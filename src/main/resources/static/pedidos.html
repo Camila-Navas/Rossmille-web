@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROSS MILLE - Pedidos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f4f8; font-family: 'Segoe UI', sans-serif; }
+        .topbar {
+            background-color: #1a1a2e; color: #fff;
+            padding: 14px 28px; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .topbar .brand { font-size: 1.1rem; font-weight: 800; letter-spacing: 3px; }
+        .topbar .section-name { font-size: 0.85rem; opacity: 0.65; margin-left: 12px; }
+        .topbar .user-info { font-size: 0.82rem; opacity: 0.8; }
+        .btn-back {
+            background: transparent; border: 1px solid rgba(255,255,255,0.35);
+            color: #fff; border-radius: 6px; padding: 5px 14px;
+            font-size: 0.82rem; cursor: pointer; margin-right: 12px;
+            text-decoration: none;
+        }
+        .btn-back:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .main { padding: 28px 32px; max-width: 900px; margin: 0 auto; }
+        .toolbar {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 20px;
+        }
+        .tabs {
+            display: flex; gap: 4px;
+            background: #e8e8f0; border-radius: 8px; padding: 4px;
+        }
+        .tab-btn {
+            padding: 6px 20px; border: none; background: transparent;
+            border-radius: 6px; font-size: 0.88rem; font-weight: 600;
+            color: #666; cursor: pointer; transition: all 0.15s;
+        }
+        .tab-btn.active { background: #fff; color: #1a1a2e; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+        .btn-nuevo {
+            background: #1a1a2e; color: #fff; border: none;
+            border-radius: 8px; padding: 8px 20px; font-size: 0.88rem;
+            font-weight: 600; cursor: pointer; transition: background 0.15s;
+        }
+        .btn-nuevo:hover { background: #2d2d50; }
+
+        /* Pedido card */
+        .pedido-card {
+            background: #fff; border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            margin-bottom: 14px; overflow: hidden;
+            border: 1.5px solid transparent; transition: border-color 0.15s;
+        }
+        .pedido-card:hover { border-color: #e0e0ee; }
+        .card-header-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 20px 10px; cursor: pointer;
+        }
+        .card-id { font-size: 0.78rem; color: #999; min-width: 72px; }
+        .card-cliente { font-weight: 700; font-size: 0.92rem; color: #1a1a2e; flex: 1; }
+        .card-fecha { font-size: 0.78rem; color: #888; min-width: 110px; text-align: right; }
+        .badge-estado {
+            font-size: 0.72rem; font-weight: 700; padding: 3px 10px;
+            border-radius: 20px; white-space: nowrap;
+        }
+        .estado-pendiente { background: #fff3cd; color: #856404; }
+        .estado-en-proceso { background: #cfe2ff; color: #0a4fa8; }
+        .estado-atendido { background: #d1e7dd; color: #0a5c36; }
+        .card-body-row {
+            padding: 0 20px 12px; display: none;
+        }
+        .card-body-row.open { display: block; }
+        .card-total { font-size: 0.82rem; color: #555; margin-bottom: 6px; }
+        .card-obs { font-size: 0.8rem; color: #666; margin-bottom: 10px; font-style: italic; }
+        .items-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 12px; }
+        .items-table th { color: #888; font-weight: 600; padding: 4px 0; border-bottom: 1px solid #f0f0f5; }
+        .items-table td { padding: 5px 0; border-bottom: 1px solid #f8f8fc; color: #333; }
+        .items-table td:last-child { text-align: right; }
+        .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-avanzar {
+            border: none; border-radius: 6px; padding: 6px 16px;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            transition: opacity 0.15s;
+        }
+        .btn-avanzar-pendiente { background: #fff3cd; color: #856404; }
+        .btn-avanzar-pendiente:hover { opacity: 0.8; }
+        .btn-avanzar-proceso { background: #cfe2ff; color: #0a4fa8; }
+        .btn-avanzar-proceso:hover { opacity: 0.8; }
+        .btn-eliminar {
+            background: transparent; border: 1px solid #f0a0a0;
+            color: #cc4444; border-radius: 6px; padding: 6px 14px;
+            font-size: 0.82rem; cursor: pointer;
+        }
+        .btn-eliminar:hover { background: #fff0f0; }
+
+        /* Modal nuevo pedido */
+        .item-row {
+            display: grid; grid-template-columns: 1fr 70px 110px 1fr 32px;
+            gap: 6px; align-items: start; margin-bottom: 6px;
+        }
+        .item-row input, .item-row textarea {
+            border: 1px solid #d0d0dd; border-radius: 6px;
+            padding: 5px 8px; font-size: 0.82rem; width: 100%;
+        }
+        .btn-remove-item {
+            background: transparent; border: 1px solid #f0a0a0; color: #cc4444;
+            border-radius: 6px; width: 32px; height: 32px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+        }
+        .total-estimado { font-weight: 700; color: #1a1a2e; font-size: 0.95rem; }
+        .empty-msg { text-align: center; color: #aaa; padding: 48px 0; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div style="display:flex; align-items:center;">
+            <a href="dashboard.html" class="btn-back">&#8592; Inicio</a>
+            <span class="brand">ROSS MILLE</span>
+            <span class="section-name">/ Pedidos</span>
+        </div>
+        <span class="user-info" id="userInfo"></span>
+    </div>
+
+    <div class="main">
+        <div class="toolbar">
+            <div class="tabs">
+                <button class="tab-btn active" id="tabActivos"
+                    onclick="cambiarTab('activos')">Activos</button>
+                <button class="tab-btn" id="tabHistorial"
+                    onclick="cambiarTab('historial')">Historial</button>
+            </div>
+            <button class="btn-nuevo" onclick="abrirModalNuevo()">+ Nuevo Pedido</button>
+        </div>
+
+        <div id="listaPedidos">
+            <div class="empty-msg">Cargando...</div>
+        </div>
+    </div>
+
+    <!-- Modal: Nuevo Pedido -->
+    <div class="modal fade" id="modalNuevo" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h6 class="modal-title fw-bold">Nuevo Pedido</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="font-size:0.85rem;">ID del Cliente</label>
+                        <input type="text" id="nuevoIdCliente" class="form-control form-control-sm"
+                            placeholder="Ej: 1234567890" maxlength="10">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="font-size:0.85rem;">Observaciones</label>
+                        <textarea id="nuevoObservaciones" class="form-control form-control-sm"
+                            rows="2" placeholder="Notas adicionales (opcional)"></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label fw-semibold mb-0" style="font-size:0.85rem;">
+                                Productos del pedido
+                            </label>
+                            <button type="button" class="btn btn-outline-secondary btn-sm"
+                                onclick="agregarItemForm()">+ Agregar item</button>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 70px 110px 1fr 32px;
+                            gap:6px; margin-bottom:4px;">
+                            <span style="font-size:0.75rem; color:#888; font-weight:600;">Nombre producto</span>
+                            <span style="font-size:0.75rem; color:#888; font-weight:600;">Cant.</span>
+                            <span style="font-size:0.75rem; color:#888; font-weight:600;">Precio est.</span>
+                            <span style="font-size:0.75rem; color:#888; font-weight:600;">Descripcion</span>
+                            <span></span>
+                        </div>
+                        <div id="itemsForm"></div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-2"
+                        style="border-top: 1px solid #e8e8f0;">
+                        <span style="font-size:0.85rem; color:#666;">Total estimado:</span>
+                        <span class="total-estimado" id="totalEstimadoLabel">$0</span>
+                    </div>
+                    <div id="nuevoError" class="text-danger mt-2" style="font-size:0.83rem; display:none;"></div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                        data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-dark btn-sm"
+                        id="btnCrearPedido" onclick="crearPedido()">Crear Pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar eliminar -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold">Eliminar pedido</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="textoEliminar" style="font-size:0.88rem; color:#333; margin-bottom:12px;"></p>
+                    <label style="font-size:0.82rem; font-weight:600;">Contrasena de administrador</label>
+                    <input type="password" id="inputContrasenaEliminar"
+                        class="form-control form-control-sm mt-1" placeholder="Contrasena">
+                    <div id="errorEliminar" class="text-danger mt-2"
+                        style="font-size:0.8rem; display:none;"></div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                        data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger btn-sm"
+                        id="btnConfirmarEliminar" onclick="ejecutarEliminar()">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/pedidos.js"></script>
+    <script>
+        const session = guardRoute();
+        if (session) {
+            document.getElementById('userInfo').textContent =
+                session.nombre + ' (' + session.rol + ')';
+            window._esAdmin = session.rol === 'Administrador';
+        }
+    </script>
+</body>
+</html>

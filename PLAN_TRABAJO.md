@@ -13,7 +13,7 @@ La BD MySQL 8.0 en Docker se reutiliza sin cambios de schema.
 | Fase 2 | Modulo Productos | COMPLETADA | 2026-06-15 |
 | Fase 3 | Modulo Clientes | COMPLETADA | 2026-06-15 |
 | Fase 4 | Modulo Vender (POS) | COMPLETADA | 2026-06-15 |
-| Fase 5 | Modulo Pedidos | Pendiente | — |
+| Fase 5 | Modulo Pedidos | COMPLETADA | 2026-06-15 |
 | Fase 6 | Usuarios + Reportes + Dashboard final | Pendiente | — |
 | Fase 7 | Calidad y cierre | Pendiente | — |
 
@@ -138,23 +138,25 @@ Esta es la pieza tecnica mas importante del portafolio (transaccion ACID con blo
 
 ---
 
-## FASE 5 — Modulo Pedidos [Pendiente]
+## FASE 5 — Modulo Pedidos [COMPLETADA 2026-06-15]
 
 **Criterio de exito:** Crear pedido, marcarlo como Atendido, verificar que aparece en historial.
 
 ### Tareas
 
-- [ ] 5.1 Entidades `Pedido` + `DetallePedido`
-- [ ] 5.2 `PedidoDTO` + `DetallePedidoDTO`
-- [ ] 5.3 `PedidoService` + `PedidoController` — endpoints:
+- [x] 5.1 Entidades `Pedido` + `DetallePedido`
+- [x] 5.2 `PedidoDTO` + `DetallePedidoDTO` + `PedidoRequest` + `DetallePedidoRequest`
+- [x] 5.3 `PedidoService` + `PedidoController` — endpoints:
   - GET /api/pedidos?tipo=activos (estado IN Pendiente, En Proceso)
   - GET /api/pedidos?tipo=historial (estado = Atendido)
   - POST /api/pedidos
-  - PUT /api/pedidos/{id}/atender — cambia estado a Atendido
+  - PUT /api/pedidos/{id}/avanzar — Pendiente->En Proceso->Atendido
   - DELETE /api/pedidos/{id} — solo Administrador + { contrasena }
-- [ ] 5.4 `pedidos.html` + `pedidos.js`
+- [x] 5.4 `pedidos.html` + `pedidos.js`
   - Tabs: Activos / Historial
-  - Formulario de nuevo pedido con busqueda de cliente y lista de items
+  - Cards expandibles con items del pedido
+  - Formulario modal de nuevo pedido con items dinamicos
+  - Boton avanzar estado + eliminar (admin)
 
 ---
 
