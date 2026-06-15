@@ -14,7 +14,7 @@ La BD MySQL 8.0 en Docker se reutiliza sin cambios de schema.
 | Fase 3 | Modulo Clientes | COMPLETADA | 2026-06-15 |
 | Fase 4 | Modulo Vender (POS) | COMPLETADA | 2026-06-15 |
 | Fase 5 | Modulo Pedidos | COMPLETADA | 2026-06-15 |
-| Fase 6 | Usuarios + Reportes + Dashboard final | Pendiente | — |
+| Fase 6 | Usuarios + Reportes + Dashboard final | COMPLETADA | 2026-06-15 |
 | Fase 7 | Calidad y cierre | Pendiente | — |
 
 ---
@@ -160,27 +160,27 @@ Esta es la pieza tecnica mas importante del portafolio (transaccion ACID con blo
 
 ---
 
-## FASE 6 — Usuarios + Reportes + Dashboard final [Pendiente]
+## FASE 6 — Usuarios + Reportes + Dashboard final [COMPLETADA 2026-06-15]
 
 **Criterio de exito:** Admin puede ver reporte y exportarlo a PDF. Empleado no puede acceder a /usuarios ni /reporte.
 
 ### Tareas
 
-- [ ] 6.1 Entidad Usuario ya existe — agregar UsuarioDTO (sin exponer hash de contrasena)
-- [ ] 6.2 `UsuarioService` + `UsuarioController` — endpoints protegidos con @PreAuthorize:
-  - GET /api/usuarios — solo Administrador
-  - POST /api/usuarios — solo Administrador
-  - PUT /api/usuarios/{id} — solo Administrador
-  - DELETE /api/usuarios/{id} — solo Administrador
-- [ ] 6.3 `ReporteService` — reutilizar logica de PdfGenerator del prototipo Swing
-  - Filtrar ventas por rango de fechas con JOIN a clientes y usuarios
-  - Generar PDF con PDFBox (ya incluido en pom.xml)
-- [ ] 6.4 `ReporteController` — endpoints:
+- [x] 6.1 `UsuarioDTO` (sin exponer hash de contrasena)
+- [x] 6.2 `UsuarioService` + `UsuarioController` — @PreAuthorize("hasRole('ADMINISTRADOR')") en toda la clase:
+  - GET /api/usuarios
+  - POST /api/usuarios
+  - PUT /api/usuarios/{id}
+  - DELETE /api/usuarios/{id} + verificacion de contrasena del admin
+- [x] 6.3 `ReporteService` — JdbcTemplate JOIN ventas+clientes+usuarios, PDF con PDFBox adaptado de Swing
+  - generarPdf() retorna byte[] via ByteArrayOutputStream (sin archivos temporales)
+  - Texto truncado automaticamente si supera ancho de columna
+- [x] 6.4 `ReporteController` — @PreAuthorize en toda la clase:
   - GET /api/reporte?desde=YYYY-MM-DD&hasta=YYYY-MM-DD — JSON
-  - GET /api/reporte/pdf?desde=YYYY-MM-DD&hasta=YYYY-MM-DD — descarga PDF
-- [ ] 6.5 `usuarios.html` + `usuarios.js`
-- [ ] 6.6 `reporte.html` + `reporte.js` — date pickers, tabla de resultados, boton exportar PDF
-- [ ] 6.7 `dashboard.html` — version final con cards de acceso reales (quitar clase coming-soon)
+  - GET /api/reporte/pdf?desde=YYYY-MM-DD&hasta=YYYY-MM-DD — descarga PDF con Content-Disposition
+- [x] 6.5 `usuarios.html` + `usuarios.js` — tabla CRUD, modales crear/editar/eliminar
+- [x] 6.6 `reporte.html` + `reporte.js` — date pickers con mes actual por defecto, tabla, resumen, descarga PDF via fetch con JWT
+- [x] 6.7 `dashboard.html` — todas las cards activas (sin coming-soon)
 
 ---
 
