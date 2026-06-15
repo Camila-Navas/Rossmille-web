@@ -12,7 +12,7 @@ La BD MySQL 8.0 en Docker se reutiliza sin cambios de schema.
 | Fase 1 | Base del proyecto + Autenticacion JWT | COMPLETADA | 2026-06-12 |
 | Fase 2 | Modulo Productos | COMPLETADA | 2026-06-15 |
 | Fase 3 | Modulo Clientes | COMPLETADA | 2026-06-15 |
-| Fase 4 | Modulo Vender (POS) | Pendiente | — |
+| Fase 4 | Modulo Vender (POS) | EN PROGRESO | 2026-06-15 |
 | Fase 5 | Modulo Pedidos | Pendiente | — |
 | Fase 6 | Usuarios + Reportes + Dashboard final | Pendiente | — |
 | Fase 7 | Calidad y cierre | Pendiente | — |
@@ -100,7 +100,7 @@ La BD MySQL 8.0 en Docker se reutiliza sin cambios de schema.
 
 ---
 
-## FASE 4 — Modulo Vender (POS) [Pendiente]
+## FASE 4 — Modulo Vender (POS) [EN PROGRESO]
 
 **Criterio de exito:** Venta completa procesada, stock descontado en BD, ticket mostrado.
 
@@ -108,8 +108,10 @@ Esta es la pieza tecnica mas importante del portafolio (transaccion ACID con blo
 
 ### Tareas
 
-- [ ] 4.1 Entidades `Venta` + `DetalleVenta`
-- [ ] 4.2 `VentaRequest` + `VentaResponse`
+- [x] 4.1 Entidades `Venta` + `DetalleVenta`
+- [x] 4.2 `VentaRequest` + `VentaResponse` + `ItemVentaRequest` + `ItemVentaResponse`
+- [x] 4.2b `VentaRepository` + `DetalleVentaRepository`
+- [x] 4.2c `StockInsuficienteException`
 - [ ] 4.3 `VentaService` con `@Transactional`:
   - Recibe: lista de items ({ productoId, cantidad, precioUnitario }), idCliente, descuento, metodoPago
   - Para cada producto: SELECT stock FROM productos WHERE id = ? FOR UPDATE (bloqueo pesimista)
