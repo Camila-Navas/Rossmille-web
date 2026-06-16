@@ -1,6 +1,7 @@
 var tabActual = 'activos';
 var pedidoEliminarId = null;
 var contadorItems = 0;
+var contadoresTab = { activos: null, historial: null };
 
 var modalNuevo = null;
 var modalEliminar = null;
@@ -9,7 +10,27 @@ document.addEventListener('DOMContentLoaded', function () {
     modalNuevo    = new bootstrap.Modal(document.getElementById('modalNuevo'));
     modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminar'));
     cargarPedidos();
+    cargarContadorTab('historial');
 });
+
+async function cargarContadorTab(tab) {
+    var res = await apiFetch('/pedidos?tipo=' + tab);
+    if (!res) return;
+    var body = await res.json();
+    if (body.ok) {
+        contadoresTab[tab] = (body.data || []).length;
+        refrescarEtiquetasTab();
+    }
+}
+
+function refrescarEtiquetasTab() {
+    var n = contadoresTab.activos;
+    document.getElementById('tabActivos').textContent =
+        'Activos' + (n > 0 ? ' (' + n + ')' : '');
+    var h = contadoresTab.historial;
+    document.getElementById('tabHistorial').textContent =
+        'Historial' + (h > 0 ? ' (' + h + ')' : '');
+}
 
 function cambiarTab(tab) {
     tabActual = tab;
@@ -33,6 +54,9 @@ async function cargarPedidos() {
     }
 
     var pedidos = body.data || [];
+    contadoresTab[tabActual] = pedidos.length;
+    refrescarEtiquetasTab();
+
     if (pedidos.length === 0) {
         lista.innerHTML = '<div class="empty-msg">Sin pedidos ' +
             (tabActual === 'activos' ? 'activos' : 'en historial') + '</div>';

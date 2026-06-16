@@ -4,56 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROSS MILLE - Vender</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/rossmille.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
         body {
             background-color: #f4f4f8;
-            font-family: 'Segoe UI', sans-serif;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            margin-left: var(--rm-sidebar-w);
         }
-        .topbar {
-            background-color: #1a1a2e;
-            color: #fff;
-            padding: 14px 28px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        .topbar .brand {
-            font-size: 1.1rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-        }
-        .topbar .section-name {
-            font-size: 0.85rem;
-            opacity: 0.65;
-            margin-left: 12px;
-        }
-        .topbar .user-info {
-            font-size: 0.82rem;
-            opacity: 0.8;
-        }
-        .btn-back {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.35);
-            color: #fff;
-            border-radius: 6px;
-            padding: 5px 14px;
-            font-size: 0.82rem;
-            cursor: pointer;
-            margin-right: 12px;
-            text-decoration: none;
-        }
-        .btn-back:hover { background: rgba(255,255,255,0.12); color: #fff; }
         .pos-layout {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
-        /* Panel izquierdo: buscador de productos */
         .panel-busqueda {
             width: 420px;
             min-width: 320px;
@@ -75,11 +42,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .resultado-lista {
-            overflow-y: auto;
-            flex: 1;
-            padding: 8px 0;
-        }
+        .resultado-lista { overflow-y: auto; flex: 1; padding: 8px 0; }
         .resultado-item {
             padding: 10px 20px;
             cursor: pointer;
@@ -94,7 +57,6 @@
         .badge-stock-bajo { background: #fff3cd; color: #856404; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-left: 6px; }
         .badge-agotado { background: #fde8d8; color: #b94a00; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-left: 6px; }
 
-        /* Panel derecho: carrito + resumen */
         .panel-carrito {
             flex: 1;
             display: flex;
@@ -114,12 +76,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .carrito-items {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 24px;
-            background: #fff;
-        }
+        .carrito-items { flex: 1; overflow-y: auto; padding: 8px 24px; background: #fff; }
         .carrito-item {
             display: flex;
             align-items: center;
@@ -135,13 +92,13 @@
             width: 26px; height: 26px; border: 1px solid #d0d0dd; background: #f4f4f8;
             border-radius: 4px; cursor: pointer; font-size: 0.9rem; line-height: 1;
             display: flex; align-items: center; justify-content: center;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
         .ci-qty button:hover { background: #e8e8f0; }
         .ci-qty .qty-val { min-width: 24px; text-align: center; font-weight: 600; font-size: 0.88rem; }
         .btn-quitar { background: transparent; border: none; color: #cc4444; font-size: 1rem; cursor: pointer; padding: 0 4px; }
         .carrito-vacio { text-align: center; color: #aaa; padding: 48px 0; font-size: 0.9rem; }
 
-        /* Panel resumen inferior */
         .panel-resumen {
             background: #fff;
             border-top: 1px solid #e0e0e8;
@@ -169,6 +126,7 @@
             border-radius: 6px;
             padding: 3px 8px;
             font-size: 0.88rem;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
         .select-pago {
             border: 1px solid #d0d0dd;
@@ -176,6 +134,7 @@
             padding: 4px 8px;
             font-size: 0.88rem;
             background: #fff;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
         .input-cliente {
             width: 100%;
@@ -184,6 +143,7 @@
             padding: 5px 10px;
             font-size: 0.85rem;
             margin-top: 4px;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
         .btn-finalizar {
             background: #1a1a2e;
@@ -198,6 +158,7 @@
             margin-top: 14px;
             letter-spacing: 1px;
             transition: background 0.15s;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
         .btn-finalizar:hover { background: #2d2d50; }
         .btn-finalizar:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -211,10 +172,9 @@
             font-size: 0.85rem;
             cursor: pointer;
             margin-top: 6px;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
         .btn-limpiar:hover { background: #f4f4f8; }
-
-        /* Modal ticket */
         .ticket-body {
             font-family: 'Courier New', monospace;
             font-size: 0.82rem;
@@ -227,120 +187,138 @@
     </style>
 </head>
 <body>
-    <div class="topbar">
-        <div style="display:flex; align-items:center;">
-            <a href="dashboard.html" class="btn-back">&#8592; Inicio</a>
-            <span class="brand">ROSS MILLE</span>
-            <span class="section-name">/ Vender</span>
-        </div>
-        <span class="user-info" id="userInfo"></span>
+
+<nav class="rm-sidebar">
+    <div class="rm-sidebar-brand">
+        <div class="brand-name">ROSS MILLE</div>
+        <span class="brand-sub">Punto de Venta</span>
     </div>
+    <ul class="rm-nav">
+        <li><a href="/dashboard.html" class="rm-nav-link"><i class="bi bi-house-door"></i> Inicio</a></li>
+        <li><a href="/vender.html" class="rm-nav-link active"><i class="bi bi-cart3"></i> Vender</a></li>
+        <li><a href="/productos.html" class="rm-nav-link"><i class="bi bi-box-seam"></i> Productos</a></li>
+        <li><a href="/clientes.html" class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
+        <li><a href="/pedidos.html" class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
+        <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
+        <li class="rm-nav-admin"><a href="/usuarios.html" class="rm-nav-link"><i class="bi bi-person-gear"></i> Usuarios</a></li>
+        <li class="rm-nav-admin"><a href="/reporte.html" class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
+    </ul>
+    <div class="rm-sidebar-footer">
+        <div class="sf-name" id="sb-name"></div>
+        <div class="sf-role" id="sb-role"></div>
+        <button class="rm-btn-logout" onclick="logout()">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesion
+        </button>
+    </div>
+</nav>
 
-    <div class="pos-layout">
+<div class="pos-layout">
 
-        <!-- Panel izquierdo: busqueda de productos -->
-        <div class="panel-busqueda">
-            <div class="panel-header">
-                <h6>Productos</h6>
-                <input type="text" id="inputBusqueda" class="form-control form-control-sm"
-                    placeholder="Buscar por nombre..." autocomplete="off">
-            </div>
-            <div class="resultado-lista" id="resultadoLista">
-                <div class="carrito-vacio">Escribe para buscar un producto</div>
-            </div>
+    <!-- Panel izquierdo: busqueda de productos -->
+    <div class="panel-busqueda">
+        <div class="panel-header">
+            <h6>Productos</h6>
+            <input type="text" id="inputBusqueda" class="form-control form-control-sm"
+                placeholder="Buscar por nombre..." autocomplete="off">
         </div>
-
-        <!-- Panel derecho: carrito -->
-        <div class="panel-carrito">
-            <div class="carrito-header">
-                <h6>Carrito</h6>
-            </div>
-            <div class="carrito-items" id="carritoItems">
-                <div class="carrito-vacio" id="carritoVacio">El carrito esta vacio</div>
-            </div>
-            <div class="panel-resumen">
-                <div class="resumen-fila">
-                    <span>Cliente (opcional)</span>
-                </div>
-                <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
-                    <input type="text" id="inputCliente" class="input-cliente"
-                        placeholder="ID del cliente (opcional)" autocomplete="off">
-                </div>
-                <div class="resumen-fila">
-                    <span>Subtotal</span>
-                    <span id="subtotalVal">$0</span>
-                </div>
-                <div class="resumen-fila">
-                    <span>Descuento ($)</span>
-                    <input type="number" id="inputDescuento" class="input-descuento"
-                        min="0" step="100" value="0" placeholder="0">
-                </div>
-                <div class="resumen-fila">
-                    <span>Metodo de pago</span>
-                    <select id="selectPago" class="select-pago">
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Tarjeta">Tarjeta</option>
-                        <option value="Transferencia">Transferencia</option>
-                    </select>
-                </div>
-                <div class="resumen-fila total">
-                    <span>TOTAL</span>
-                    <span id="totalVal">$0</span>
-                </div>
-                <button class="btn-finalizar" id="btnFinalizar" disabled
-                    onclick="finalizarVenta()">FINALIZAR VENTA</button>
-                <button class="btn-limpiar" onclick="limpiarCarrito()">Limpiar carrito</button>
-            </div>
+        <div class="resultado-lista" id="resultadoLista">
+            <div class="carrito-vacio">Escribe para buscar un producto</div>
         </div>
     </div>
 
-    <!-- Modal ticket -->
-    <div class="modal fade" id="modalTicket" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <h6 class="modal-title fw-bold">Venta registrada</h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body pt-2">
-                    <div class="ticket-body" id="ticketBody"></div>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-dark w-100"
-                        data-bs-dismiss="modal" onclick="limpiarCarrito()">
-                        Nueva venta
-                    </button>
-                </div>
+    <!-- Panel derecho: carrito -->
+    <div class="panel-carrito">
+        <div class="carrito-header">
+            <h6>Carrito</h6>
+        </div>
+        <div class="carrito-items" id="carritoItems">
+            <div class="carrito-vacio" id="carritoVacio">El carrito esta vacio</div>
+        </div>
+        <div class="panel-resumen">
+            <div class="resumen-fila">
+                <span>Cliente (opcional)</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
+                <input type="text" id="inputCliente" class="input-cliente"
+                    placeholder="ID del cliente (opcional)" autocomplete="off">
+            </div>
+            <div class="resumen-fila">
+                <span>Subtotal</span>
+                <span id="subtotalVal">$0</span>
+            </div>
+            <div class="resumen-fila">
+                <span>Descuento ($)</span>
+                <input type="number" id="inputDescuento" class="input-descuento"
+                    min="0" step="100" value="0" placeholder="0">
+            </div>
+            <div class="resumen-fila">
+                <span>Metodo de pago</span>
+                <select id="selectPago" class="select-pago">
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="Transferencia">Transferencia</option>
+                </select>
+            </div>
+            <div class="resumen-fila total">
+                <span>TOTAL</span>
+                <span id="totalVal">$0</span>
+            </div>
+            <button class="btn-finalizar" id="btnFinalizar" disabled
+                onclick="finalizarVenta()">FINALIZAR VENTA</button>
+            <button class="btn-limpiar" onclick="limpiarCarrito()">Limpiar carrito</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal ticket -->
+<div class="modal fade" id="modalTicket" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h6 class="modal-title fw-bold">Venta registrada</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <div class="ticket-body" id="ticketBody"></div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-dark w-100"
+                    data-bs-dismiss="modal" onclick="limpiarCarrito()">
+                    Nueva venta
+                </button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal error -->
-    <div class="modal fade" id="modalError" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content">
-                <div class="modal-body text-center py-4">
-                    <div style="font-size:1.8rem; margin-bottom:10px; color:#cc4444;">&#9888;</div>
-                    <div id="errorMsg" style="font-size:0.9rem; color:#333;"></div>
+<!-- Modal error -->
+<div class="modal fade" id="modalError" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div style="font-size:1.8rem; margin-bottom:10px; color:#cc4444;">
+                    <i class="bi bi-exclamation-triangle"></i>
                 </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-outline-secondary w-100"
-                        data-bs-dismiss="modal">Cerrar</button>
-                </div>
+                <div id="errorMsg" style="font-size:0.9rem; color:#333;"></div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-outline-secondary w-100"
+                    data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/vender.js"></script>
-    <script>
-        const session = guardRoute();
-        if (session) {
-            document.getElementById('userInfo').textContent =
-                session.nombre + ' (' + session.rol + ')';
-        }
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/rossmille.js"></script>
+<script src="/js/vender.js"></script>
+<script>
+    var session = guardRoute();
+    if (session) {
+        initSidebar(session);
+    }
+</script>
 </body>
 </html>

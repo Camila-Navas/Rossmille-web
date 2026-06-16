@@ -4,62 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROSS MILLE - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/rossmille.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        body {
-            background-color: #f4f4f8;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .topbar {
-            background-color: #1a1a2e;
-            color: #fff;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .topbar .brand {
-            font-size: 1.3rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-        }
-        .topbar .user-info {
-            font-size: 0.9rem;
-            opacity: 0.85;
-        }
-        .btn-logout {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.4);
-            color: #fff;
-            border-radius: 6px;
-            padding: 6px 16px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            margin-left: 16px;
-            transition: background 0.2s;
-        }
-        .btn-logout:hover {
-            background: rgba(255,255,255,0.15);
-        }
         .main {
-            padding: 48px 32px;
-            max-width: 1000px;
-            margin: 0 auto;
+            padding: 40px 36px;
+            max-width: 1100px;
         }
         .welcome-title {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #1a1a2e;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .welcome-sub {
             color: #666;
-            margin-bottom: 40px;
+            font-size: 0.9rem;
+            margin-bottom: 22px;
+        }
+        .kpi-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1.5px solid transparent;
+            transition: border-color 0.15s;
+        }
+        .kpi-card:hover { border-color: #1a1a2e; }
+        .kpi-icon {
+            font-size: 1.6rem;
+            color: #1a1a2e;
+            opacity: 0.65;
+            flex-shrink: 0;
+        }
+        .kpi-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .kpi-label {
+            font-size: 0.72rem;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .chart-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px 22px 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            margin-bottom: 28px;
+        }
+        .chart-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 14px;
+        }
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 14px;
+            margin-top: 8px;
         }
         .module-card {
             background: #fff;
             border-radius: 12px;
-            padding: 28px 24px;
+            padding: 28px 20px;
             text-align: center;
             box-shadow: 0 2px 12px rgba(0,0,0,0.07);
             cursor: pointer;
@@ -76,101 +100,157 @@
             color: #1a1a2e;
         }
         .module-card .icon {
-            font-size: 2.2rem;
+            font-size: 1.9rem;
             margin-bottom: 12px;
+            color: #1a1a2e;
         }
         .module-card .label {
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
         .badge-admin {
             background: #e8f4fd;
             color: #1a5276;
             border-radius: 6px;
-            padding: 3px 10px;
-            font-size: 0.75rem;
+            padding: 2px 8px;
+            font-size: 0.7rem;
             font-weight: 600;
-            margin-left: 8px;
-        }
-        .coming-soon {
-            opacity: 0.45;
-            cursor: default;
-        }
-        .coming-soon:hover {
-            transform: none;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-            border-color: transparent;
+            margin-left: 6px;
         }
     </style>
 </head>
-<body>
-    <div class="topbar">
-        <div class="brand">ROSS MILLE</div>
-        <div style="display:flex; align-items:center;">
-            <span class="user-info" id="userInfo"></span>
-            <button class="btn-logout" onclick="logout()">Cerrar Sesion</button>
+<body class="rm-has-sidebar">
+
+<nav class="rm-sidebar">
+    <div class="rm-sidebar-brand">
+        <div class="brand-name">ROSS MILLE</div>
+        <span class="brand-sub">Punto de Venta</span>
+    </div>
+    <ul class="rm-nav">
+        <li><a href="/dashboard.html" class="rm-nav-link active"><i class="bi bi-house-door"></i> Inicio</a></li>
+        <li><a href="/vender.html" class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
+        <li><a href="/productos.html" class="rm-nav-link"><i class="bi bi-box-seam"></i> Productos</a></li>
+        <li><a href="/clientes.html" class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
+        <li><a href="/pedidos.html" class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
+        <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
+        <li class="rm-nav-admin"><a href="/usuarios.html" class="rm-nav-link"><i class="bi bi-person-gear"></i> Usuarios</a></li>
+        <li class="rm-nav-admin"><a href="/reporte.html" class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
+    </ul>
+    <div class="rm-sidebar-footer">
+        <div class="sf-name" id="sb-name"></div>
+        <div class="sf-role" id="sb-role"></div>
+        <button class="rm-btn-logout" onclick="logout()">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesion
+        </button>
+    </div>
+</nav>
+
+<div class="main">
+    <div class="welcome-title" id="welcomeTitle">Bienvenido</div>
+    <div class="welcome-sub">Resumen del dia de hoy</div>
+
+    <div class="row g-3 mb-4" id="kpiRow">
+        <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="bi bi-receipt"></i></div>
+                <div>
+                    <div class="kpi-value" id="kpiVentasHoy">-</div>
+                    <div class="kpi-label">Ventas hoy</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="bi bi-cash-stack"></i></div>
+                <div>
+                    <div class="kpi-value" id="kpiIngresosHoy">-</div>
+                    <div class="kpi-label">Ingresos hoy</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="bi bi-exclamation-triangle"></i></div>
+                <div>
+                    <div class="kpi-value" id="kpiStockBajo">-</div>
+                    <div class="kpi-label">Stock bajo</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="bi bi-clipboard2-list"></i></div>
+                <div>
+                    <div class="kpi-value" id="kpiPedidosPendientes">-</div>
+                    <div class="kpi-label">Pedidos pendientes</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="main">
-        <div class="welcome-title" id="welcomeTitle">Bienvenido</div>
-        <div class="welcome-sub">Selecciona un modulo para comenzar</div>
-
-        <div class="row g-3" id="moduleGrid">
-            <div class="col-6 col-md-4 col-lg-3">
-                <a href="vender.html" class="module-card">
-                    <div class="icon">&#128722;</div>
-                    <div class="label">Vender</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <a href="productos.html" class="module-card">
-                    <div class="icon">&#128230;</div>
-                    <div class="label">Productos</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <a href="clientes.html" class="module-card">
-                    <div class="icon">&#128100;</div>
-                    <div class="label">Clientes</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <a href="pedidos.html" class="module-card">
-                    <div class="icon">&#128203;</div>
-                    <div class="label">Pedidos</div>
-                </a>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3 admin-only" style="display:none;">
-                <a href="usuarios.html" class="module-card">
-                    <div class="icon">&#128101;</div>
-                    <div class="label">Usuarios <span class="badge-admin">Admin</span></div>
-                </a>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3 admin-only" style="display:none;">
-                <a href="reporte.html" class="module-card">
-                    <div class="icon">&#128202;</div>
-                    <div class="label">Reporte <span class="badge-admin">Admin</span></div>
-                </a>
-            </div>
-        </div>
+    <div class="chart-card">
+        <div class="chart-title">Ingresos ultimos 7 dias</div>
+        <canvas id="chartVentas" height="110"></canvas>
     </div>
 
-    <script src="/js/auth.js"></script>
-    <script>
-        const session = guardRoute();
-        if (session) {
-            document.getElementById('userInfo').textContent =
-                session.nombre + ' (' + session.rol + ')';
-            document.getElementById('welcomeTitle').textContent =
-                'Bienvenido, ' + session.nombre;
+    <div class="section-label">Acceso rapido</div>
+    <div class="row g-3" id="moduleGrid">
+        <div class="col-6 col-md-4 col-lg-3">
+            <a href="vender.html" class="module-card">
+                <div class="icon"><i class="bi bi-cart3"></i></div>
+                <div class="label">Vender</div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3">
+            <a href="productos.html" class="module-card">
+                <div class="icon"><i class="bi bi-box-seam"></i></div>
+                <div class="label">Productos</div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3">
+            <a href="clientes.html" class="module-card">
+                <div class="icon"><i class="bi bi-people"></i></div>
+                <div class="label">Clientes</div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3">
+            <a href="pedidos.html" class="module-card">
+                <div class="icon"><i class="bi bi-clipboard2-list"></i></div>
+                <div class="label">Pedidos</div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 admin-only" style="display:none;">
+            <a href="usuarios.html" class="module-card">
+                <div class="icon"><i class="bi bi-person-gear"></i></div>
+                <div class="label">Usuarios <span class="badge-admin">Admin</span></div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 admin-only" style="display:none;">
+            <a href="reporte.html" class="module-card">
+                <div class="icon"><i class="bi bi-bar-chart-line"></i></div>
+                <div class="label">Reporte <span class="badge-admin">Admin</span></div>
+            </a>
+        </div>
+    </div>
+</div>
 
-            if (session.rol === 'Administrador') {
-                document.querySelectorAll('.admin-only').forEach(function(el) {
-                    el.style.display = '';
-                });
-            }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/rossmille.js"></script>
+<script src="/js/dashboard.js"></script>
+<script>
+    var session = guardRoute();
+    if (session) {
+        initSidebar(session);
+        document.getElementById('welcomeTitle').textContent = 'Bienvenido, ' + session.nombre;
+        if (session.rol === 'Administrador') {
+            document.querySelectorAll('.admin-only').forEach(function(el) {
+                el.style.display = '';
+            });
         }
-    </script>
+    }
+</script>
 </body>
 </html>

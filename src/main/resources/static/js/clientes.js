@@ -2,6 +2,31 @@ var clientesCache = [];
 var clienteEditandoId = null;
 var eliminarClienteId = null;
 var esAdmin = false;
+var busquedaTimer = null;
+var paginaActualClientes = 1;
+var PAGE_SIZE_CLIENTES = 10;
+
+var AVATAR_COLORS = ['#1a1a2e','#2196F3','#4CAF50','#C62828','#6A1B9A','#00796B','#E65100','#0277BD'];
+
+function iniciales(nombre) {
+    if (!nombre) return '?';
+    var p = nombre.trim().split(/\s+/);
+    if (p.length >= 2) return (p[0][0] + p[1][0]).toUpperCase();
+    return nombre.substring(0, 2).toUpperCase();
+}
+
+function avatarColor(nombre) {
+    if (!nombre) return AVATAR_COLORS[0];
+    var h = 0;
+    for (var i = 0; i < nombre.length; i++) h = (h * 31 + nombre.charCodeAt(i)) & 0xffff;
+    return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+
+function formatNum(n) {
+    var num = parseFloat(n);
+    if (isNaN(num)) return '0';
+    return num.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
 
 var modalCliente = null;
 var modalHistorial = null;
@@ -14,15 +39,26 @@ function init(session) {
     modalHistorial = new bootstrap.Modal(document.getElementById('modalHistorial'));
     modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminar'));
 
+    document.getElementById('inputBuscar').addEventListener('input', function () {
+        clearTimeout(busquedaTimer);
+        var q = this.value.trim();
+        busquedaTimer = setTimeout(function () { cargarClientes(q); }, 300);
+    });
+
     document.getElementById('btnBuscar').addEventListener('click', function () {
+        clearTimeout(busquedaTimer);
         cargarClientes(document.getElementById('inputBuscar').value.trim());
     });
 
     document.getElementById('inputBuscar').addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') cargarClientes(this.value.trim());
+        if (e.key === 'Enter') {
+            clearTimeout(busquedaTimer);
+            cargarClientes(this.value.trim());
+        }
     });
 
     document.getElementById('btnLimpiar').addEventListener('click', function () {
+        clearTimeout(busquedaTimer);
         document.getElementById('inputBuscar').value = '';
         cargarClientes('');
     });
@@ -49,7 +85,13 @@ async function cargarClientes(q) {
         return;
     }
 
+    paginaActualClientes = 1;
     clientesCache = body.data || [];
+    renderClientes(clientesCache);
+}
+
+function irAPaginaClientes(n) {
+    paginaActualClientes = n;
     renderClientes(clientesCache);
 }
 
@@ -58,14 +100,25 @@ function renderClientes(lista) {
 
     if (!lista || lista.length === 0) {
         tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No se encontraron clientes.</td></tr>';
+        renderPaginacion('paginacionClientes', 0, 1, PAGE_SIZE_CLIENTES, 'irAPaginaClientes');
         return;
     }
 
+    var inicio = (paginaActualClientes - 1) * PAGE_SIZE_CLIENTES;
+    var pagina = lista.slice(inicio, inicio + PAGE_SIZE_CLIENTES);
+
     var html = '';
-    lista.forEach(function (c) {
+    pagina.forEach(function (c) {
+        var ini = iniciales(c.nombre);
+        var color = avatarColor(c.nombre);
         html += '<tr>' +
             '<td class="td-id">' + esc(c.id) + '</td>' +
-            '<td class="td-nombre">' + esc(c.nombre) + '</td>' +
+            '<td class="td-nombre">' +
+                '<div class="cliente-nombre-wrap">' +
+                    '<span class="avatar-ini" style="background:' + color + '">' + ini + '</span>' +
+                    esc(c.nombre) +
+                '</div>' +
+            '</td>' +
             '<td class="td-muted">' + esc(c.correo || '—') + '</td>' +
             '<td class="td-muted">' + esc(c.telefono || '—') + '</td>' +
             '<td><div class="acciones">' +
@@ -76,6 +129,7 @@ function renderClientes(lista) {
             '</tr>';
     });
     tbody.innerHTML = html;
+    renderPaginacion('paginacionClientes', lista.length, paginaActualClientes, PAGE_SIZE_CLIENTES, 'irAPaginaClientes');
 }
 
 function esc(str) {
@@ -200,7 +254,7 @@ async function abrirModalHistorial(id, nombre) {
             '<span class="venta-id">Venta #' + v.ventaId + '</span>' +
             '<span class="venta-fecha">' + esc(v.fecha) + '</span>' +
             '<span class="venta-metodo">' + esc(v.metodoPago) + '</span>' +
-            '<span class="venta-total">$ ' + Number(v.total).toFixed(2) + '</span>' +
+            '<span class="venta-total">$' + formatNum(v.total) + '</span>' +
             '</div>' +
             '<div class="venta-items">';
 
@@ -208,8 +262,8 @@ async function abrirModalHistorial(id, nombre) {
             html += '<div class="item-row">' +
                 '<span class="item-nombre">' + esc(item.nombreProducto) + '</span>' +
                 '<span class="item-detalle">' +
-                item.cantidad + ' x $ ' + Number(item.precioUnitario).toFixed(2) +
-                ' = $ ' + Number(item.subtotal).toFixed(2) +
+                item.cantidad + ' x $' + formatNum(item.precioUnitario) +
+                ' = $' + formatNum(item.subtotal) +
                 '</span></div>';
         });
 

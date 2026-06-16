@@ -1,6 +1,8 @@
 var usuariosCache = [];
 var editandoId = null;
 var eliminarId = null;
+var paginaActualUsuarios = 1;
+var PAGE_SIZE_USUARIOS = 10;
 
 var modalUsuario = null;
 var modalEliminar = null;
@@ -25,7 +27,13 @@ async function cargarUsuarios() {
         return;
     }
 
+    paginaActualUsuarios = 1;
     usuariosCache = body.data || [];
+    renderTabla();
+}
+
+function irAPaginaUsuarios(n) {
+    paginaActualUsuarios = n;
     renderTabla();
 }
 
@@ -33,9 +41,12 @@ function renderTabla() {
     var tbody = document.getElementById('tablaBody');
     if (usuariosCache.length === 0) {
         tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Sin usuarios registrados</td></tr>';
+        renderPaginacion('paginacionUsuarios', 0, 1, PAGE_SIZE_USUARIOS, 'irAPaginaUsuarios');
         return;
     }
-    tbody.innerHTML = usuariosCache.map(function (u) {
+    var inicio = (paginaActualUsuarios - 1) * PAGE_SIZE_USUARIOS;
+    var pagina = usuariosCache.slice(inicio, inicio + PAGE_SIZE_USUARIOS);
+    tbody.innerHTML = pagina.map(function (u) {
         var badgeClass = u.rol === 'Administrador' ? 'rol-admin' : 'rol-empleado';
         return '<tr>' +
             '<td><code style="font-size:0.82rem;">' + esc(u.id) + '</code></td>' +
@@ -51,6 +62,7 @@ function renderTabla() {
             '</td>' +
         '</tr>';
     }).join('');
+    renderPaginacion('paginacionUsuarios', usuariosCache.length, paginaActualUsuarios, PAGE_SIZE_USUARIOS, 'irAPaginaUsuarios');
 }
 
 function abrirModalCrear() {

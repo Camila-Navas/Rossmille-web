@@ -4,53 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROSS MILLE - Productos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/rossmille.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        body {
-            background-color: #f4f4f8;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .topbar {
-            background-color: #1a1a2e;
-            color: #fff;
-            padding: 14px 28px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .topbar .brand {
-            font-size: 1.1rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-        }
-        .topbar .section-name {
-            font-size: 0.85rem;
-            opacity: 0.65;
-            margin-left: 12px;
-        }
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.88rem;
-        }
-        .btn-top {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.35);
-            color: #fff;
-            border-radius: 6px;
-            padding: 5px 14px;
-            font-size: 0.82rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-top:hover {
-            background: rgba(255,255,255,0.12);
-        }
         .main {
-            padding: 28px 24px;
+            padding: 28px 32px;
             max-width: 1280px;
-            margin: 0 auto;
         }
         .toolbar {
             display: flex;
@@ -73,10 +34,9 @@
             font-size: 0.9rem;
             outline: none;
             transition: border-color 0.2s;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
-        .toolbar input.search-input:focus {
-            border-color: #1a1a2e;
-        }
+        .toolbar input.search-input:focus { border-color: #1a1a2e; }
         .btn-buscar, .btn-limpiar {
             background: #1a1a2e;
             color: #fff;
@@ -86,10 +46,9 @@
             font-size: 0.88rem;
             cursor: pointer;
             white-space: nowrap;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
-        .btn-limpiar {
-            background: #6c757d;
-        }
+        .btn-limpiar { background: #6c757d; }
         .btn-buscar:hover { background: #2d2d4e; }
         .btn-limpiar:hover { background: #5a6268; }
         .badge-stock-alerta {
@@ -112,10 +71,10 @@
             cursor: pointer;
             font-weight: 600;
             white-space: nowrap;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
         .btn-nuevo:hover { background: #157347; }
 
-        /* Tarjetas de productos */
         .producto-card {
             background: #fff;
             border-radius: 10px;
@@ -127,22 +86,10 @@
             box-shadow: 0 1px 6px rgba(0,0,0,0.06);
             transition: box-shadow 0.15s;
         }
-        .producto-card:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.11);
-        }
-        .card-agotado {
-            background: #fff3e0;
-            border-color: #e65100;
-        }
-        .card-stock-bajo {
-            background: #fffde7;
-            border-color: #ffc107;
-        }
-        .card-header-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
+        .producto-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.11); }
+        .card-agotado { background: #fff3e0; border-color: #e65100; }
+        .card-stock-bajo { background: #fffde7; border-color: #ffc107; }
+        .card-header-tags { display: flex; gap: 6px; flex-wrap: wrap; }
         .tag-cat {
             background: #e8f0fe;
             color: #1a1a2e;
@@ -160,12 +107,7 @@
             font-size: 0.72rem;
             font-weight: 600;
         }
-        .card-nombre {
-            font-size: 0.97rem;
-            font-weight: 700;
-            color: #1a1a2e;
-            line-height: 1.3;
-        }
+        .card-nombre { font-size: 0.97rem; font-weight: 700; color: #1a1a2e; line-height: 1.3; }
         .card-desc {
             font-size: 0.8rem;
             color: #888;
@@ -175,10 +117,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
-        .card-meta {
-            font-size: 0.78rem;
-            color: #777;
-        }
+        .card-meta { font-size: 0.78rem; color: #777; }
         .card-stock-row {
             font-size: 0.83rem;
             color: #444;
@@ -187,9 +126,7 @@
             gap: 6px;
             flex-wrap: wrap;
         }
-        .stock-num {
-            font-weight: 600;
-        }
+        .stock-num { font-weight: 600; }
         .badge-agotado {
             background: #e65100;
             color: #fff;
@@ -207,12 +144,7 @@
             border-radius: 4px;
             font-weight: 700;
         }
-        .card-precio {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-top: 4px;
-        }
+        .card-precio { font-size: 1.05rem; font-weight: 700; color: #1a1a2e; margin-top: 4px; }
         .card-acciones {
             display: flex;
             gap: 8px;
@@ -229,6 +161,7 @@
             padding: 6px 0;
             font-size: 0.82rem;
             cursor: pointer;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
         .btn-card-editar:hover { background: #2d2d4e; }
         .btn-card-eliminar {
@@ -240,58 +173,77 @@
             padding: 6px 0;
             font-size: 0.82rem;
             cursor: pointer;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
-        .btn-card-eliminar:hover {
-            background: #dc3545;
-            color: #fff;
-        }
+        .btn-card-eliminar:hover { background: #dc3545; color: #fff; }
 
-        /* Modal */
-        .modal-error {
-            display: none;
-            background: #fff3f3;
-            border: 1px solid #f5c6cb;
-            color: #842029;
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.85rem;
-            margin-top: 10px;
+        .filtros-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
-        .form-label {
-            font-size: 0.85rem;
+        .filtros-label {
+            font-size: 0.78rem;
             font-weight: 600;
-            color: #444;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-right: 4px;
         }
-        .form-control, .form-select {
-            border-radius: 7px;
-            border: 1.5px solid #ddd;
-            font-size: 0.9rem;
+        .filtro-chip {
+            background: #f0f0f5;
+            color: #555;
+            border: 1.5px solid transparent;
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
-        .form-control:focus, .form-select:focus {
+        .filtro-chip:hover { background: #e0e0ea; }
+        .filtro-chip.active {
+            background: #1a1a2e;
+            color: #fff;
             border-color: #1a1a2e;
-            box-shadow: none;
         }
     </style>
 </head>
-<body>
+<body class="rm-has-sidebar">
 
-<div class="topbar">
-    <div style="display:flex; align-items:center;">
-        <span class="brand">ROSS MILLE</span>
-        <span class="section-name">/ Productos</span>
+<nav class="rm-sidebar">
+    <div class="rm-sidebar-brand">
+        <div class="brand-name">ROSS MILLE</div>
+        <span class="brand-sub">Punto de Venta</span>
     </div>
-    <div class="topbar-right">
-        <span id="userInfo" style="opacity:0.75;"></span>
-        <button class="btn-top" onclick="window.location.href='/dashboard.html'">Volver</button>
-        <button class="btn-top" onclick="logout()">Cerrar Sesion</button>
+    <ul class="rm-nav">
+        <li><a href="/dashboard.html" class="rm-nav-link"><i class="bi bi-house-door"></i> Inicio</a></li>
+        <li><a href="/vender.html" class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
+        <li><a href="/productos.html" class="rm-nav-link active"><i class="bi bi-box-seam"></i> Productos</a></li>
+        <li><a href="/clientes.html" class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
+        <li><a href="/pedidos.html" class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
+        <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
+        <li class="rm-nav-admin"><a href="/usuarios.html" class="rm-nav-link"><i class="bi bi-person-gear"></i> Usuarios</a></li>
+        <li class="rm-nav-admin"><a href="/reporte.html" class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
+    </ul>
+    <div class="rm-sidebar-footer">
+        <div class="sf-name" id="sb-name"></div>
+        <div class="sf-role" id="sb-role"></div>
+        <button class="rm-btn-logout" onclick="logout()">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesion
+        </button>
     </div>
-</div>
+</nav>
 
 <div class="main">
 
     <div class="toolbar">
         <div class="search-wrap">
-            <input type="text" id="inputBuscar" class="search-input" placeholder="Buscar por nombre, categoria, color...">
+            <input type="text" id="inputBuscar" class="search-input"
+                placeholder="Buscar por nombre, categoria, color...">
             <button class="btn-buscar" id="btnBuscar">Buscar</button>
             <button class="btn-limpiar" id="btnLimpiar">Limpiar</button>
         </div>
@@ -299,9 +251,19 @@
         <button class="btn-nuevo" id="btnNuevo">+ Nuevo Producto</button>
     </div>
 
+    <div class="filtros-wrap">
+        <span class="filtros-label">Genero:</span>
+        <button class="filtro-chip" data-genero="Femenino" onclick="setFiltroGenero('Femenino')">Femenino</button>
+        <button class="filtro-chip" data-genero="Masculino" onclick="setFiltroGenero('Masculino')">Masculino</button>
+        <button class="filtro-chip" data-genero="Unisex" onclick="setFiltroGenero('Unisex')">Unisex</button>
+        <button class="filtro-chip" data-genero="Nino" onclick="setFiltroGenero('Nino')">Nino</button>
+        <button class="filtro-chip" data-genero="Nina" onclick="setFiltroGenero('Nina')">Nina</button>
+    </div>
+
     <div class="row g-3" id="productosGrid">
         <div class="col-12 text-center text-muted py-5">Cargando...</div>
     </div>
+    <div id="paginacionProductos" class="paginacion-wrap"></div>
 
 </div>
 
@@ -399,11 +361,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/api.js"></script>
+<script src="/js/rossmille.js"></script>
 <script src="/js/productos.js"></script>
 <script>
     var session = guardRoute();
     if (session) {
-        document.getElementById('userInfo').textContent = session.nombre + ' (' + session.rol + ')';
+        initSidebar(session);
         init();
     }
 </script>
