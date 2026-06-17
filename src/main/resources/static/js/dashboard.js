@@ -58,8 +58,8 @@
                 labels: labels,
                 datasets: [{
                     data: totales,
-                    backgroundColor: '#1a1a2e',
-                    hoverBackgroundColor: '#2d2d4e',
+                    backgroundColor: 'rgba(99,102,241,0.82)',
+                    hoverBackgroundColor: '#4f46e5',
                     borderRadius: 5,
                     borderSkipped: false
                 }]

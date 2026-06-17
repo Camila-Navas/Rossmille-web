@@ -9,113 +9,128 @@
     <link href="/css/rossmille.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        .main {
-            padding: 40px 36px;
-            max-width: 1100px;
-        }
-        .welcome-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 6px;
-        }
-        .welcome-sub {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 22px;
-        }
+        .rm-page { padding: 32px 36px; max-width: 1140px; }
+
+        /* KPI Cards */
         .kpi-card {
             background: #fff;
-            border-radius: 12px;
-            padding: 18px 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            border-radius: var(--rm-radius-lg);
+            padding: 20px;
+            box-shadow: var(--rm-shadow);
+            border: 1px solid var(--rm-border);
             display: flex;
             align-items: center;
-            gap: 14px;
-            border: 1.5px solid transparent;
-            transition: border-color 0.15s;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s, box-shadow 0.15s;
         }
-        .kpi-card:hover { border-color: #1a1a2e; }
-        .kpi-icon {
-            font-size: 1.6rem;
-            color: #1a1a2e;
-            opacity: 0.65;
-            flex-shrink: 0;
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--rm-shadow-md);
         }
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .kpi-indigo::after  { background: var(--rm-accent); }
+        .kpi-emerald::after { background: var(--rm-success); }
+        .kpi-amber::after   { background: var(--rm-warning); }
+        .kpi-purple::after  { background: var(--rm-purple); }
+
+        .kpi-icon-wrap {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .kpi-indigo  .kpi-icon-wrap { background: #eef2ff; color: var(--rm-accent); }
+        .kpi-emerald .kpi-icon-wrap { background: #ecfdf5; color: var(--rm-success); }
+        .kpi-amber   .kpi-icon-wrap { background: #fffbeb; color: var(--rm-warning); }
+        .kpi-purple  .kpi-icon-wrap { background: #f5f3ff; color: var(--rm-purple); }
+
         .kpi-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #1a1a2e;
-            line-height: 1;
-            margin-bottom: 4px;
+            font-size: 1.55rem; font-weight: 800;
+            color: var(--rm-text); line-height: 1; margin-bottom: 5px;
         }
         .kpi-label {
-            font-size: 0.72rem;
-            color: #888;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 0.71rem; font-weight: 600;
+            color: var(--rm-text-2); text-transform: uppercase; letter-spacing: 0.6px;
         }
+
+        /* Chart card */
         .chart-card {
             background: #fff;
-            border-radius: 12px;
-            padding: 20px 22px 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            border-radius: var(--rm-radius-lg);
+            padding: 24px;
+            box-shadow: var(--rm-shadow);
+            border: 1px solid var(--rm-border);
             margin-bottom: 28px;
         }
-        .chart-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            margin-bottom: 14px;
+        .chart-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
-        .section-label {
-            font-size: 0.75rem;
+        .chart-title { font-size: 0.92rem; font-weight: 700; color: var(--rm-text); margin-bottom: 2px; }
+        .chart-subtitle { font-size: 0.78rem; color: var(--rm-text-2); }
+        .chart-badge {
+            background: #eef2ff;
+            color: var(--rm-accent);
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 0.72rem;
             font-weight: 600;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            margin-bottom: 14px;
-            margin-top: 8px;
         }
+
+        /* Module cards */
         .module-card {
             background: #fff;
-            border-radius: 12px;
-            padding: 28px 20px;
+            border-radius: var(--rm-radius-lg);
+            padding: 24px 18px 20px;
             text-align: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            box-shadow: var(--rm-shadow);
+            border: 1px solid var(--rm-border);
             cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s;
-            border: 1.5px solid transparent;
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
             text-decoration: none;
-            color: #1a1a2e;
+            color: var(--rm-text);
             display: block;
         }
         .module-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            border-color: #1a1a2e;
-            color: #1a1a2e;
+            box-shadow: 0 12px 32px rgba(99,102,241,0.13);
+            border-color: var(--rm-accent);
+            color: var(--rm-text);
+            text-decoration: none;
         }
-        .module-card .icon {
-            font-size: 1.9rem;
-            margin-bottom: 12px;
-            color: #1a1a2e;
+        .mc-icon-wrap {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; margin-bottom: 12px;
         }
-        .module-card .label {
-            font-weight: 600;
-            font-size: 0.92rem;
+        .mc-emerald { background: #ecfdf5; color: var(--rm-success); }
+        .mc-indigo  { background: #eef2ff; color: var(--rm-accent); }
+        .mc-blue    { background: #eff6ff; color: var(--rm-info); }
+        .mc-purple  { background: #f5f3ff; color: var(--rm-purple); }
+        .mc-teal    { background: #f0fdfa; color: #0d9488; }
+        .mc-amber   { background: #fffbeb; color: var(--rm-warning); }
+
+        .mc-label {
+            font-weight: 600; font-size: 0.9rem;
+            color: var(--rm-text); display: block; margin-bottom: 3px;
         }
-        .badge-admin {
-            background: #e8f4fd;
-            color: #1a5276;
-            border-radius: 6px;
-            padding: 2px 8px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-left: 6px;
+        .mc-admin-badge {
+            background: #f1f5f9; color: var(--rm-text-2);
+            border-radius: 4px; padding: 1px 8px;
+            font-size: 0.67rem; font-weight: 600;
+            display: inline-block; margin-top: 2px;
         }
     </style>
 </head>
@@ -123,18 +138,18 @@
 
 <nav class="rm-sidebar">
     <div class="rm-sidebar-brand">
-        <div class="brand-name">ROSS MILLE</div>
+        <div class="brand-name">ROSS <span class="brand-gold">MILLE</span></div>
         <span class="brand-sub">Punto de Venta</span>
     </div>
     <ul class="rm-nav">
         <li><a href="/dashboard.html" class="rm-nav-link active"><i class="bi bi-house-door"></i> Inicio</a></li>
-        <li><a href="/vender.html" class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
+        <li><a href="/vender.html"    class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
         <li><a href="/productos.html" class="rm-nav-link"><i class="bi bi-box-seam"></i> Productos</a></li>
-        <li><a href="/clientes.html" class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
-        <li><a href="/pedidos.html" class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
+        <li><a href="/clientes.html"  class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
+        <li><a href="/pedidos.html"   class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
         <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
         <li class="rm-nav-admin"><a href="/usuarios.html" class="rm-nav-link"><i class="bi bi-person-gear"></i> Usuarios</a></li>
-        <li class="rm-nav-admin"><a href="/reporte.html" class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
+        <li class="rm-nav-admin"><a href="/reporte.html"  class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
     </ul>
     <div class="rm-sidebar-footer">
         <div class="sf-name" id="sb-name"></div>
@@ -145,14 +160,21 @@
     </div>
 </nav>
 
-<div class="main">
-    <div class="welcome-title" id="welcomeTitle">Bienvenido</div>
-    <div class="welcome-sub">Resumen del dia de hoy</div>
+<div class="rm-page">
 
-    <div class="row g-3 mb-4" id="kpiRow">
+    <!-- Page header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title" id="welcomeTitle">Bienvenido</h1>
+            <p class="page-subtitle" id="pageDate"></p>
+        </div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="row g-3 mb-4">
         <div class="col-6 col-lg-3">
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-receipt"></i></div>
+            <div class="kpi-card kpi-indigo">
+                <div class="kpi-icon-wrap"><i class="bi bi-receipt"></i></div>
                 <div>
                     <div class="kpi-value" id="kpiVentasHoy">-</div>
                     <div class="kpi-label">Ventas hoy</div>
@@ -160,8 +182,8 @@
             </div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-cash-stack"></i></div>
+            <div class="kpi-card kpi-emerald">
+                <div class="kpi-icon-wrap"><i class="bi bi-cash-stack"></i></div>
                 <div>
                     <div class="kpi-value" id="kpiIngresosHoy">-</div>
                     <div class="kpi-label">Ingresos hoy</div>
@@ -169,8 +191,8 @@
             </div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="kpi-card kpi-amber">
+                <div class="kpi-icon-wrap"><i class="bi bi-exclamation-triangle"></i></div>
                 <div>
                     <div class="kpi-value" id="kpiStockBajo">-</div>
                     <div class="kpi-label">Stock bajo</div>
@@ -178,8 +200,8 @@
             </div>
         </div>
         <div class="col-6 col-lg-3">
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-clipboard2-list"></i></div>
+            <div class="kpi-card kpi-purple">
+                <div class="kpi-icon-wrap"><i class="bi bi-clipboard2-list"></i></div>
                 <div>
                     <div class="kpi-value" id="kpiPedidosPendientes">-</div>
                     <div class="kpi-label">Pedidos pendientes</div>
@@ -188,50 +210,61 @@
         </div>
     </div>
 
+    <!-- Chart -->
     <div class="chart-card">
-        <div class="chart-title">Ingresos ultimos 7 dias</div>
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Ingresos ultimos 7 dias</div>
+                <div class="chart-subtitle">Total de ventas registradas por dia</div>
+            </div>
+            <span class="chart-badge"><i class="bi bi-bar-chart-fill me-1"></i>Semanal</span>
+        </div>
         <canvas id="chartVentas" height="110"></canvas>
     </div>
 
-    <div class="section-label">Acceso rapido</div>
+    <!-- Quick access -->
+    <div class="section-title">Acceso rapido</div>
     <div class="row g-3" id="moduleGrid">
         <div class="col-6 col-md-4 col-lg-3">
             <a href="vender.html" class="module-card">
-                <div class="icon"><i class="bi bi-cart3"></i></div>
-                <div class="label">Vender</div>
+                <div class="mc-icon-wrap mc-emerald"><i class="bi bi-cart3"></i></div>
+                <span class="mc-label">Vender</span>
             </a>
         </div>
         <div class="col-6 col-md-4 col-lg-3">
             <a href="productos.html" class="module-card">
-                <div class="icon"><i class="bi bi-box-seam"></i></div>
-                <div class="label">Productos</div>
+                <div class="mc-icon-wrap mc-indigo"><i class="bi bi-box-seam"></i></div>
+                <span class="mc-label">Productos</span>
             </a>
         </div>
         <div class="col-6 col-md-4 col-lg-3">
             <a href="clientes.html" class="module-card">
-                <div class="icon"><i class="bi bi-people"></i></div>
-                <div class="label">Clientes</div>
+                <div class="mc-icon-wrap mc-blue"><i class="bi bi-people"></i></div>
+                <span class="mc-label">Clientes</span>
             </a>
         </div>
         <div class="col-6 col-md-4 col-lg-3">
             <a href="pedidos.html" class="module-card">
-                <div class="icon"><i class="bi bi-clipboard2-list"></i></div>
-                <div class="label">Pedidos</div>
+                <div class="mc-icon-wrap mc-purple"><i class="bi bi-clipboard2-list"></i></div>
+                <span class="mc-label">Pedidos</span>
             </a>
         </div>
         <div class="col-6 col-md-4 col-lg-3 admin-only" style="display:none;">
             <a href="usuarios.html" class="module-card">
-                <div class="icon"><i class="bi bi-person-gear"></i></div>
-                <div class="label">Usuarios <span class="badge-admin">Admin</span></div>
+                <div class="mc-icon-wrap mc-teal"><i class="bi bi-person-gear"></i></div>
+                <span class="mc-label">Usuarios</span>
+                <span class="mc-admin-badge">Admin</span>
             </a>
         </div>
         <div class="col-6 col-md-4 col-lg-3 admin-only" style="display:none;">
             <a href="reporte.html" class="module-card">
-                <div class="icon"><i class="bi bi-bar-chart-line"></i></div>
-                <div class="label">Reporte <span class="badge-admin">Admin</span></div>
+                <div class="mc-icon-wrap mc-amber"><i class="bi bi-bar-chart-line"></i></div>
+                <span class="mc-label">Reporte</span>
+                <span class="mc-admin-badge">Admin</span>
             </a>
         </div>
     </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -244,7 +277,21 @@
     var session = guardRoute();
     if (session) {
         initSidebar(session);
-        document.getElementById('welcomeTitle').textContent = 'Bienvenido, ' + session.nombre;
+
+        var hora = new Date().getHours();
+        var saludo = hora >= 5 && hora < 12
+            ? 'Buenos dias'
+            : (hora >= 12 && hora < 19 ? 'Buenas tardes' : 'Buenas noches');
+        document.getElementById('welcomeTitle').textContent = saludo + ', ' + session.nombre;
+
+        var dias   = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+        var meses  = ['enero','febrero','marzo','abril','mayo','junio','julio',
+                      'agosto','septiembre','octubre','noviembre','diciembre'];
+        var hoy    = new Date();
+        document.getElementById('pageDate').textContent =
+            dias[hoy.getDay()] + ', ' + hoy.getDate() + ' de ' +
+            meses[hoy.getMonth()] + ' de ' + hoy.getFullYear();
+
         if (session.rol === 'Administrador') {
             document.querySelectorAll('.admin-only').forEach(function(el) {
                 el.style.display = '';
