@@ -1,6 +1,6 @@
 # Contexto del Proyecto -- ROSS MILLE Web
 
-Ultima actualizacion: 2026-06-17
+Ultima actualizacion: 2026-06-17 (tarde)
 
 Migracion del prototipo ROSS MILLE POS (Java Swing) a aplicacion web profesional con
 Spring Boot REST API y frontend HTML/CSS/Vanilla JS.
@@ -54,6 +54,18 @@ Esto hace que la app sea accesible en la red local sin port forwarding.
 Se requirio ejecutar una sola vez como Administrador el script del Escritorio
 `rossmille_habilitar_red.ps1` para agregar la regla de firewall Windows en puerto 8080.
 La configuracion es permanente -- solo hay que volver a correr la app.
+
+### Docker -- fix bind mount (2026-06-17)
+
+Se elimino el bind mount `./db/init.sql:/docker-entrypoint-initdb.d/init.sql` del
+`docker-compose.yml`. Ese mount causaba error al reiniciar Docker Desktop en WSL2
+porque las rutas internas cambian entre reinicios.
+
+El archivo `db/init.sql` sigue existiendo para documentacion y para instalaciones
+nuevas desde cero, pero ya no se monta en el contenedor. Los datos persisten en el
+volumen nombrado `rossmille_data` que sobrevive reinicios de contenedor.
+
+Desde ahora `docker compose up -d` arranca sin errores despues de cualquier reinicio.
 
 ---
 
@@ -471,3 +483,5 @@ POST /api/configuracion/restaurar    -> multipart archivo=.sql, ejecuta sentenci
 | d889fce | Fases A-D: sistema de diseno, dashboard, UX y pulido final |
 | 3298859 | Fase E: rediseno visual paleta indigo/gold + dashboard v2 + config red local |
 | f062546 | Fase F: Modulo Configuracion completo -- 7 secciones, backend + frontend |
+| c2b118d | docs: actualizar CONTEXTO_PROYECTO.md con Fase F |
+| (nuevo) | fix: eliminar bind mount init.sql de docker-compose.yml |
