@@ -1,5 +1,9 @@
 package com.rossmille.service;
 
+import com.rossmille.dto.DiaVentasDTO;
+import com.rossmille.dto.GraficaReporteDTO;
+import com.rossmille.dto.MetodoPagoDTO;
+import com.rossmille.dto.ProductoVentaDTO;
 import com.rossmille.dto.ReporteFilaDTO;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -13,6 +17,8 @@ import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,6 +80,83 @@ public class ReporteService {
             dto.setMetodoPago((String) row.get("metodo_pago"));
             return dto;
         }).toList();
+    }
+
+    public GraficaReporteDTO obtenerGraficas(LocalDate desde, LocalDate hasta) {
+        LocalDateTime inicio = desde.atStartOfDay();
+        LocalDateTime fin    = hasta.atTime(LocalTime.MAX);
+
+        // Top 10 productos mas vendidos
+        String sqlProductos =
+            "SELECT p.nombre, p.genero, p.categoria, p.talla," +
+            " SUM(dv.cantidad) AS unidades," +
+            " SUM(dv.cantidad * dv.precio_unitario) AS total_vendido" +
+            " FROM detalle_venta dv" +
+            " JOIN productos p ON p.id = dv.producto_id" +
+            " JOIN ventas v ON v.id = dv.venta_id" +
+            " WHERE v.fecha BETWEEN ? AND ?" +
+            " GROUP BY p.id, p.nombre, p.genero, p.categoria, p.talla" +
+            " ORDER BY unidades DESC LIMIT 10";
+
+        List<ProductoVentaDTO> topProductos = jdbcTemplate
+            .queryForList(sqlProductos, inicio, fin)
+            .stream().map(row -> {
+                ProductoVentaDTO dto = new ProductoVentaDTO();
+                dto.setNombre((String) row.get("nombre"));
+                dto.setGenero(row.get("genero") != null ? (String) row.get("genero") : "");
+                dto.setCategoria(row.get("categoria") != null ? (String) row.get("categoria") : "");
+                dto.setTalla(row.get("talla") != null ? (String) row.get("talla") : "");
+                dto.setUnidades(((Number) row.get("unidades")).intValue());
+                dto.setTotalVendido(new BigDecimal(row.get("total_vendido").toString()));
+                return dto;
+            }).toList();
+
+        // Ventas por metodo de pago
+        String sqlMetodos =
+            "SELECT metodo_pago, COUNT(*) AS cantidad, SUM(total) AS total" +
+            " FROM ventas WHERE fecha BETWEEN ? AND ?" +
+            " GROUP BY metodo_pago ORDER BY cantidad DESC";
+
+        List<MetodoPagoDTO> metodosPago = jdbcTemplate
+            .queryForList(sqlMetodos, inicio, fin)
+            .stream().map(row -> {
+                MetodoPagoDTO dto = new MetodoPagoDTO();
+                dto.setMetodo(row.get("metodo_pago") != null ? (String) row.get("metodo_pago") : "Sin especificar");
+                dto.setCantidad(((Number) row.get("cantidad")).intValue());
+                dto.setTotal(new BigDecimal(row.get("total").toString()));
+                return dto;
+            }).toList();
+
+        // Ventas agrupadas por dia
+        String sqlDias =
+            "SELECT DATE(fecha) AS dia, COUNT(*) AS cantidad, SUM(total) AS total" +
+            " FROM ventas WHERE fecha BETWEEN ? AND ?" +
+            " GROUP BY DATE(fecha) ORDER BY dia";
+
+        DateTimeFormatter fmtDia = DateTimeFormatter.ofPattern("dd/MM");
+        List<DiaVentasDTO> ventasPorDia = jdbcTemplate
+            .queryForList(sqlDias, inicio, fin)
+            .stream().map(row -> {
+                DiaVentasDTO dto = new DiaVentasDTO();
+                Object diaObj = row.get("dia");
+                if (diaObj instanceof Date sd) {
+                    dto.setFecha(sd.toLocalDate().format(fmtDia));
+                } else if (diaObj instanceof LocalDate ld) {
+                    dto.setFecha(ld.format(fmtDia));
+                } else {
+                    String s = diaObj.toString();
+                    dto.setFecha(s.length() >= 10 ? s.substring(8, 10) + "/" + s.substring(5, 7) : s);
+                }
+                dto.setCantidad(((Number) row.get("cantidad")).intValue());
+                dto.setTotal(new BigDecimal(row.get("total").toString()));
+                return dto;
+            }).toList();
+
+        GraficaReporteDTO resultado = new GraficaReporteDTO();
+        resultado.setTopProductos(topProductos);
+        resultado.setMetodosPago(metodosPago);
+        resultado.setVentasPorDia(ventasPorDia);
+        return resultado;
     }
 
     public byte[] generarPdf(LocalDate desde, LocalDate hasta) {

@@ -1,6 +1,7 @@
 package com.rossmille.controller;
 
 import com.rossmille.dto.ApiResponse;
+import com.rossmille.dto.GraficaReporteDTO;
 import com.rossmille.dto.ReporteFilaDTO;
 import com.rossmille.service.ReporteService;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +35,16 @@ public class ReporteController {
         LocalDate fechaHasta = LocalDate.parse(hasta);
         return ResponseEntity.ok(ApiResponse.success(
                 reporteService.listar(fechaDesde, fechaHasta)));
+    }
+
+    @GetMapping("/graficas")
+    public ResponseEntity<ApiResponse<GraficaReporteDTO>> graficas(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        LocalDate fechaDesde = LocalDate.parse(desde);
+        LocalDate fechaHasta = LocalDate.parse(hasta);
+        return ResponseEntity.ok(ApiResponse.success(
+                reporteService.obtenerGraficas(fechaDesde, fechaHasta)));
     }
 
     @GetMapping("/pdf")
