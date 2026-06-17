@@ -61,6 +61,32 @@
                 : '<i class="bi bi-chevron-left"></i>';
             btn.setAttribute('title', collapsed ? 'Expandir menu' : 'Contraer menu');
         });
+
+        aplicarApariencia();
+    };
+
+    window.aplicarApariencia = function () {
+        try {
+            var raw = localStorage.getItem('rm_apariencia');
+            if (!raw) return;
+            var ap = JSON.parse(raw);
+            if (ap.tema === 'oscuro') {
+                document.documentElement.setAttribute('data-theme', 'oscuro');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+            if (ap.color) {
+                document.documentElement.style.setProperty('--rm-accent', ap.color);
+                var r = parseInt(ap.color.slice(1,3),16);
+                var g = parseInt(ap.color.slice(3,5),16);
+                var b = parseInt(ap.color.slice(5,7),16);
+                var h = '#' + [Math.max(0,r-20),Math.max(0,g-20),Math.max(0,b-20)].map(function(v){return v.toString(16).padStart(2,'0');}).join('');
+                document.documentElement.style.setProperty('--rm-accent-h', h);
+            }
+            if (ap.fuente) {
+                document.documentElement.style.fontSize = ap.fuente + 'px';
+            }
+        } catch (e) { /* localStorage invalido */ }
     };
 
     window.renderPaginacion = function (wrapId, total, pagina, pageSize, fnNombre) {

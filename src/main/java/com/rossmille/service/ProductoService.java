@@ -5,6 +5,7 @@ import com.rossmille.entity.Producto;
 import com.rossmille.entity.Usuario;
 import com.rossmille.repository.ProductoRepository;
 import com.rossmille.repository.UsuarioRepository;
+import com.rossmille.service.ConfiguracionService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,18 +16,19 @@ import java.util.List;
 @Service
 public class ProductoService {
 
-    static final int STOCK_BAJO_UMBRAL = 5;
-
     private final ProductoRepository productoRepository;
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ConfiguracionService configuracionService;
 
     public ProductoService(ProductoRepository productoRepository,
                            UsuarioRepository usuarioRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           ConfiguracionService configuracionService) {
         this.productoRepository = productoRepository;
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.configuracionService = configuracionService;
     }
 
     public List<ProductoDTO> listar() {
@@ -43,7 +45,8 @@ public class ProductoService {
     }
 
     public List<ProductoDTO> stockBajo() {
-        return productoRepository.findByStockLessThanEqual(STOCK_BAJO_UMBRAL).stream()
+        int umbral = configuracionService.getInt("notificaciones.stock_umbral", 5);
+        return productoRepository.findByStockLessThanEqual(umbral).stream()
                 .map(this::toDto)
                 .toList();
     }

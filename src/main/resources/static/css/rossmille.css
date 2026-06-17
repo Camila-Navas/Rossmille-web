@@ -414,3 +414,66 @@ body.sidebar-collapsed .rm-sidebar-toggle-btn { left: 46px; }
     border-top: 1px solid var(--rm-border);
     padding: 14px 22px;
 }
+
+/* ---- Tema oscuro ---- */
+[data-theme="oscuro"] {
+    --rm-bg:        #0f172a;
+    --rm-white:     #1e293b;
+    --rm-border:    #334155;
+    --rm-text:      #e2e8f0;
+    --rm-text-2:    #94a3b8;
+    --rm-shadow:    0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+    --rm-shadow-md: 0 4px 20px rgba(0,0,0,0.45);
+}
+[data-theme="oscuro"] .form-control,
+[data-theme="oscuro"] .form-select {
+    background-color: #0f172a;
+    color: var(--rm-text);
+    border-color: var(--rm-border);
+}
+[data-theme="oscuro"] .form-control:focus,
+[data-theme="oscuro"] .form-select:focus {
+    background-color: #0f172a;
+    color: var(--rm-text);
+}
+[data-theme="oscuro"] .input-group-text {
+    background-color: #1e293b;
+    border-color: var(--rm-border);
+    color: var(--rm-text-2);
+}
+[data-theme="oscuro"] .modal-content {
+    background: #1e293b;
+    border-color: var(--rm-border);
+}
+[data-theme="oscuro"] .modal-header,
+[data-theme="oscuro"] .modal-footer {
+    border-color: var(--rm-border);
+}
+[data-theme="oscuro"] .table {
+    color: var(--rm-text);
+    border-color: var(--rm-border);
+}
+[data-theme="oscuro"] .table>:not(caption)>*>* {
+    background-color: transparent;
+    border-color: var(--rm-border);
+}
+[data-theme="oscuro"] .btn-outline-secondary {
+    color: var(--rm-text-2);
+    border-color: var(--rm-border);
+}
+[data-theme="oscuro"] .btn-outline-secondary:hover {
+    background: #334155;
+    color: var(--rm-text);
+    border-color: var(--rm-border);
+}
+[data-theme="oscuro"] .cfg-card { background: #1e293b; }
+[data-theme="oscuro"] .cfg-card-header,
+[data-theme="oscuro"] .cfg-card-footer { background: #0f172a; border-color: var(--rm-border); }
+[data-theme="oscuro"] .cfg-toggle,
+[data-theme="oscuro"] .ap-row,
+[data-theme="oscuro"] .backup-action { border-color: var(--rm-border); }
+[data-theme="oscuro"] .logo-drop,
+[data-theme="oscuro"] .backup-file-drop { border-color: var(--rm-border); color: var(--rm-text-2); }
+[data-theme="oscuro"] .theme-opt { background: #1e293b; border-color: var(--rm-border); color: var(--rm-text-2); }
+[data-theme="oscuro"] .info-note { background: #1e3a5f; border-color: #3b82f6; color: #bfdbfe; }
+[data-theme="oscuro"] .warn-note { background: #451a03; border-color: #d97706; color: #fde68a; }
