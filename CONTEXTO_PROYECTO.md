@@ -53,6 +53,7 @@ WSL2 tiene modo `networkingMode=mirrored` activo via `C:\Users\camil\.wslconfig`
 Esto hace que la app sea accesible en la red local sin port forwarding.
 Se requirio ejecutar una sola vez como Administrador el script del Escritorio
 `rossmille_habilitar_red.ps1` para agregar la regla de firewall Windows en puerto 8080.
+La configuracion es permanente -- solo hay que volver a correr la app.
 
 ---
 
@@ -91,119 +92,113 @@ estaba corrupto (54 chars sin prefijo $2a$). Si la BD se reinicia desde cero, co
 | A | Sistema de diseno compartido + Sidebar | COMPLETADA 2026-06-16 | d889fce |
 | B | Dashboard con KPIs reales + Chart.js | COMPLETADA 2026-06-16 | d889fce |
 | C | Mejoras UX por modulo | COMPLETADA 2026-06-16 | d889fce |
-| D | Pulido final | COMPLETADA 2026-06-16 | d889fce |
-| E | Rediseno visual: nueva paleta + brand gold + dashboard v2 | COMPLETADA 2026-06-17 | (ver abajo) |
+| D | Sidebar colapsable + paginacion + favicon | COMPLETADA 2026-06-16 | d889fce |
+| E | Rediseno visual: paleta indigo/gold + dashboard v2 | COMPLETADA 2026-06-17 | 3298859 |
+| F | Modulo Configuracion completo (7 secciones) | COMPLETADA 2026-06-17 | f062546 |
 
 ---
 
-## Fase A -- COMPLETADA
+## Fase F -- Modulo Configuracion (2026-06-17)
 
-**Archivos creados:**
-- `src/main/resources/static/css/rossmille.css`
-- `src/main/resources/static/js/rossmille.js`
+### Tabla nueva en BD
 
-**Que hace:** sidebar lateral fijo, `showToast()`, `initSidebar()`, Bootstrap Icons.
-Ver historial completo en commits anteriores.
-
----
-
-## Fase B -- COMPLETADA
-
-**Endpoint:** `GET /api/dashboard/resumen` -- KPIs + ventas 7 dias.
-**Archivos Java:** `DashboardDTO`, `DiaVentasDTO`, `DashboardService`, `DashboardController`.
-**Frontend:** `dashboard.js` con Chart.js 4.4.4.
-
----
-
-## Fase C -- COMPLETADA
-
-- Productos: debounce 300ms + filtros chip de genero (client-side)
-- Clientes: debounce 300ms + avatar con iniciales + formatNum COP
-- Pedidos: contador por tab
-
----
-
-## Fase D -- COMPLETADA
-
-- Sidebar colapsable (60px icono-only, estado en localStorage)
-- Paginacion client-side: Productos 12/pag, Clientes 10/pag, Usuarios 10/pag
-- `renderPaginacion()` global en rossmille.js
-- formatNum(n) en productos.js
-- favicon.svg (RM sobre fondo #1a1a2e)
-
----
-
-## Fase E -- COMPLETADA 2026-06-17
-
-Rediseno visual completo: nueva paleta de colores, brand gold, dashboard v2.
-
-### Cambios en rossmille.css
-
-**Nueva paleta de variables:**
-```css
---rm-dark:      #0f172a   (antes #1a1a2e)
---rm-dark-2:    #1e293b   (antes #2d2d4e)
---rm-accent:    #6366f1   (NUEVO -- indigo)
---rm-accent-h:  #4f46e5
---rm-gold:      #c9a96e   (NUEVO -- dorado para brand)
---rm-bg:        #f1f5f9   (antes #f4f4f8)
---rm-border:    #e2e8f0   (antes #e0e0e8)
---rm-text:      #1e293b   (NUEVO -- texto principal)
---rm-text-2:    #64748b   (NUEVO -- texto secundario)
---rm-success:   #10b981   (antes #198754)
---rm-success-h: #059669   (NUEVO)
---rm-warning:   #f59e0b   (NUEVO)
---rm-danger:    #ef4444   (antes #dc3545)
---rm-danger-h:  #dc2626   (NUEVO)
---rm-info:      #3b82f6   (NUEVO)
---rm-purple:    #8b5cf6   (NUEVO)
---rm-shadow-md: 0 4px 20px rgba(0,0,0,0.09)  (NUEVO)
+```sql
+-- Archivo: db/add_configuracion.sql (ya ejecutado en BD existente)
+-- Agregado tambien a: db/init.sql (para instalaciones nuevas)
+CREATE TABLE configuracion (
+    clave       VARCHAR(100) NOT NULL,
+    valor       TEXT         NULL,
+    grupo       VARCHAR(50)  NOT NULL DEFAULT 'general',
+    descripcion VARCHAR(255) NULL,
+    actualizado TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (clave)
+);
 ```
 
-**Sidebar:**
-- Fondo: gradiente `linear-gradient(175deg, #0f172a 0%, #1a1246 100%)` (antes color plano)
-- Links de navegacion: `border-radius: 8px` + `margin: 2px 10px` (antes border-left)
-- Link activo: fondo `rgba(99,102,241,0.18)` + icono color `#818cf8`
-- Logout hover: tinte rojo (`rgba(239,68,68,0.15)`) en lugar de blanco
-- Toggle btn hover: indigo en lugar de dark-2
+### Defaults sembrados al arrancar (28 claves)
 
-**Utilidades nuevas en rossmille.css:**
-- `.page-header`, `.page-title`, `.page-subtitle` -- encabezado de pagina
-- `.section-title` -- titulo de seccion (reemplaza .section-label)
-- `.modal-content`, `.modal-header`, `.modal-title`, `.modal-body`, `.modal-footer` -- overrides de modal Bootstrap
-- Focus ring: `border-color: var(--rm-accent)` + `box-shadow: 0 0 0 3px rgba(99,102,241,0.12)`
-- Toast info: indigo en lugar de dark
+| Grupo | Clave | Valor por defecto |
+|-------|-------|-------------------|
+| empresa | empresa.nombre | ROSS MILLE |
+| empresa | empresa.nit | (vacio) |
+| empresa | empresa.direccion | (vacio) |
+| empresa | empresa.telefono | (vacio) |
+| empresa | empresa.correo | (vacio) |
+| empresa | empresa.sitio_web | (vacio) |
+| empresa | empresa.ciudad | (vacio) |
+| empresa | empresa.pais | Colombia |
+| empresa | empresa.logo_base64 | (vacio -- data URL cuando se sube imagen) |
+| sistema | sistema.moneda_simbolo | $ |
+| sistema | sistema.iva_porcentaje | 19 |
+| sistema | sistema.formato_fecha | dd/MM/yyyy |
+| sistema | sistema.idioma | es |
+| sistema | sistema.zona_horaria | America/Bogota |
+| ventas | ventas.consecutivo_inicial | 1 |
+| ventas | ventas.prefijo_facturas | FAC- |
+| ventas | ventas.pie_pagina | Gracias por su compra en ROSS MILLE. |
+| ventas | ventas.metodos_pago | Efectivo,Tarjeta,Transferencia |
+| ventas | ventas.descuento_maximo | 50 |
+| seguridad | seguridad.tiempo_sesion_horas | 8 |
+| seguridad | seguridad.contrasena_min_longitud | 6 |
+| seguridad | seguridad.max_intentos_login | 5 |
+| notificaciones | notificaciones.stock_umbral | 5 |
+| notificaciones | notificaciones.alertas_correo | false |
+| notificaciones | notificaciones.alertas_sistema | true |
+| apariencia | apariencia.tema | claro |
+| apariencia | apariencia.color_principal | #6366f1 |
+| apariencia | apariencia.tamano_fuente | 15 |
 
-**Brand gold (todos los HTML de modulos):**
-```html
-<div class="brand-name">ROSS <span class="brand-gold">MILLE</span></div>
+### Archivos Java creados
+
+| Archivo | Descripcion |
+|---------|-------------|
+| `entity/Configuracion.java` | Entidad JPA, PK = clave (String), campos: valor, grupo, descripcion, actualizado |
+| `repository/ConfiguracionRepository.java` | JpaRepository<Configuracion, String> + findByGrupo |
+| `service/ConfiguracionService.java` | @PostConstruct seedDefaults(), get(clave), getInt(clave, default), getAll(), guardar(Map), generarBackup() -> byte[], restaurar(sql) -> int |
+| `controller/ConfiguracionController.java` | @PreAuthorize ADMINISTRADOR a nivel de clase |
+
+### Endpoints de Configuracion (solo ADMINISTRADOR)
+
 ```
-La palabra MILLE aparece en dorado (#c9a96e) en el sidebar de los 8 modulos.
+GET  /api/configuracion              -> Map<String,String> con las 28 claves
+PUT  /api/configuracion              -> guarda Map<String,String> parcial (body JSON)
+GET  /api/configuracion/backup       -> descarga rossmille_backup_YYYYMMDD_HHmmss.sql
+POST /api/configuracion/restaurar    -> multipart archivo=.sql, ejecuta INSERT IGNORE
+```
 
-### Cambios en dashboard.html
+### Archivos frontend creados/modificados
 
-**KPI cards (v2):**
-- Borde superior de 3px de color por tipo (`.kpi-indigo`, `.kpi-emerald`, `.kpi-amber`, `.kpi-purple`)
-- Icon wrap de 48x48px con fondo coloreado (`.kpi-icon-wrap`)
-- Hover: `translateY(-2px)` + `box-shadow-md`
+**Nuevo:**
+- `configuracion.html` -- 7 secciones con tabs (Empresa, Sistema, Ventas, Seguridad, Notificaciones, Respaldo, Apariencia)
+- `js/configuracion.js` -- carga al entrar, guarda por grupo, validaciones, logo base64, backup download, restore upload, apariencia en tiempo real
 
-**Grafico (v2):**
-- Card con header + subtitulo + badge "Semanal"
-- Color de barras: indigo `rgba(99,102,241,0.82)` (antes `#1a1a2e`)
+**Modificados:**
+- `js/rossmille.js` -- agrega `window.aplicarApariencia()`: lee `localStorage` clave `rm_apariencia` y aplica CSS variables `--rm-accent`, `--rm-accent-h`, `font-size`, `data-theme` en toda pagina que llame `initSidebar()`
+- `css/rossmille.css` -- agrega bloque `[data-theme="oscuro"]` con overrides de fondo, texto, bordes, formularios, modales, tablas y componentes de la pagina de configuracion
+- Los 7 HTML de modulos -- link Configuracion agregado al sidebar admin: `<li class="rm-nav-admin"><a href="/configuracion.html" class="rm-nav-link"><i class="bi bi-gear"></i> Configuracion</a></li>`
 
-**Module cards (v2):**
-- Icon wrap 52x52px con fondo coloreado por modulo
-  - Vender: emerald | Productos: indigo | Clientes: blue | Pedidos: purple | Usuarios: teal | Reporte: amber
-- Hover border: indigo en lugar de oscuro
+**Otros cambios:**
+- `SecurityConfig.java` -- agrega `/*.svg` a rutas publicas (fix favicon)
+- `application.yml` -- `spring.servlet.multipart.max-file-size: 50MB`
+- `service/ProductoService.java` -- `stockBajo()` ahora lee umbral de `configuracionService.getInt("notificaciones.stock_umbral", 5)` en lugar de constante hardcodeada
 
-**Saludo dinamico:**
-- "Buenos dias / Buenas tardes / Buenas noches, {nombre}" segun hora del dia
-- Fecha completa debajo: "Martes, 17 de junio de 2026"
+### Descripcion de las 7 secciones de la pagina
 
-### Cambios en dashboard.js
+| Seccion | Campos configurables |
+|---------|---------------------|
+| Empresa | nombre, NIT, direccion, telefono, correo, sitio web, ciudad, pais, logo (upload base64) |
+| Sistema | simbolo moneda, IVA %, formato fecha, idioma, zona horaria |
+| Ventas | consecutivo inicial, prefijo facturas, pie de pagina, metodos de pago (checkboxes), descuento maximo % |
+| Seguridad | tabla permisos por rol (lectura), tiempo sesion horas, longitud min contrasena, max intentos login |
+| Notificaciones | umbral stock bajo (conectado a ProductoService), toggle alertas sistema, toggle alertas correo |
+| Respaldo | boton descargar .sql (exporta INSERT IGNORE de todas las tablas), subir .sql para restaurar |
+| Apariencia | tema claro/oscuro (data-theme), color principal (color picker, aplica --rm-accent en tiempo real), tamano fuente 12-20px (slider) |
 
-- `backgroundColor`: `rgba(99,102,241,0.82)` (antes `#1a1a2e`)
-- `hoverBackgroundColor`: `#4f46e5` (antes `#2d2d4e`)
+### Logica de apariencia
+
+1. Admin cambia color/tema/fuente en /configuracion.html -> cambio visual inmediato en la pagina
+2. Al guardar -> se envian al backend Y se guardan en `localStorage` clave `rm_apariencia`
+3. Cualquier otra pagina del sistema -> `initSidebar()` llama `aplicarApariencia()` que lee localStorage y aplica las variables CSS
 
 ---
 
@@ -220,16 +215,17 @@ L-- src/main/
     +-- java/com/rossmille/
     |   +-- RossmilleApplication.java
     |   +-- config/
-    |   |   L-- SecurityConfig.java
+    |   |   L-- SecurityConfig.java               [fix /*.svg publico]
     |   +-- controller/
     |   |   +-- AuthController.java
-    |   |   +-- DashboardController.java      GET /api/dashboard/resumen
+    |   |   +-- ConfiguracionController.java      GET+PUT /api/configuracion, backup, restaurar
+    |   |   +-- DashboardController.java          GET /api/dashboard/resumen
     |   |   +-- ProductoController.java
     |   |   +-- ClienteController.java
     |   |   +-- VentaController.java
     |   |   +-- PedidoController.java
-    |   |   +-- UsuarioController.java        @PreAuthorize clase (solo ADMINISTRADOR)
-    |   |   L-- ReporteController.java        @PreAuthorize clase (solo ADMINISTRADOR)
+    |   |   +-- UsuarioController.java            @PreAuthorize clase (ADMINISTRADOR)
+    |   |   L-- ReporteController.java            @PreAuthorize clase (ADMINISTRADOR)
     |   +-- dto/
     |   |   +-- ApiResponse.java
     |   |   +-- DashboardDTO.java / DiaVentasDTO.java
@@ -238,10 +234,9 @@ L-- src/main/
     |   |   +-- ClienteDTO.java / HistorialComprasDTO.java / ItemCompraDTO.java
     |   |   +-- VentaRequest.java / VentaResponse.java / ItemVentaRequest.java / ItemVentaResponse.java
     |   |   +-- PedidoDTO.java / PedidoRequest.java / DetallePedidoDTO.java / DetallePedidoRequest.java
-    |   |   +-- UsuarioDTO.java
-    |   |   +-- ReporteFilaDTO.java
-    |   |   L-- EliminarRequest.java
+    |   |   +-- UsuarioDTO.java / ReporteFilaDTO.java / EliminarRequest.java
     |   +-- entity/
+    |   |   +-- Configuracion.java                [NUEVO Fase F]
     |   |   +-- Usuario.java / Producto.java / Cliente.java
     |   |   +-- Venta.java / DetalleVenta.java
     |   |   L-- Pedido.java / DetallePedido.java
@@ -249,6 +244,7 @@ L-- src/main/
     |   |   +-- GlobalExceptionHandler.java
     |   |   L-- StockInsuficienteException.java
     |   +-- repository/
+    |   |   +-- ConfiguracionRepository.java      [NUEVO Fase F]
     |   |   +-- UsuarioRepository.java / ProductoRepository.java / ClienteRepository.java
     |   |   +-- VentaRepository.java / DetalleVentaRepository.java
     |   |   L-- PedidoRepository.java / DetallePedidoRepository.java
@@ -257,38 +253,41 @@ L-- src/main/
     |   |   +-- JwtTokenProvider.java
     |   |   L-- UserDetailsServiceImpl.java
     |   L-- service/
+    |       +-- ConfiguracionService.java          [NUEVO Fase F]
     |       +-- AuthService.java
     |       +-- DashboardService.java
-    |       +-- ProductoService.java
+    |       +-- ProductoService.java               [umbral stock desde BD]
     |       +-- ClienteService.java
     |       +-- VentaService.java
     |       +-- PedidoService.java
     |       +-- UsuarioService.java
     |       L-- ReporteService.java
     L-- resources/
-        +-- application.yml
+        +-- application.yml                        [multipart 50MB]
         L-- static/
             +-- favicon.svg
             +-- css/
-            |   L-- rossmille.css             [A+D+E: paleta, sidebar, paginacion, nueva paleta indigo/gold]
+            |   L-- rossmille.css                  [E+F: paleta, sidebar, dark mode]
             +-- login.html
-            +-- dashboard.html                [B+E: KPIs, chart, module cards v2, saludo dinamico]
-            +-- productos.html                [C+D+E: debounce, chips genero, paginacion, brand gold]
-            +-- clientes.html                 [C+D+E: debounce, avatar, paginacion, brand gold]
-            +-- vender.html                   [E: brand gold]
-            +-- pedidos.html                  [C+E: contadores tab, brand gold]
-            +-- usuarios.html                 [D+E: paginacion, brand gold]
-            +-- reporte.html                  [E: brand gold]
+            +-- dashboard.html                     [B+E+F: KPIs, chart, sidebar link config]
+            +-- configuracion.html                 [NUEVO Fase F -- 7 secciones]
+            +-- productos.html                     [C+D+E+F: debounce, chips, paginacion, sidebar link]
+            +-- clientes.html                      [C+D+E+F: debounce, avatar, paginacion, sidebar link]
+            +-- vender.html                        [E+F: brand gold, sidebar link]
+            +-- pedidos.html                       [C+E+F: contadores tab, sidebar link]
+            +-- usuarios.html                      [D+E+F: paginacion, sidebar link]
+            +-- reporte.html                       [E+F: sidebar link]
             L-- js/
-                +-- rossmille.js              [A+D: showToast, initSidebar, toggle sidebar, renderPaginacion]
-                +-- auth.js                   guardRoute(), logout(), getToken(), clearSession()
-                +-- api.js                    apiFetch() con Authorization header automatico
-                +-- dashboard.js              [B+E: Chart.js, KPIs, color indigo]
-                +-- productos.js              [C+D: debounce, filtros genero, paginacion, formatNum]
-                +-- clientes.js               [C+D: debounce, avatar, formatNum, paginacion]
+                +-- rossmille.js                   [A+D+F: showToast, initSidebar, toggle, paginacion, aplicarApariencia]
+                +-- auth.js
+                +-- api.js
+                +-- dashboard.js                   [B+E]
+                +-- configuracion.js               [NUEVO Fase F]
+                +-- productos.js                   [C+D]
+                +-- clientes.js                    [C+D]
                 +-- vender.js
-                +-- pedidos.js                [C: contadores por tab]
-                +-- usuarios.js               [D: paginacion]
+                +-- pedidos.js                     [C]
+                +-- usuarios.js                    [D]
                 L-- reporte.js
 ```
 
@@ -303,13 +302,13 @@ POST /api/auth/login   { id, cargo, contrasena } -> { token, nombre, rol }
 
 ### Dashboard (cualquier rol autenticado)
 ```
-GET /api/dashboard/resumen   -> DashboardDTO { ventasHoy, ingresosHoy, stockBajo, pedidosPendientes, ventasPorDia[] }
+GET /api/dashboard/resumen   -> DashboardDTO
 ```
 
 ### Productos (cualquier rol autenticado)
 ```
-GET    /api/productos              ?q= busqueda por nombre/desc/genero/cat/color
-GET    /api/productos/stock-bajo   stock <= 5
+GET    /api/productos              ?q= busqueda
+GET    /api/productos/stock-bajo   stock <= notificaciones.stock_umbral (BD)
 GET    /api/productos/{id}
 POST   /api/productos
 PUT    /api/productos/{id}
@@ -323,24 +322,24 @@ GET    /api/clientes/{id}
 POST   /api/clientes
 PUT    /api/clientes/{id}
 DELETE /api/clientes/{id}          body: { contrasena }
-GET    /api/clientes/{id}/compras  historial JOIN ventas+detalle+productos
+GET    /api/clientes/{id}/compras
 ```
 
 ### Ventas (cualquier rol)
 ```
-POST   /api/ventas   { items:[{productoId,cantidad,precioUnitario}], idCliente, descuento, metodoPago }
+POST   /api/ventas   { items, idCliente, descuento, metodoPago }
 ```
 
 ### Pedidos (cualquier rol; DELETE solo Administrador)
 ```
-GET    /api/pedidos?tipo=activos    estado IN (Pendiente, En Proceso)
-GET    /api/pedidos?tipo=historial  estado = Atendido
+GET    /api/pedidos?tipo=activos
+GET    /api/pedidos?tipo=historial
 POST   /api/pedidos
-PUT    /api/pedidos/{id}/avanzar    Pendiente->En Proceso->Atendido
-DELETE /api/pedidos/{id}            body: { contrasena }
+PUT    /api/pedidos/{id}/avanzar
+DELETE /api/pedidos/{id}   body: { contrasena }
 ```
 
-### Usuarios (solo Administrador -- @PreAuthorize clase)
+### Usuarios (solo ADMINISTRADOR)
 ```
 GET    /api/usuarios
 POST   /api/usuarios
@@ -348,10 +347,18 @@ PUT    /api/usuarios/{id}
 DELETE /api/usuarios/{id}   body: { contrasena }
 ```
 
-### Reporte (solo Administrador -- @PreAuthorize clase)
+### Reporte (solo ADMINISTRADOR)
 ```
 GET /api/reporte?desde=YYYY-MM-DD&hasta=YYYY-MM-DD
 GET /api/reporte/pdf?desde=YYYY-MM-DD&hasta=YYYY-MM-DD
+```
+
+### Configuracion (solo ADMINISTRADOR)
+```
+GET  /api/configuracion              -> Map<String,String> (28 claves)
+PUT  /api/configuracion              -> guarda cambios parciales (body JSON)
+GET  /api/configuracion/backup       -> descarga .sql con INSERT IGNORE de todas las tablas
+POST /api/configuracion/restaurar    -> multipart archivo=.sql, ejecuta sentencias seguras
 ```
 
 ---
@@ -360,21 +367,22 @@ GET /api/reporte/pdf?desde=YYYY-MM-DD&hasta=YYYY-MM-DD
 
 ### Autenticacion
 - Login: ID + cargo + contrasena
-- JWT claims: sub (idUsuario), nombre, rol. Expiracion 8h
+- JWT claims: sub (idUsuario), nombre, rol. Expiracion 8h (configurable en BD: seguridad.tiempo_sesion_horas)
 - JWT en localStorage: claves `rm_token` y `rm_session`
 
 ### Seguridad
 - Spring Security 6 STATELESS, CSRF off
-- Rutas publicas: POST /api/auth/login, /*.html, /js/**, /css/**, /favicon.svg
-- `@PreAuthorize("hasRole('ADMINISTRADOR')")` a nivel de clase en UsuarioController y ReporteController
+- Rutas publicas: POST /api/auth/login, /*.html, /js/**, /css/**, /*.ico, /*.svg
+- @PreAuthorize("hasRole('ADMINISTRADOR')") a nivel de clase: UsuarioController, ReporteController, ConfiguracionController
 - Autoridades: ROLE_ADMINISTRADOR / ROLE_EMPLEADO
-- AccessDeniedException -> HTTP 403 (handler especifico en GlobalExceptionHandler)
+- AccessDeniedException -> HTTP 403
 
 ### Base de datos
 - `ddl-auto: validate` -- Hibernate verifica, no modifica el schema
-- `@Lock(LockModeType.PESSIMISTIC_WRITE)` en ProductoRepository para ventas ACID
-- JdbcTemplate para queries con JOIN (historial compras, reporte, dashboard)
+- @Lock(LockModeType.PESSIMISTIC_WRITE) en ProductoRepository para ventas ACID
+- JdbcTemplate para queries JOIN y para generacion/restauracion de backups SQL
 - MySQL Connector 8 retorna LocalDateTime para DATETIME -- usar instanceof pattern matching
+- Tabla configuracion: clave-valor con grupo para agrupar secciones
 
 ### Patron de respuesta API
 ```json
@@ -383,57 +391,48 @@ GET /api/reporte/pdf?desde=YYYY-MM-DD&hasta=YYYY-MM-DD
 ```
 
 ### Frontend
-- `apiFetch(url, options)` en api.js -- fetch con Authorization header automatico, redireccion en 401/403
-- `guardRoute()` en auth.js -- protege todas las paginas, retorna session o redirige a login
-- `initSidebar(session)` en rossmille.js -- rellena sidebar, oculta items admin, inyecta boton toggle
-- `showToast(msg, type)` en rossmille.js -- notificaciones flotantes (success/error/info)
-- `renderPaginacion(wrapId, total, pagina, pageSize, fnNombre)` en rossmille.js -- controles reutilizables
-- `formatNum(n)` en cada modulo JS -- formato `es-CO` (punto como separador de miles)
+- `apiFetch()` en api.js -- fetch con Authorization header automatico, redireccion en 401/403
+- `guardRoute()` en auth.js -- protege todas las paginas
+- `initSidebar(session)` en rossmille.js -- sidebar, toggle, llama `aplicarApariencia()`
+- `aplicarApariencia()` en rossmille.js -- lee `rm_apariencia` de localStorage, aplica CSS vars
+- `showToast(msg, type)` en rossmille.js -- notificaciones flotantes
+- `renderPaginacion()` en rossmille.js -- controles reutilizables
+- `formatNum(n)` en cada modulo JS -- formato es-CO
 
-### Sidebar colapsable (Fase D)
-- Estado en `localStorage` clave `rm_sidebar_collapsed` ('1' o '0')
-- Colapsado: 60px, solo iconos. Expandido: 220px, texto completo
-- CSS usa `body.sidebar-collapsed` como selector padre
-- El boton toggle se inyecta via JS en `initSidebar`, no en HTML estatico
-
-### Paginacion (Fase D)
-- Toda la paginacion es client-side sobre el cache ya cargado
-- Al hacer nueva busqueda o cambiar filtro se resetea a pagina 1
-- Si el total es <= pageSize, los controles no se muestran
+### Apariencia
+- Persistencia: localStorage clave `rm_apariencia` = `{tema, color, fuente}`
+- Aplicacion: `aplicarApariencia()` al cargar cada pagina (dentro de initSidebar)
+- Tiempo real: color picker y slider actualizan CSS variables sin guardar
+- Tema oscuro: [data-theme="oscuro"] en documentElement, override de variables CSS
 
 ### Paleta de colores (Fase E)
 - Primario oscuro: slate `#0f172a` / `#1e293b`
 - Accent: indigo `#6366f1` / `#4f46e5`
 - Brand gold: `#c9a96e` (solo para "MILLE" en el sidebar)
-- Fondo: `#f1f5f9`
-- Texto: `#1e293b` (principal) / `#64748b` (secundario)
-- Exito: emerald `#10b981`, Advertencia: `#f59e0b`, Peligro: `#ef4444`, Info: `#3b82f6`, Morado: `#8b5cf6`
+- Fondo: `#f1f5f9`, Texto: `#1e293b` / `#64748b`
+- Exito: `#10b981`, Advertencia: `#f59e0b`, Peligro: `#ef4444`, Info: `#3b82f6`, Morado: `#8b5cf6`
+
+### Sidebar colapsable (Fase D)
+- Estado: localStorage clave `rm_sidebar_collapsed`
+- Colapsado: 60px solo iconos. Expandido: 220px texto completo
+- Toggle inyectado via JS en initSidebar
+
+### Paginacion (Fase D)
+- Client-side sobre cache cargado
+- Productos: 12/pag, Clientes: 10/pag, Usuarios: 10/pag
 
 ---
 
 ## Configuracion de red (WSL2 -- configurado 2026-06-17)
 
-### Acceso desde la misma red Wi-Fi
-
-URL desde otro equipo: `http://192.168.10.167:8080/login.html`
-IP del equipo Windows (Wi-Fi): `192.168.10.167`
-
-### Archivos creados para habilitar acceso en red
-
-| Archivo | Descripcion |
-|---------|-------------|
-| `C:\Users\camil\.wslconfig` | `networkingMode=mirrored` -- WSL2 comparte interfaz de red con Windows |
-| `C:\Users\camil\Desktop\rossmille_habilitar_red.ps1` | Script Admin: agrega regla firewall puerto 8080 + reinicia WSL |
-
-### Pasos para reactivar (si el equipo se reinicia)
-
-Solo necesitas volver a correr la app:
-```bash
-export JAVA_HOME=/home/camil/.vscode-server/extensions/redhat.java-1.54.0-linux-x64/jre/21.0.10-linux-x86_64
-export PATH=$JAVA_HOME/bin:$PATH
-cd ~/proyectos/rossmille-web && ./mvnw spring-boot:run
-```
-El `.wslconfig` y la regla de firewall son permanentes. No necesitas volver a ejecutar el script admin.
+| Item | Valor |
+|------|-------|
+| URL local | http://localhost:8080/login.html |
+| URL en red Wi-Fi | http://192.168.10.167:8080/login.html |
+| IP Windows Wi-Fi | 192.168.10.167 |
+| WSL2 networkingMode | mirrored (C:\Users\camil\.wslconfig) |
+| Firewall | Regla "ROSS MILLE Web" puerto 8080 inbound (permanente) |
+| Script admin | C:\Users\camil\Desktop\rossmille_habilitar_red.ps1 (ya ejecutado) |
 
 ---
 
@@ -441,23 +440,23 @@ El `.wslconfig` y la regla de firewall son permanentes. No necesitas volver a ej
 
 - Solo ASCII en archivos fuente (.java, .html, .js, .css, .yml) -- sin tildes ni caracteres especiales
 - `ddl-auto: validate` -- nunca modificar el schema desde la app
-- DTOs separados de entidades JPA -- nunca exponer entidad directamente en API
-- Eliminaciones protegidas con contrasena del usuario logueado (BCrypt verify en service)
-- Precio/moneda: usar `formatNum(n)` con locale `es-CO` en todos los modulos JS
-- Colores: usar variables CSS `var(--rm-*)`, nunca valores hexadecimales directos en HTML inline
+- DTOs separados de entidades JPA
+- Eliminaciones protegidas con contrasena del usuario logueado
+- `formatNum(n)` con locale `es-CO` en todos los modulos JS
+- Colores: usar variables CSS `var(--rm-*)`, no valores hex directos en HTML inline
 
 ---
 
 ## Bugs corregidos en Fase 7
 
-- Hash BCrypt del admin estaba corrupto en BD (54 chars) -- regenerado con python bcrypt
-- ReporteService y ClienteService: cast Timestamp fallaba con MySQL Connector 8 (retorna LocalDateTime) -- corregido con instanceof pattern matching
-- GlobalExceptionHandler: AccessDeniedException era atrapada por catch-all Exception -> 500 -- handler especifico -> 403
-- GlobalExceptionHandler: sin logging de errores 500 -- agregado Logger SLF4J
+- Hash BCrypt del admin corrupto en BD (54 chars) -- regenerado con python bcrypt
+- ReporteService / ClienteService: cast Timestamp -> LocalDateTime con instanceof pattern matching
+- GlobalExceptionHandler: AccessDeniedException -> handler especifico -> 403
+- GlobalExceptionHandler: logging de errores 500 con SLF4J
 
 ---
 
-## Commits del proyecto
+## Historial de commits
 
 | Hash | Descripcion |
 |------|-------------|
@@ -469,5 +468,6 @@ El `.wslconfig` y la regla de firewall son permanentes. No necesitas volver a ej
 | 0bd750c | Fase 6 completada: Usuarios + Reporte + Dashboard |
 | aa904e5 | Fase 7 completada: calidad, cierre y bugs corregidos |
 | 2021f50 | Actualizar CONTEXTO_PROYECTO.md con estado final del proyecto |
-| d889fce | Fases A-D completadas: sistema de diseno, dashboard, UX y pulido final |
-| (nuevo) | Fase E: rediseno visual paleta indigo/gold + dashboard v2 + acceso en red |
+| d889fce | Fases A-D: sistema de diseno, dashboard, UX y pulido final |
+| 3298859 | Fase E: rediseno visual paleta indigo/gold + dashboard v2 + config red local |
+| f062546 | Fase F: Modulo Configuracion completo -- 7 secciones, backend + frontend |
