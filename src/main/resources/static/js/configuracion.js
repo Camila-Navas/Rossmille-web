@@ -105,6 +105,11 @@
             cambios['empresa.logo_base64'] = logoBase64;
         }
 
+        // Caso especial: tema (no tiene input en el DOM, se toma de la variable)
+        if (grupo === 'apariencia') {
+            cambios['apariencia.tema'] = temaActual;
+        }
+
         // Validaciones basicas
         var error = validarGrupo(grupo, cambios);
         if (error) { showToast(error, 'error'); return; }
@@ -293,13 +298,16 @@
     window.setTema = function (tema) {
         temaActual = tema;
         actualizarUiTema(tema);
-        document.documentElement.setAttribute('data-theme', tema === 'oscuro' ? 'oscuro' : '');
+        if (tema === 'oscuro') {
+            document.documentElement.setAttribute('data-theme', 'oscuro');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
     };
 
     function actualizarUiTema(tema) {
         document.getElementById('themeClaro').classList.toggle('active', tema !== 'oscuro');
         document.getElementById('themeOscuro').classList.toggle('active', tema === 'oscuro');
-        document.getElementById('cfg-apariencia.tema').value = tema;
     }
 
     var colorInput = document.getElementById('cfg-apariencia.color_principal');
