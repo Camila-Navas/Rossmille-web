@@ -9,11 +9,9 @@
     <link href="/css/rossmille.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        .rm-page { padding: 32px 36px; max-width: 1140px; }
-
         /* KPI Cards */
         .kpi-card {
-            background: #fff;
+            background: var(--rm-white);
             border-radius: var(--rm-radius-lg);
             padding: 20px;
             box-shadow: var(--rm-shadow);
@@ -23,18 +21,10 @@
             gap: 16px;
             position: relative;
             overflow: hidden;
-            transition: transform 0.15s, box-shadow 0.15s;
+            transition: transform var(--rm-transition-fast), box-shadow var(--rm-transition-fast);
         }
-        .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--rm-shadow-md);
-        }
-        .kpi-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-        }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--rm-shadow-md); }
+        .kpi-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
         .kpi-indigo::after  { background: var(--rm-accent); }
         .kpi-emerald::after { background: var(--rm-success); }
         .kpi-amber::after   { background: var(--rm-warning); }
@@ -46,239 +36,183 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 1.3rem; flex-shrink: 0;
         }
-        .kpi-indigo  .kpi-icon-wrap { background: #eef2ff; color: var(--rm-accent); }
-        .kpi-emerald .kpi-icon-wrap { background: #ecfdf5; color: var(--rm-success); }
-        .kpi-amber   .kpi-icon-wrap { background: #fffbeb; color: var(--rm-warning); }
-        .kpi-purple  .kpi-icon-wrap { background: #f5f3ff; color: var(--rm-purple); }
+        .kpi-indigo  .kpi-icon-wrap { background: var(--rm-accent-tint); color: var(--rm-accent); }
+        .kpi-emerald .kpi-icon-wrap { background: color-mix(in srgb, var(--rm-success) 14%, var(--rm-white)); color: var(--rm-success); }
+        .kpi-amber   .kpi-icon-wrap { background: color-mix(in srgb, var(--rm-warning) 14%, var(--rm-white)); color: var(--rm-warning); }
+        .kpi-purple  .kpi-icon-wrap { background: color-mix(in srgb, var(--rm-purple) 14%, var(--rm-white)); color: var(--rm-purple); }
 
-        .kpi-value {
-            font-size: 1.55rem; font-weight: 800;
-            color: var(--rm-text); line-height: 1; margin-bottom: 5px;
-        }
-        .kpi-label {
-            font-size: 0.71rem; font-weight: 600;
-            color: var(--rm-text-2); text-transform: uppercase; letter-spacing: 0.6px;
-        }
+        .kpi-value { font-size: 1.55rem; font-weight: 800; color: var(--rm-text); line-height: 1; margin-bottom: 5px; }
+        .kpi-label { font-size: 0.71rem; font-weight: 600; color: var(--rm-text-2); text-transform: uppercase; letter-spacing: 0.6px; }
 
         /* Chart card */
         .chart-card {
-            background: #fff;
+            background: var(--rm-white);
             border-radius: var(--rm-radius-lg);
             padding: 24px;
             box-shadow: var(--rm-shadow);
             border: 1px solid var(--rm-border);
-            margin-bottom: 28px;
         }
-        .chart-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+        .chart-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
         .chart-title { font-size: 0.92rem; font-weight: 700; color: var(--rm-text); margin-bottom: 2px; }
         .chart-subtitle { font-size: 0.78rem; color: var(--rm-text-2); }
-        .chart-badge {
-            background: #eef2ff;
-            color: var(--rm-accent);
-            border-radius: 6px;
-            padding: 3px 10px;
-            font-size: 0.72rem;
-            font-weight: 600;
-        }
+        .chart-badge { background: var(--rm-accent-tint); color: var(--rm-accent); border-radius: 6px; padding: 3px 10px; font-size: 0.72rem; font-weight: 600; }
 
         /* Module cards */
         .module-card {
-            background: #fff;
+            background: var(--rm-white);
             border-radius: var(--rm-radius-lg);
             padding: 24px 18px 20px;
             text-align: center;
             box-shadow: var(--rm-shadow);
             border: 1px solid var(--rm-border);
             cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+            transition: transform var(--rm-transition-fast), box-shadow var(--rm-transition-fast), border-color var(--rm-transition-fast);
             text-decoration: none;
             color: var(--rm-text);
             display: block;
         }
-        .module-card:hover {
+        .module-card:hover, .module-card:focus-visible {
             transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(99,102,241,0.13);
+            box-shadow: 0 12px 32px var(--rm-accent-tint-md);
             border-color: var(--rm-accent);
             color: var(--rm-text);
             text-decoration: none;
         }
         .mc-icon-wrap {
-            width: 52px; height: 52px;
-            border-radius: 14px;
+            width: 52px; height: 52px; border-radius: 14px;
             display: inline-flex; align-items: center; justify-content: center;
             font-size: 1.4rem; margin-bottom: 12px;
         }
-        .mc-emerald { background: #ecfdf5; color: var(--rm-success); }
-        .mc-indigo  { background: #eef2ff; color: var(--rm-accent); }
-        .mc-blue    { background: #eff6ff; color: var(--rm-info); }
-        .mc-purple  { background: #f5f3ff; color: var(--rm-purple); }
+        .mc-emerald { background: color-mix(in srgb, var(--rm-success) 14%, var(--rm-white)); color: var(--rm-success); }
+        .mc-indigo  { background: var(--rm-accent-tint); color: var(--rm-accent); }
+        .mc-blue    { background: color-mix(in srgb, var(--rm-info) 14%, var(--rm-white)); color: var(--rm-info); }
+        .mc-purple  { background: color-mix(in srgb, var(--rm-purple) 14%, var(--rm-white)); color: var(--rm-purple); }
         .mc-teal    { background: #f0fdfa; color: #0d9488; }
-        .mc-amber   { background: #fffbeb; color: var(--rm-warning); }
+        .mc-amber   { background: color-mix(in srgb, var(--rm-warning) 14%, var(--rm-white)); color: var(--rm-warning); }
+        [data-mode="oscuro"] .mc-teal { background: #042f2c; }
 
-        .mc-label {
-            font-weight: 600; font-size: 0.9rem;
-            color: var(--rm-text); display: block; margin-bottom: 3px;
-        }
+        .mc-label { font-weight: 600; font-size: 0.9rem; color: var(--rm-text); display: block; margin-bottom: 3px; }
         .mc-admin-badge {
-            background: #f1f5f9; color: var(--rm-text-2);
-            border-radius: 4px; padding: 1px 8px;
-            font-size: 0.67rem; font-weight: 600;
+            background: var(--rm-bg); color: var(--rm-text-2);
+            border-radius: 4px; padding: 1px 8px; font-size: 0.67rem; font-weight: 600;
             display: inline-block; margin-top: 2px;
         }
+
+        .kpi-grid, .module-grid {
+            display: grid;
+            gap: var(--rm-space-4);
+            grid-template-columns: repeat(2, 1fr);
+        }
+        @media (min-width: 640px) { .module-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 960px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } .module-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); } }
     </style>
 </head>
 <body class="rm-has-sidebar">
 
-<nav class="rm-sidebar">
-    <div class="rm-sidebar-brand">
-        <div class="brand-name">ROSS <span class="brand-gold">MILLE</span></div>
-        <span class="brand-sub">Punto de Venta</span>
-    </div>
-    <ul class="rm-nav">
-        <li><a href="/dashboard.html" class="rm-nav-link active"><i class="bi bi-house-door"></i> Inicio</a></li>
-        <li><a href="/vender.html"    class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
-        <li><a href="/productos.html" class="rm-nav-link"><i class="bi bi-box-seam"></i> Productos</a></li>
-        <li><a href="/clientes.html"  class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
-        <li><a href="/pedidos.html"   class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
-        <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
-        <li class="rm-nav-admin"><a href="/usuarios.html" class="rm-nav-link"><i class="bi bi-person-gear"></i> Usuarios</a></li>
-        <li class="rm-nav-admin"><a href="/reporte.html"  class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
-        <li class="rm-nav-admin"><a href="/configuracion.html" class="rm-nav-link"><i class="bi bi-gear"></i> Configuracion</a></li>
-    </ul>
-    <div class="rm-sidebar-footer">
-        <div class="sf-name" id="sb-name"></div>
-        <div class="sf-role" id="sb-role"></div>
-        <button class="rm-btn-logout" onclick="logout()">
-            <i class="bi bi-box-arrow-right"></i> Cerrar Sesion
-        </button>
-    </div>
-</nav>
+<a class="skip-link" href="#main" data-i18n="a11y.skipToContent">Saltar al contenido principal</a>
+<div id="rmDrawerBackdrop" class="rm-drawer-backdrop"></div>
+<div id="rmSidebarMount"></div>
+<div id="rmTopbarMount"></div>
 
-<div class="rm-page">
+<main id="main" class="rm-page">
 
-    <!-- Page header -->
-    <div class="page-header">
+    <div class="page-header reveal">
         <div>
             <h1 class="page-title" id="welcomeTitle">Bienvenido</h1>
             <p class="page-subtitle" id="pageDate"></p>
         </div>
     </div>
 
-    <!-- KPI Row -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3">
-            <div class="kpi-card kpi-indigo">
-                <div class="kpi-icon-wrap"><i class="bi bi-receipt"></i></div>
-                <div>
-                    <div class="kpi-value" id="kpiVentasHoy">-</div>
-                    <div class="kpi-label">Ventas hoy</div>
-                </div>
+    <div class="kpi-grid reveal">
+        <div class="kpi-card kpi-indigo">
+            <div class="kpi-icon-wrap"><i class="bi bi-receipt" aria-hidden="true"></i></div>
+            <div>
+                <div class="kpi-value" id="kpiVentasHoy">-</div>
+                <div class="kpi-label">Ventas hoy</div>
             </div>
         </div>
-        <div class="col-6 col-lg-3">
-            <div class="kpi-card kpi-emerald">
-                <div class="kpi-icon-wrap"><i class="bi bi-cash-stack"></i></div>
-                <div>
-                    <div class="kpi-value" id="kpiIngresosHoy">-</div>
-                    <div class="kpi-label">Ingresos hoy</div>
-                </div>
+        <div class="kpi-card kpi-emerald">
+            <div class="kpi-icon-wrap"><i class="bi bi-cash-stack" aria-hidden="true"></i></div>
+            <div>
+                <div class="kpi-value" id="kpiIngresosHoy">-</div>
+                <div class="kpi-label">Ingresos hoy</div>
             </div>
         </div>
-        <div class="col-6 col-lg-3">
-            <div class="kpi-card kpi-amber">
-                <div class="kpi-icon-wrap"><i class="bi bi-exclamation-triangle"></i></div>
-                <div>
-                    <div class="kpi-value" id="kpiStockBajo">-</div>
-                    <div class="kpi-label">Stock bajo</div>
-                </div>
+        <div class="kpi-card kpi-amber">
+            <div class="kpi-icon-wrap"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
+            <div>
+                <div class="kpi-value" id="kpiStockBajo">-</div>
+                <div class="kpi-label">Stock bajo</div>
             </div>
         </div>
-        <div class="col-6 col-lg-3">
-            <div class="kpi-card kpi-purple">
-                <div class="kpi-icon-wrap"><i class="bi bi-clipboard2-list"></i></div>
-                <div>
-                    <div class="kpi-value" id="kpiPedidosPendientes">-</div>
-                    <div class="kpi-label">Pedidos pendientes</div>
-                </div>
+        <div class="kpi-card kpi-purple">
+            <div class="kpi-icon-wrap"><i class="bi bi-clipboard2-list" aria-hidden="true"></i></div>
+            <div>
+                <div class="kpi-value" id="kpiPedidosPendientes">-</div>
+                <div class="kpi-label">Pedidos pendientes</div>
             </div>
         </div>
     </div>
 
-    <!-- Chart -->
-    <div class="chart-card">
+    <div class="chart-card reveal">
         <div class="chart-header">
             <div>
                 <div class="chart-title">Ingresos ultimos 7 dias</div>
                 <div class="chart-subtitle">Total de ventas registradas por dia</div>
             </div>
-            <span class="chart-badge"><i class="bi bi-bar-chart-fill me-1"></i>Semanal</span>
+            <span class="chart-badge"><i class="bi bi-bar-chart-fill me-1" aria-hidden="true"></i>Semanal</span>
         </div>
-        <canvas id="chartVentas" height="110"></canvas>
+        <canvas id="chartVentas" height="110" role="img" aria-label="Grafico de ingresos de los ultimos 7 dias"></canvas>
     </div>
 
-    <!-- Quick access -->
-    <div class="section-title">Acceso rapido</div>
-    <div class="row g-3" id="moduleGrid">
-        <div class="col-6 col-md-4 col-lg-3">
+    <div class="reveal">
+        <div class="section-title">Acceso rapido</div>
+        <div class="module-grid" id="moduleGrid">
             <a href="vender.html" class="module-card">
-                <div class="mc-icon-wrap mc-emerald"><i class="bi bi-cart3"></i></div>
+                <div class="mc-icon-wrap mc-emerald"><i class="bi bi-cart3" aria-hidden="true"></i></div>
                 <span class="mc-label">Vender</span>
             </a>
-        </div>
-        <div class="col-6 col-md-4 col-lg-3">
             <a href="productos.html" class="module-card">
-                <div class="mc-icon-wrap mc-indigo"><i class="bi bi-box-seam"></i></div>
+                <div class="mc-icon-wrap mc-indigo"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
                 <span class="mc-label">Productos</span>
             </a>
-        </div>
-        <div class="col-6 col-md-4 col-lg-3">
             <a href="clientes.html" class="module-card">
-                <div class="mc-icon-wrap mc-blue"><i class="bi bi-people"></i></div>
+                <div class="mc-icon-wrap mc-blue"><i class="bi bi-people" aria-hidden="true"></i></div>
                 <span class="mc-label">Clientes</span>
             </a>
-        </div>
-        <div class="col-6 col-md-4 col-lg-3">
             <a href="pedidos.html" class="module-card">
-                <div class="mc-icon-wrap mc-purple"><i class="bi bi-clipboard2-list"></i></div>
+                <div class="mc-icon-wrap mc-purple"><i class="bi bi-clipboard2-list" aria-hidden="true"></i></div>
                 <span class="mc-label">Pedidos</span>
             </a>
-        </div>
-        <div class="col-6 col-md-4 col-lg-3 admin-only" style="display:none;">
-            <a href="usuarios.html" class="module-card">
-                <div class="mc-icon-wrap mc-teal"><i class="bi bi-person-gear"></i></div>
+            <a href="usuarios.html" class="module-card admin-only" style="display:none;">
+                <div class="mc-icon-wrap mc-teal"><i class="bi bi-person-gear" aria-hidden="true"></i></div>
                 <span class="mc-label">Usuarios</span>
                 <span class="mc-admin-badge">Admin</span>
             </a>
-        </div>
-        <div class="col-6 col-md-4 col-lg-3 admin-only" style="display:none;">
-            <a href="reporte.html" class="module-card">
-                <div class="mc-icon-wrap mc-amber"><i class="bi bi-bar-chart-line"></i></div>
+            <a href="reporte.html" class="module-card admin-only" style="display:none;">
+                <div class="mc-icon-wrap mc-amber"><i class="bi bi-bar-chart-line" aria-hidden="true"></i></div>
                 <span class="mc-label">Reporte</span>
                 <span class="mc-admin-badge">Admin</span>
             </a>
         </div>
     </div>
 
-</div>
+</main>
+
+<div id="rmFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/rossmille.js"></script>
+<script src="/js/layout.js"></script>
 <script src="/js/dashboard.js"></script>
 <script>
-    var session = guardRoute();
+    var session = initApp({ activeKey: 'dashboard', titleKey: 'nav.dashboard', subtitleKey: '' });
     if (session) {
-        initSidebar(session);
-
         var hora = new Date().getHours();
         var saludo = hora >= 5 && hora < 12
             ? 'Buenos dias'

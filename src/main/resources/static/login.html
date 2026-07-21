@@ -4,105 +4,181 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROSS MILLE - Iniciar Sesion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/rossmille.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
         body {
-            background-color: #1a1a2e;
+            background-color: var(--rm-dark);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: var(--rm-space-4);
         }
+        .login-topbar {
+            position: fixed;
+            top: var(--rm-space-4);
+            right: var(--rm-space-4);
+            display: flex;
+            gap: 6px;
+            z-index: 20;
+        }
+        .login-topbar .rm-icon-btn {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.14);
+            color: rgba(255,255,255,0.75);
+        }
+        .login-topbar .rm-icon-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+        .login-topbar .rm-switcher-menu { top: calc(100% + 8px); }
+
         .login-card {
-            background: #ffffff;
-            border-radius: 16px;
+            background: var(--rm-white);
+            border-radius: var(--rm-radius-xl);
             padding: 48px 40px;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            box-shadow: var(--rm-shadow-lg);
         }
         .brand-title {
+            font-family: var(--rm-font-heading);
             font-size: 2rem;
             font-weight: 800;
             letter-spacing: 4px;
-            color: #1a1a2e;
+            color: var(--rm-text);
             text-align: center;
             margin-bottom: 4px;
         }
         .brand-sub {
             text-align: center;
-            color: #888;
+            color: var(--rm-text-2);
             font-size: 0.8rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 36px;
         }
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 1.5px solid #e0e0e0;
-            padding: 10px 14px;
-            font-size: 0.95rem;
-        }
         .btn-login {
-            background-color: #1a1a2e;
+            background-color: var(--rm-accent);
             color: #ffffff;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--rm-radius);
             padding: 12px;
             font-size: 1rem;
             font-weight: 600;
             letter-spacing: 1px;
             width: 100%;
             margin-top: 8px;
-            transition: background-color 0.2s;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            transition: background-color var(--rm-transition-fast);
+            font-family: var(--rm-font-body);
             cursor: pointer;
         }
-        .btn-login:hover { background-color: #2d2d4e; color: #fff; }
+        .btn-login:hover { background-color: var(--rm-accent-h); color: #fff; }
         .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
         .error-msg {
             display: none;
-            background-color: #fff3f3;
-            border: 1px solid #f5c6cb;
-            color: #842029;
-            border-radius: 8px;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            border-radius: var(--rm-radius);
             padding: 10px 14px;
             font-size: 0.88rem;
             margin-top: 16px;
         }
+        [data-mode="oscuro"] .login-card { background: var(--rm-white); }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <div class="brand-title">ROSS MILLE</div>
-        <div class="brand-sub">Sistema de Punto de Venta</div>
+    <a class="skip-link" href="#loginForm" data-i18n="a11y.skipToContent">Saltar al contenido principal</a>
+
+    <!-- Selector de tema e idioma: visible incluso antes de iniciar sesion -->
+    <div class="login-topbar">
+        <div class="rm-switcher" id="switchTheme">
+            <button type="button" class="rm-icon-btn" aria-haspopup="true" aria-expanded="false" data-i18n-aria="topbar.theme">
+                <i class="bi bi-sun" aria-hidden="true"></i>
+            </button>
+            <div class="rm-switcher-menu" role="menu">
+                <div class="rm-switcher-heading" data-i18n="topbar.mode"></div>
+                <button type="button" class="rm-switcher-item" role="menuitemradio" data-mode="claro">
+                    <i class="bi bi-sun" aria-hidden="true"></i><span data-i18n="topbar.modeClaro"></span></button>
+                <button type="button" class="rm-switcher-item" role="menuitemradio" data-mode="oscuro">
+                    <i class="bi bi-moon-stars" aria-hidden="true"></i><span data-i18n="topbar.modeOscuro"></span></button>
+            </div>
+        </div>
+        <div class="rm-switcher" id="switchLang">
+            <button type="button" class="rm-icon-btn" aria-haspopup="true" aria-expanded="false" data-i18n-aria="topbar.language">
+                <i class="bi bi-translate" aria-hidden="true"></i>
+            </button>
+            <div class="rm-switcher-menu" role="menu">
+                <div class="rm-switcher-heading" data-i18n="topbar.language"></div>
+                <button type="button" class="rm-switcher-item" role="menuitemradio" data-lang="es">
+                    <span data-i18n="topbar.langEs"></span></button>
+                <button type="button" class="rm-switcher-item" role="menuitemradio" data-lang="en">
+                    <span data-i18n="topbar.langEn"></span></button>
+            </div>
+        </div>
+    </div>
+
+    <main class="login-card">
+        <div class="brand-title" data-i18n="login.title">ROSS MILLE</div>
+        <div class="brand-sub" data-i18n="login.subtitle">Sistema de Punto de Venta</div>
 
         <form id="loginForm" novalidate>
             <div class="mb-3">
-                <label class="form-label" for="inputId">ID de Usuario</label>
+                <label class="form-label" for="inputId" data-i18n="login.id">ID de Usuario</label>
                 <input type="text" class="form-control" id="inputId"
-                    placeholder="Ingrese su ID" required autocomplete="username">
+                    data-i18n-placeholder="login.idPlaceholder" required autocomplete="username">
             </div>
             <div class="mb-3">
-                <label class="form-label" for="selectCargo">Cargo</label>
+                <label class="form-label" for="selectCargo" data-i18n="login.role">Cargo</label>
                 <select class="form-select" id="selectCargo" required>
-                    <option value="" disabled selected>Seleccionar cargo</option>
-                    <option value="Administrador">Administrador</option>
-                    <option value="Empleado">Empleado</option>
+                    <option value="" disabled selected data-i18n="login.rolePlaceholder">Seleccionar cargo</option>
+                    <option value="Administrador" data-i18n="login.roleAdmin">Administrador</option>
+                    <option value="Empleado" data-i18n="login.roleEmployee">Empleado</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label class="form-label" for="inputContrasena">Contrasena</label>
+                <label class="form-label" for="inputContrasena" data-i18n="login.password">Contrasena</label>
                 <input type="password" class="form-control" id="inputContrasena"
-                    placeholder="Ingrese su contrasena" required autocomplete="current-password">
+                    data-i18n-placeholder="login.passwordPlaceholder" required autocomplete="current-password">
             </div>
-            <button type="submit" class="btn-login" id="btnLogin">Iniciar Sesion</button>
-            <div class="error-msg" id="errorMsg"></div>
+            <button type="submit" class="btn-login" id="btnLogin" data-i18n="login.submit">Iniciar Sesion</button>
+            <div class="error-msg" id="errorMsg" role="alert"></div>
         </form>
-    </div>
+    </main>
 
+    <script src="/js/theme.js"></script>
+    <script src="/js/i18n.js"></script>
     <script src="/js/auth.js"></script>
+    <script>
+        (function () {
+            function wireSwitcher(id, onClick) {
+                var wrap = document.getElementById(id);
+                var btn = wrap.querySelector('.rm-icon-btn');
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    var open = wrap.classList.toggle('open');
+                    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                });
+                document.addEventListener('click', function (e) {
+                    if (!wrap.contains(e.target)) { wrap.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+                });
+                wrap.querySelector('.rm-switcher-menu').addEventListener('click', onClick);
+            }
+            wireSwitcher('switchTheme', function (e) {
+                var t = e.target.closest('[data-mode]');
+                if (!t) return;
+                RMTheme.setMode(t.getAttribute('data-mode'));
+                var icon = document.querySelector('#switchTheme .rm-icon-btn i');
+                icon.className = 'bi ' + (t.getAttribute('data-mode') === 'oscuro' ? 'bi-moon-stars' : 'bi-sun');
+            });
+            wireSwitcher('switchLang', function (e) {
+                var t = e.target.closest('[data-lang]');
+                if (!t) return;
+                RMI18n.setLang(t.getAttribute('data-lang'));
+            });
+            RMI18n.applyTranslations(document);
+        })();
+    </script>
 </body>
 </html>

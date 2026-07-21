@@ -9,192 +9,121 @@
     <link href="/css/rossmille.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        .main {
-            padding: 28px 32px;
-            max-width: 1200px;
-        }
-        .toolbar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
+        .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .search-wrap { display: flex; gap: 6px; flex: 1; min-width: 220px; }
         .search-input {
-            flex: 1;
-            border: 1.5px solid #ddd;
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 0.9rem;
-            outline: none;
-            transition: border-color 0.2s;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            flex: 1; border: 1.5px solid var(--rm-border); border-radius: var(--rm-radius);
+            padding: 8px 14px; font-size: 0.9rem; outline: none;
+            transition: border-color var(--rm-transition-fast); font-family: var(--rm-font-body);
+            background: var(--rm-white); color: var(--rm-text);
         }
-        .search-input:focus { border-color: #1a1a2e; }
-        .btn-buscar {
-            background: #1a1a2e; color: #fff; border: none;
-            border-radius: 8px; padding: 8px 16px;
-            font-size: 0.88rem; cursor: pointer;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+        .search-input:focus { border-color: var(--rm-accent); }
+        .btn-buscar, .btn-limpiar, .btn-nuevo {
+            border: none; border-radius: var(--rm-radius); padding: 8px 16px;
+            font-size: 0.88rem; cursor: pointer; font-family: var(--rm-font-body); transition: background var(--rm-transition-fast);
         }
-        .btn-buscar:hover { background: #2d2d4e; }
-        .btn-limpiar {
-            background: #6c757d; color: #fff; border: none;
-            border-radius: 8px; padding: 8px 14px;
-            font-size: 0.88rem; cursor: pointer;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-        }
-        .btn-limpiar:hover { background: #5a6268; }
-        .btn-nuevo {
-            background: #198754; color: #fff; border: none;
-            border-radius: 8px; padding: 8px 18px;
-            font-size: 0.88rem; cursor: pointer; font-weight: 600;
-            white-space: nowrap;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-        }
-        .btn-nuevo:hover { background: #157347; }
+        .btn-buscar { background: var(--rm-accent); color: #fff; }
+        .btn-buscar:hover { background: var(--rm-accent-h); }
+        .btn-limpiar { background: var(--rm-neutral); color: #fff; padding: 8px 14px; }
+        .btn-limpiar:hover { background: var(--rm-neutral-h); }
+        .btn-nuevo { background: var(--rm-success); color: #fff; padding: 8px 18px; font-weight: 600; white-space: nowrap; }
+        .btn-nuevo:hover { background: var(--rm-success-h); }
 
-        .table-wrap {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            overflow: hidden;
-        }
+        .table-wrap { background: var(--rm-white); border-radius: var(--rm-radius-lg); box-shadow: var(--rm-shadow); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
         thead th {
-            background: #1a1a2e; color: #fff;
-            padding: 12px 14px; font-weight: 600;
-            font-size: 0.82rem; letter-spacing: 0.5px;
-            text-transform: uppercase; text-align: left;
+            background: var(--rm-dark); color: #fff; padding: 12px 14px; font-weight: 600;
+            font-size: 0.82rem; letter-spacing: 0.5px; text-transform: uppercase; text-align: left;
         }
-        tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.1s; }
-        tbody tr:hover { background: #f8f8fc; }
-        tbody td { padding: 11px 14px; color: #333; vertical-align: middle; }
-        .td-id { font-weight: 600; color: #1a1a2e; font-size: 0.82rem; }
+        tbody tr { border-bottom: 1px solid var(--rm-border); transition: background var(--rm-transition-fast); }
+        tbody tr:hover { background: var(--rm-bg); }
+        tbody td { padding: 11px 14px; color: var(--rm-text); vertical-align: middle; }
+        .td-id { font-weight: 600; color: var(--rm-text); font-size: 0.82rem; }
         .td-nombre { font-weight: 600; }
-        .td-muted { color: #888; font-size: 0.83rem; }
+        .td-muted { color: var(--rm-text-2); font-size: 0.83rem; }
         .acciones { display: flex; gap: 6px; flex-wrap: wrap; }
-        .btn-accion {
-            border: none; border-radius: 5px; padding: 4px 12px;
-            font-size: 0.78rem; cursor: pointer; font-weight: 600;
-            transition: opacity 0.15s;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-        }
+        .btn-accion { border: none; border-radius: var(--rm-radius-sm); padding: 4px 12px; font-size: 0.78rem; cursor: pointer; font-weight: 600; transition: opacity var(--rm-transition-fast); font-family: var(--rm-font-body); }
         .btn-accion:hover { opacity: 0.82; }
-        .btn-editar { background: #1a1a2e; color: #fff; }
-        .btn-compras { background: #0d6efd; color: #fff; }
-        .btn-eliminar { background: #dc3545; color: #fff; }
-        .empty-row td { text-align: center; color: #aaa; padding: 40px; }
+        .btn-editar { background: var(--rm-accent); color: #fff; }
+        .btn-compras { background: var(--rm-info); color: #fff; }
+        .btn-eliminar { background: var(--rm-danger); color: #fff; }
+        .empty-row td { text-align: center; color: var(--rm-text-2); padding: 40px; }
 
-        .venta-card {
-            border: 1px solid #e8e8e8; border-radius: 8px;
-            margin-bottom: 12px; overflow: hidden;
-        }
-        .venta-header {
-            background: #f8f9fa; padding: 10px 14px;
-            display: flex; justify-content: space-between;
-            align-items: center; flex-wrap: wrap; gap: 6px;
-        }
-        .venta-id { font-weight: 700; color: #1a1a2e; font-size: 0.9rem; }
-        .venta-fecha { color: #666; font-size: 0.82rem; }
-        .venta-total { font-weight: 700; color: #198754; font-size: 0.95rem; }
-        .venta-metodo {
-            background: #e8f4fd; color: #1a5276;
-            border-radius: 4px; padding: 2px 8px;
-            font-size: 0.75rem; font-weight: 600;
-        }
+        .venta-card { border: 1px solid var(--rm-border); border-radius: var(--rm-radius); margin-bottom: 12px; overflow: hidden; }
+        .venta-header { background: var(--rm-bg); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .venta-id { font-weight: 700; color: var(--rm-text); font-size: 0.9rem; }
+        .venta-fecha { color: var(--rm-text-2); font-size: 0.82rem; }
+        .venta-total { font-weight: 700; color: var(--rm-success); font-size: 0.95rem; }
+        .venta-metodo { background: var(--rm-accent-tint); color: var(--rm-accent); border-radius: 4px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; }
         .venta-items { padding: 10px 14px; }
-        .item-row {
-            display: flex; justify-content: space-between;
-            font-size: 0.83rem; padding: 3px 0;
-            border-bottom: 1px solid #f5f5f5; color: #444;
-        }
+        .item-row { display: flex; justify-content: space-between; font-size: 0.83rem; padding: 3px 0; border-bottom: 1px solid var(--rm-border); color: var(--rm-text); }
         .item-row:last-child { border-bottom: none; }
         .item-nombre { flex: 1; }
-        .item-detalle { color: #888; white-space: nowrap; margin-left: 12px; }
-        .sin-compras { text-align: center; color: #aaa; padding: 24px 0; font-size: 0.9rem; }
-        .cliente-nombre-wrap {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-        }
+        .item-detalle { color: var(--rm-text-2); white-space: nowrap; margin-left: 12px; }
+        .sin-compras { text-align: center; color: var(--rm-text-2); padding: 24px 0; font-size: 0.9rem; }
+        .cliente-nombre-wrap { display: flex; align-items: center; gap: 9px; }
         .avatar-ini {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            color: #fff;
-            font-size: 0.68rem;
-            font-weight: 700;
-            flex-shrink: 0;
-            letter-spacing: 0.5px;
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 30px; height: 30px; border-radius: 50%; color: #fff;
+            font-size: 0.68rem; font-weight: 700; flex-shrink: 0; letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 639.98px) {
+            .table-wrap { overflow-x: auto; }
+            table { min-width: 640px; }
         }
     </style>
 </head>
 <body class="rm-has-sidebar">
 
-<nav class="rm-sidebar">
-    <div class="rm-sidebar-brand">
-        <div class="brand-name">ROSS <span class="brand-gold">MILLE</span></div>
-        <span class="brand-sub">Punto de Venta</span>
-    </div>
-    <ul class="rm-nav">
-        <li><a href="/dashboard.html" class="rm-nav-link"><i class="bi bi-house-door"></i> Inicio</a></li>
-        <li><a href="/vender.html" class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
-        <li><a href="/productos.html" class="rm-nav-link"><i class="bi bi-box-seam"></i> Productos</a></li>
-        <li><a href="/clientes.html" class="rm-nav-link active"><i class="bi bi-people"></i> Clientes</a></li>
-        <li><a href="/pedidos.html" class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
-        <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
-        <li class="rm-nav-admin"><a href="/usuarios.html" class="rm-nav-link"><i class="bi bi-person-gear"></i> Usuarios</a></li>
-        <li class="rm-nav-admin"><a href="/reporte.html" class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
-        <li class="rm-nav-admin"><a href="/configuracion.html" class="rm-nav-link"><i class="bi bi-gear"></i> Configuracion</a></li>
-    </ul>
-    <div class="rm-sidebar-footer">
-        <div class="sf-name" id="sb-name"></div>
-        <div class="sf-role" id="sb-role"></div>
-        <button class="rm-btn-logout" onclick="logout()">
-            <i class="bi bi-box-arrow-right"></i> Cerrar Sesion
-        </button>
-    </div>
-</nav>
+<a class="skip-link" href="#main" data-i18n="a11y.skipToContent">Saltar al contenido principal</a>
+<div id="rmDrawerBackdrop" class="rm-drawer-backdrop"></div>
+<div id="rmSidebarMount"></div>
+<div id="rmTopbarMount"></div>
 
-<div class="main">
+<main id="main" class="rm-page">
 
-    <div class="toolbar">
+    <div class="page-header reveal">
+        <div>
+            <h1 class="page-title" data-i18n="page.clientes.title">Clientes</h1>
+            <p class="page-subtitle" data-i18n="page.clientes.subtitle">Base de datos de clientes e historial de compras</p>
+        </div>
+    </div>
+
+    <div class="toolbar reveal">
         <div class="search-wrap">
+            <label class="visually-hidden-focusable" for="inputBuscar">Buscar cliente</label>
             <input type="text" id="inputBuscar" class="search-input"
                 placeholder="Buscar por ID, nombre, correo o telefono...">
-            <button class="btn-buscar" id="btnBuscar">Buscar</button>
-            <button class="btn-limpiar" id="btnLimpiar">Limpiar</button>
+            <button class="btn-buscar" id="btnBuscar" data-i18n="common.search">Buscar</button>
+            <button class="btn-limpiar" id="btnLimpiar" data-i18n="common.clear">Limpiar</button>
         </div>
         <button class="btn-nuevo" id="btnNuevo">+ Nuevo Cliente</button>
     </div>
 
-    <div class="table-wrap">
-        <div style="overflow-x:auto;">
+    <div class="reveal">
+        <div class="table-wrap">
             <table id="tablaClientes">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Correo</th>
-                        <th>Telefono</th>
-                        <th>Acciones</th>
+                        <th data-i18n="common.id">ID</th>
+                        <th data-i18n="common.name">Nombre</th>
+                        <th data-i18n="common.email">Correo</th>
+                        <th data-i18n="common.phone">Telefono</th>
+                        <th data-i18n="common.actions">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyClientes">
-                    <tr class="empty-row"><td colspan="5">Cargando...</td></tr>
+                    <tr class="empty-row"><td colspan="5" data-i18n="common.loading">Cargando...</td></tr>
                 </tbody>
             </table>
         </div>
+        <div id="paginacionClientes" class="paginacion-wrap"></div>
     </div>
-    <div id="paginacionClientes" class="paginacion-wrap"></div>
 
-</div>
+</main>
 
+<div id="rmFooterMount"></div>
 
 <!-- Modal: Crear / Editar Cliente -->
 <div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true">
@@ -234,13 +163,12 @@
                 <div class="modal-error" id="modalClienteError"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-dark" id="btnGuardar">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardar" data-i18n="common.save">Guardar</button>
             </div>
         </div>
     </div>
 </div>
-
 
 <!-- Modal: Historial de Compras -->
 <div class="modal fade" id="modalHistorial" tabindex="-1" aria-hidden="true">
@@ -252,16 +180,15 @@
             </div>
             <div class="modal-body" style="max-height:65vh; overflow-y:auto;">
                 <div id="historialContenido">
-                    <div class="sin-compras">Cargando...</div>
+                    <div class="sin-compras" data-i18n="common.loading">Cargando...</div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.close">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
-
 
 <!-- Modal: Confirmar Eliminacion -->
 <div class="modal fade" id="modalEliminar" tabindex="-1" aria-hidden="true">
@@ -282,25 +209,24 @@
                 <div class="modal-error" id="modalEliminarError"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarEliminar" data-i18n="common.delete">Eliminar</button>
             </div>
         </div>
     </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/rossmille.js"></script>
+<script src="/js/layout.js"></script>
 <script src="/js/clientes.js"></script>
 <script>
-    var session = guardRoute();
-    if (session) {
-        initSidebar(session);
-        init(session);
-    }
+    var session = initApp({ activeKey: 'clientes', titleKey: 'page.clientes.title', subtitleKey: 'page.clientes.subtitle' });
+    if (session) init(session);
 </script>
 
 </body>

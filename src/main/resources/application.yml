@@ -4,9 +4,11 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
   datasource:
-    url: jdbc:mysql://localhost:3306/rossmille_db?useSSL=false&serverTimezone=America/Bogota&allowPublicKeyRetrieval=true
-    username: RossMille
-    password: RossMillB01
+    # En local usa los valores por defecto (Docker). En Railway, el plugin de MySQL
+    # inyecta MYSQLHOST/MYSQLPORT/MYSQLDATABASE/MYSQLUSER/MYSQLPASSWORD automaticamente.
+    url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQLDATABASE:rossmille_db}?useSSL=false&serverTimezone=America/Bogota&allowPublicKeyRetrieval=true
+    username: ${MYSQLUSER:RossMille}
+    password: ${MYSQLPASSWORD:RossMillB01}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -15,8 +17,11 @@ spring:
     open-in-view: false
 
 server:
-  port: 8080
+  # Railway asigna el puerto dinamicamente via la variable PORT
+  port: ${PORT:8080}
 
 jwt:
-  secret: rossmille-jwt-secret-key-2024-rossmille-pos-web
-  expiration: 28800000
+  # IMPORTANTE: sobrescribir JWT_SECRET en las variables de entorno de Railway
+  # con un valor propio y secreto antes de exponer la app publicamente.
+  secret: ${JWT_SECRET:rossmille-jwt-secret-key-2024-rossmille-pos-web}
+  expiration: ${JWT_EXPIRATION:28800000}

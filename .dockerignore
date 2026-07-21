@@ -1,0 +1,14 @@
+target/
+.git
+.gitignore
+.classpath
+.project
+.settings/
+.idea/
+*.iws
+*.iml
+*.ipr
+HELP.md
+README.md
+CONTEXTO_PROYECTO.md
+PLAN_TRABAJO.md

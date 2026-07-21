@@ -9,123 +9,83 @@
     <link href="/css/rossmille.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        .main { padding: 28px 32px; max-width: 1000px; }
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .toolbar h5 { font-weight: 700; color: #1a1a2e; margin: 0; font-size: 1rem; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .btn-nuevo {
-            background: #1a1a2e;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 20px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--rm-accent); color: #fff; border: none; border-radius: var(--rm-radius);
+            padding: 8px 20px; font-size: 0.88rem; font-weight: 600; cursor: pointer; font-family: var(--rm-font-body);
+            transition: background var(--rm-transition-fast);
         }
-        .btn-nuevo:hover { background: #2d2d50; }
-        .tabla-wrapper {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            overflow: hidden;
-        }
+        .btn-nuevo:hover { background: var(--rm-accent-h); }
+        .tabla-wrapper { background: var(--rm-white); border-radius: var(--rm-radius-lg); box-shadow: var(--rm-shadow); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; }
         thead th {
-            background: #1a1a2e;
-            color: #fff;
-            padding: 12px 16px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-align: left;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            background: var(--rm-dark); color: #fff; padding: 12px 16px; font-size: 0.8rem; font-weight: 600;
+            text-align: left; text-transform: uppercase; letter-spacing: 0.5px;
         }
-        tbody tr { border-bottom: 1px solid #f0f0f5; transition: background 0.1s; }
-        tbody tr:hover { background: #fafafa; }
-        tbody td { padding: 12px 16px; font-size: 0.85rem; color: #333; }
-        .badge-rol {
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
+        tbody tr { border-bottom: 1px solid var(--rm-border); transition: background var(--rm-transition-fast); }
+        tbody tr:hover { background: var(--rm-bg); }
+        tbody td { padding: 12px 16px; font-size: 0.85rem; color: var(--rm-text); }
+        .badge-rol { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: var(--rm-radius-pill); }
         .rol-admin { background: #e8f4fd; color: #1a5276; }
         .rol-empleado { background: #e8f8f5; color: #0a5c36; }
-        .btn-accion {
-            border: none;
-            border-radius: 5px;
-            padding: 4px 12px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-right: 4px;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-        }
-        .btn-editar { background: #f0f0f8; color: #1a1a2e; }
-        .btn-editar:hover { background: #e0e0ee; }
-        .btn-eliminar-row { background: #fff0f0; color: #cc4444; }
+        .btn-accion { border: none; border-radius: var(--rm-radius-sm); padding: 4px 12px; font-size: 0.78rem; font-weight: 600; cursor: pointer; margin-right: 4px; font-family: var(--rm-font-body); }
+        .btn-editar { background: var(--rm-accent-tint); color: var(--rm-accent); }
+        .btn-editar:hover { background: var(--rm-accent-tint-md); }
+        .btn-eliminar-row { background: #fff0f0; color: var(--rm-danger); }
         .btn-eliminar-row:hover { background: #ffe0e0; }
-        .empty-row td { text-align: center; color: #aaa; padding: 40px; }
+        .empty-row td { text-align: center; color: var(--rm-text-2); padding: 40px; }
+
+        @media (max-width: 639.98px) {
+            .tabla-wrapper { overflow-x: auto; }
+            table { min-width: 640px; }
+        }
     </style>
 </head>
 <body class="rm-has-sidebar">
 
-<nav class="rm-sidebar">
-    <div class="rm-sidebar-brand">
-        <div class="brand-name">ROSS <span class="brand-gold">MILLE</span></div>
-        <span class="brand-sub">Punto de Venta</span>
-    </div>
-    <ul class="rm-nav">
-        <li><a href="/dashboard.html" class="rm-nav-link"><i class="bi bi-house-door"></i> Inicio</a></li>
-        <li><a href="/vender.html" class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
-        <li><a href="/productos.html" class="rm-nav-link"><i class="bi bi-box-seam"></i> Productos</a></li>
-        <li><a href="/clientes.html" class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
-        <li><a href="/pedidos.html" class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
-        <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
-        <li class="rm-nav-admin"><a href="/usuarios.html" class="rm-nav-link active"><i class="bi bi-person-gear"></i> Usuarios</a></li>
-        <li class="rm-nav-admin"><a href="/reporte.html" class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
-        <li class="rm-nav-admin"><a href="/configuracion.html" class="rm-nav-link"><i class="bi bi-gear"></i> Configuracion</a></li>
-    </ul>
-    <div class="rm-sidebar-footer">
-        <div class="sf-name" id="sb-name"></div>
-        <div class="sf-role" id="sb-role"></div>
-        <button class="rm-btn-logout" onclick="logout()">
-            <i class="bi bi-box-arrow-right"></i> Cerrar Sesion
-        </button>
-    </div>
-</nav>
+<a class="skip-link" href="#main" data-i18n="a11y.skipToContent">Saltar al contenido principal</a>
+<div id="rmDrawerBackdrop" class="rm-drawer-backdrop"></div>
+<div id="rmSidebarMount"></div>
+<div id="rmTopbarMount"></div>
 
-<div class="main">
-    <div class="toolbar">
-        <h5>Gestion de Usuarios</h5>
+<main id="main" class="rm-page">
+
+    <div class="page-header reveal">
+        <div>
+            <h1 class="page-title" data-i18n="page.usuarios.title">Usuarios</h1>
+            <p class="page-subtitle" data-i18n="page.usuarios.subtitle">Gestion de cuentas y roles del sistema</p>
+        </div>
+    </div>
+
+    <div class="toolbar reveal">
+        <span></span>
         <button class="btn-nuevo" onclick="abrirModalCrear()">+ Nuevo Usuario</button>
     </div>
 
-    <div class="tabla-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Rol</th>
-                    <th>Correo</th>
-                    <th>Telefono</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tablaBody">
-                <tr class="empty-row"><td colspan="6">Cargando...</td></tr>
-            </tbody>
-        </table>
+    <div class="reveal">
+        <div class="tabla-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-i18n="common.id">ID</th>
+                        <th data-i18n="common.name">Nombre</th>
+                        <th>Rol</th>
+                        <th data-i18n="common.email">Correo</th>
+                        <th data-i18n="common.phone">Telefono</th>
+                        <th data-i18n="common.actions">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaBody">
+                    <tr class="empty-row"><td colspan="6" data-i18n="common.loading">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="paginacionUsuarios" class="paginacion-wrap"></div>
     </div>
-    <div id="paginacionUsuarios" class="paginacion-wrap"></div>
-</div>
+
+</main>
+
+<div id="rmFooterMount"></div>
 
 <!-- Modal crear / editar -->
 <div class="modal fade" id="modalUsuario" tabindex="-1">
@@ -133,40 +93,40 @@
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h6 class="modal-title fw-bold" id="modalTitulo">Nuevo Usuario</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <div class="row g-2">
                     <div class="col-6">
-                        <label class="form-label fw-semibold" style="font-size:0.82rem;">ID</label>
+                        <label class="form-label fw-semibold" style="font-size:0.82rem;" for="campoId">ID</label>
                         <input type="text" id="campoId" class="form-control form-control-sm"
                             placeholder="Ej: 1234567890" maxlength="10">
                     </div>
                     <div class="col-6">
-                        <label class="form-label fw-semibold" style="font-size:0.82rem;">Rol</label>
+                        <label class="form-label fw-semibold" style="font-size:0.82rem;" for="campoRol">Rol</label>
                         <select id="campoRol" class="form-select form-select-sm">
                             <option value="Administrador">Administrador</option>
                             <option value="Empleado" selected>Empleado</option>
                         </select>
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-semibold" style="font-size:0.82rem;">Nombre</label>
+                        <label class="form-label fw-semibold" style="font-size:0.82rem;" for="campoNombre">Nombre</label>
                         <input type="text" id="campoNombre" class="form-control form-control-sm"
                             placeholder="Nombre completo">
                     </div>
                     <div class="col-6">
-                        <label class="form-label fw-semibold" style="font-size:0.82rem;">Correo</label>
+                        <label class="form-label fw-semibold" style="font-size:0.82rem;" for="campoCorreo">Correo</label>
                         <input type="email" id="campoCorreo" class="form-control form-control-sm"
                             placeholder="correo@ejemplo.com">
                     </div>
                     <div class="col-6">
-                        <label class="form-label fw-semibold" style="font-size:0.82rem;">Telefono</label>
+                        <label class="form-label fw-semibold" style="font-size:0.82rem;" for="campoTelefono">Telefono</label>
                         <input type="text" id="campoTelefono" class="form-control form-control-sm"
                             placeholder="300 000 0000">
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-semibold" style="font-size:0.82rem;"
-                            id="labelContrasena">Contrasena</label>
+                            id="labelContrasena" for="campoContrasena">Contrasena</label>
                         <input type="password" id="campoContrasena" class="form-control form-control-sm"
                             placeholder="Contrasena">
                         <div id="hintContrasena" class="text-muted"
@@ -175,13 +135,13 @@
                         </div>
                     </div>
                 </div>
-                <div id="modalError" class="text-danger mt-2" style="font-size:0.82rem; display:none;"></div>
+                <div id="modalError" class="text-danger mt-2" style="font-size:0.82rem; display:none;" role="alert"></div>
             </div>
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-outline-secondary btn-sm"
-                    data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-dark btn-sm"
-                    id="btnGuardar" onclick="guardarUsuario()">Guardar</button>
+                    data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                <button type="button" class="btn btn-primary btn-sm"
+                    id="btnGuardar" onclick="guardarUsuario()" data-i18n="common.save">Guardar</button>
             </div>
         </div>
     </div>
@@ -193,19 +153,19 @@
         <div class="modal-content">
             <div class="modal-header border-0 pb-0">
                 <h6 class="modal-title fw-bold">Eliminar usuario</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <p id="textoEliminar" style="font-size:0.88rem; color:#333; margin-bottom:12px;"></p>
-                <label style="font-size:0.82rem; font-weight:600;">Tu contrasena de administrador</label>
+                <p id="textoEliminar" style="font-size:0.88rem; color:var(--rm-text); margin-bottom:12px;"></p>
+                <label style="font-size:0.82rem; font-weight:600;" for="inputContrasenaEliminar">Tu contrasena de administrador</label>
                 <input type="password" id="inputContrasenaEliminar"
                     class="form-control form-control-sm mt-1" placeholder="Contrasena">
                 <div id="errorEliminar" class="text-danger mt-2"
-                    style="font-size:0.8rem; display:none;"></div>
+                    style="font-size:0.8rem; display:none;" role="alert"></div>
             </div>
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-outline-secondary btn-sm"
-                    data-bs-dismiss="modal">Cancelar</button>
+                    data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
                 <button type="button" class="btn btn-danger btn-sm"
                     id="btnConfirmarEliminar" onclick="ejecutarEliminar()">Eliminar</button>
             </div>
@@ -214,14 +174,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/rossmille.js"></script>
+<script src="/js/layout.js"></script>
 <script src="/js/usuarios.js"></script>
 <script>
-    var session = guardRoute();
+    var session = initApp({ activeKey: 'usuarios', titleKey: 'page.usuarios.title', subtitleKey: 'page.usuarios.subtitle' });
     if (session) {
-        initSidebar(session);
         if (session.rol !== 'Administrador') {
             window.location.replace('/dashboard.html');
         } else {

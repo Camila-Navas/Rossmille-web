@@ -6,6 +6,28 @@ var chartMetodos = null;
 // Colores de Chart.js alineados con la paleta del sistema
 var COLORES_METODO = ['#6366f1', '#10b981', '#f59e0b', '#8b5cf6', '#3b82f6', '#ef4444'];
 
+// Lee los tokens de color actuales (reacciona a acento y modo claro/oscuro)
+function colorTema() {
+    var css = getComputedStyle(document.documentElement);
+    return {
+        accent: css.getPropertyValue('--rm-accent').trim() || '#6366f1',
+        accentHover: css.getPropertyValue('--rm-accent-h').trim() || '#4f46e5',
+        textMuted: css.getPropertyValue('--rm-text-2').trim() || '#94a3b8',
+        border: css.getPropertyValue('--rm-border').trim() || '#e2e8f0',
+        surface: css.getPropertyValue('--rm-white').trim() || '#ffffff'
+    };
+}
+
+var ultimasGraficas = null;
+
+// Si el usuario cambia de tema/acento con el reporte ya generado, se repintan los graficos
+document.addEventListener('rm:themechange', function () {
+    if (tabActual === 'graficas' && ultimasGraficas) {
+        renderChartDias(ultimasGraficas.ventasPorDia || []);
+        renderChartMetodos(ultimasGraficas.metodosPago || []);
+    }
+});
+
 // ----------------------------------------------------------------
 // Inicializar fechas al cargar
 // ----------------------------------------------------------------
@@ -138,6 +160,7 @@ async function cargarGraficas(desde, hasta) {
         var res = await apiFetch('/reporte/graficas?desde=' + desde + '&hasta=' + hasta);
         if (!res.ok) return;
         var datos = res.data;
+        ultimasGraficas = datos;
         renderKpisGraficas(datos);
         renderChartDias(datos.ventasPorDia || []);
         renderTopProductos(datos.topProductos || []);
@@ -192,6 +215,8 @@ function renderChartDias(dias) {
     var labels  = dias.map(function (d) { return d.fecha; });
     var totales = dias.map(function (d) { return parseFloat(d.total) || 0; });
 
+    var tema = colorTema();
+
     chartDias = new Chart(canvas.getContext('2d'), {
         type: 'bar',
         data: {
@@ -199,8 +224,8 @@ function renderChartDias(dias) {
             datasets: [{
                 label: 'Ingresos',
                 data: totales,
-                backgroundColor: 'rgba(99,102,241,0.8)',
-                hoverBackgroundColor: '#4f46e5',
+                backgroundColor: tema.accent,
+                hoverBackgroundColor: tema.accentHover,
                 borderRadius: 5,
                 borderSkipped: false
             }]
@@ -216,14 +241,15 @@ function renderChartDias(dias) {
                 }
             },
             scales: {
-                x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+                x: { grid: { display: false }, ticks: { font: { size: 11 }, color: tema.textMuted } },
                 y: {
                     beginAtZero: true,
                     ticks: {
                         font: { size: 11 },
+                        color: tema.textMuted,
                         callback: function (v) { return '$' + fmtNumCompacto(v); }
                     },
-                    grid: { color: 'rgba(0,0,0,0.05)' }
+                    grid: { color: tema.border }
                 }
             }
         }
@@ -305,7 +331,7 @@ function renderChartMetodos(metodos) {
                 data: valores,
                 backgroundColor: colores,
                 borderWidth: 2,
-                borderColor: '#fff',
+                borderColor: colorTema().surface,
                 hoverOffset: 6
             }]
         },

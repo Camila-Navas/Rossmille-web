@@ -298,11 +298,7 @@
     window.setTema = function (tema) {
         temaActual = tema;
         actualizarUiTema(tema);
-        if (tema === 'oscuro') {
-            document.documentElement.setAttribute('data-theme', 'oscuro');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-        }
+        RMTheme.setMode(tema);
     };
 
     function actualizarUiTema(tema) {
@@ -313,8 +309,7 @@
     var colorInput = document.getElementById('cfg-apariencia.color_principal');
     colorInput.addEventListener('input', function () {
         actualizarColorPreview(this.value);
-        document.documentElement.style.setProperty('--rm-accent', this.value);
-        document.documentElement.style.setProperty('--rm-accent-h', ajustarBrillo(this.value, -20));
+        RMTheme.setCustomAccent(this.value);
     });
 
     function actualizarColorPreview(color) {
@@ -326,42 +321,26 @@
     fontInput.addEventListener('input', function () {
         var val = this.value;
         document.getElementById('fontSizeLabel').textContent = val + 'px';
-        document.documentElement.style.fontSize = val + 'px';
+        RMTheme.setFontSize(val);
     });
 
     window.resetApariencia = function () {
         setTema('claro');
         colorInput.value = '#6366f1';
         actualizarColorPreview('#6366f1');
-        document.documentElement.style.setProperty('--rm-accent', '#6366f1');
-        document.documentElement.style.setProperty('--rm-accent-h', '#4f46e5');
         fontInput.value = '15';
         document.getElementById('fontSizeLabel').textContent = '15px';
-        document.documentElement.style.fontSize = '15px';
-        document.documentElement.removeAttribute('data-theme');
+        RMTheme.resetToDefault();
     };
 
-    function guardarAparienciaLocalStorage(cambios) {
-        localStorage.setItem('rm_apariencia', JSON.stringify({
-            tema: cambios['apariencia.tema'] || temaActual,
-            color: cambios['apariencia.color_principal'] || '#6366f1',
-            fuente: cambios['apariencia.tamano_fuente'] || '15'
-        }));
-    }
+    // El estado ya queda persistido en localStorage por RMTheme (rm_theme);
+    // esta funcion solo existe para mantener el nombre usado en guardarGrupo.
+    function guardarAparienciaLocalStorage() { /* no-op: RMTheme ya persistio en cada setter */ }
 
     function aplicarAparienciaLocal(tema, color, fuente) {
-        if (tema === 'oscuro') {
-            document.documentElement.setAttribute('data-theme', 'oscuro');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-        }
-        if (color) {
-            document.documentElement.style.setProperty('--rm-accent', color);
-            document.documentElement.style.setProperty('--rm-accent-h', ajustarBrillo(color, -20));
-        }
-        if (fuente) {
-            document.documentElement.style.fontSize = fuente + 'px';
-        }
+        RMTheme.setMode(tema);
+        if (color) RMTheme.setCustomAccent(color);
+        if (fuente) RMTheme.setFontSize(fuente);
     }
 
     // ----------------------------------------------------------------
@@ -378,15 +357,5 @@
         if (bytes < 1024) return bytes + ' B';
         if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
         return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    }
-
-    function ajustarBrillo(hex, delta) {
-        var r = parseInt(hex.slice(1, 3), 16);
-        var g = parseInt(hex.slice(3, 5), 16);
-        var b = parseInt(hex.slice(5, 7), 16);
-        r = Math.max(0, Math.min(255, r + delta));
-        g = Math.max(0, Math.min(255, g + delta));
-        b = Math.max(0, Math.min(255, b + delta));
-        return '#' + [r, g, b].map(function (v) { return v.toString(16).padStart(2, '0'); }).join('');
     }
 })();

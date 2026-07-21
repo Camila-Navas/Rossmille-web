@@ -244,4 +244,54 @@ Configuracion en `src/main/resources/application.yml`.
 
 ---
 
+## Despliegue en Railway
+
+El repo incluye `Dockerfile`, `.dockerignore` y `railway.toml` listos para desplegar.
+`application.yml` ya lee host/puerto/usuario/clave de la base de datos y el puerto del
+servidor desde variables de entorno (con los valores locales como default), asi que no
+hace falta tocar codigo para desplegar.
+
+### 1. Crear el proyecto en Railway
+
+1. New Project → Deploy from GitHub repo → selecciona este repositorio.
+2. Railway detecta `railway.toml` y construye con el `Dockerfile` (no usa Nixpacks).
+
+### 2. Agregar MySQL
+
+1. En el mismo proyecto: New → Database → Add MySQL.
+2. Railway inyecta automaticamente `MYSQLHOST`, `MYSQLPORT`, `MYSQLDATABASE`,
+   `MYSQLUSER` y `MYSQLPASSWORD` al servicio de la app (variable reference, se
+   configura solo si ambos servicios estan en el mismo proyecto).
+
+### 3. Cargar el schema
+
+El servicio de MySQL arranca vacio. Antes del primer login necesitas correr el
+`db/init.sql` del prototipo Swing (`prototype-java`) contra la base de Railway:
+usa el boton "Connect" del plugin MySQL en Railway para obtener credenciales/URL
+publicas y ejecuta el script con un cliente MySQL (`mysql -h ... -u ... -p ... < init.sql`)
+o desde la pestaña "Data" del propio Railway.
+
+### 4. Crear el primer administrador
+
+Corre `db/setup_admin.py` del prototipo apuntando a la base de Railway (mismo
+mecanismo que en local, solo cambia el host/credenciales), o inserta el registro
+manualmente en la tabla `usuarios` con una contrasena hasheada en BCrypt.
+
+### 5. Variables de entorno de la app
+
+En el servicio de la app (Settings → Variables), agrega al menos:
+
+| Variable | Valor sugerido |
+|----------|----------------|
+| `JWT_SECRET` | una cadena aleatoria propia (no uses el valor por defecto del repo en produccion) |
+
+`PORT` la define Railway automaticamente — no la configures a mano.
+
+### 6. Deploy
+
+Railway construye la imagen con el `Dockerfile` y la publica. La app queda disponible
+en el dominio que Railway asigna, en `/login.html`.
+
+---
+
 Desarrollado por Camila Navas.

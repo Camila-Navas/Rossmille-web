@@ -1,6 +1,6 @@
 # Contexto del Proyecto -- ROSS MILLE Web
 
-Ultima actualizacion: 2026-06-17
+Ultima actualizacion: 2026-07-20
 
 Migracion del prototipo ROSS MILLE POS (Java Swing) a aplicacion web profesional con
 Spring Boot REST API y frontend HTML/CSS/Vanilla JS.
@@ -92,6 +92,99 @@ cero, correr `python3 db/setup_admin.py` desde el proyecto prototipo.
 | E | Rediseno visual paleta indigo/gold + dashboard v2 | COMPLETADA | 3298859 |
 | F | Modulo Configuracion completo (7 secciones) | COMPLETADA | f062546 |
 | G | Reporte con graficas (top productos, metodos pago, ingresos/dia) | COMPLETADA | 4870e40 |
+| H | Rediseno frontend: design tokens, temas (modo + 3 acentos), i18n ES/EN, layout responsive mobile-first, accesibilidad | COMPLETADA | (este commit) |
+| I | Preparacion para despliegue en Railway: Dockerfile multi-stage, railway.toml, variables de entorno | COMPLETADA | (este commit) |
+
+---
+
+## Fase I -- Preparacion para Railway (2026-07-20)
+
+### Archivos nuevos
+
+| Archivo | Proposito |
+|---------|-----------|
+| `Dockerfile` | Build multi-stage: JDK 21 compila con `mvnw`, JRE 21 corre el jar. Usuario no-root. Normaliza CRLF de `mvnw` antes de ejecutarlo (rompe el shebang en Linux si se clono en Windows). Respeta `JAVA_OPTS` y `PORT` en runtime. |
+| `.dockerignore` | Excluye `target/`, `.git`, docs y metadatos de IDE del contexto de build. |
+| `railway.toml` | Fuerza a Railway a usar el `Dockerfile` (`builder = "DOCKERFILE"`) en vez de autodetectar con Nixpacks. Restart policy `ON_FAILURE`. |
+
+### Cambios en `application.yml`
+
+Host/puerto/usuario/clave de MySQL y el puerto del servidor ahora se leen de variables
+de entorno con los valores locales de Docker como default (`${MYSQLHOST:localhost}`,
+`${PORT:8080}`, etc.). Railway inyecta `MYSQLHOST/MYSQLPORT/MYSQLDATABASE/MYSQLUSER/MYSQLPASSWORD`
+automaticamente al vincular su plugin de MySQL, y `PORT` en tiempo de ejecucion. En local,
+sin esas variables definidas, el comportamiento es identico al de antes (`./mvnw spring-boot:run`
+no requiere ningun cambio).
+
+`jwt.secret` tambien es configurable via `JWT_SECRET` -- en Railway debe sobrescribirse
+con un valor propio, ya que el default del repo es publico en el historial de git.
+
+### Pasos manuales que Railway no resuelve solo (documentados en README.md)
+
+1. Cargar `db/init.sql` (vive en el repo `prototype-java`) contra la BD de Railway --
+   el plugin de MySQL arranca vacio, `ddl-auto: validate` no crea tablas.
+2. Crear el primer administrador con `setup_admin.py` apuntando a esa BD, o INSERT manual.
+3. Configurar `JWT_SECRET` en las variables de entorno del servicio antes de exponer la app.
+
+### Pendiente / no verificado
+
+El build de Docker no se probo localmente en esta sesion (Docker Desktop no estaba
+corriendo). Se referencia por nombre/version pero no se corrio `docker build` de punta
+a punta -- validar antes de confiar en produccion.
+
+---
+
+## Fase H -- Rediseno frontend completo (2026-07-20)
+
+Objetivo: llevar el frontend de "funcional" a nivel portafolio (moderno, coherente,
+responsive, accesible), sin cambiar el stack (sigue siendo HTML + Bootstrap 5 + Vanilla JS,
+sin frameworks nuevos) y sin tocar el backend.
+
+### Arquitectura nueva
+
+| Archivo | Responsabilidad |
+|---------|------------------|
+| `js/theme.js` | `RMTheme` -- unica fuente de verdad para el tema: modo claro/oscuro + 3 acentos (indigo/esmeralda/borgona) + color personalizado + tamano de fuente. Persiste en `localStorage` (`rm_theme`), migra el formato anterior (`rm_apariencia`), respeta `prefers-color-scheme` como valor inicial. |
+| `js/i18n.js` | `RMI18n` -- diccionario ES/EN por claves (`data-i18n="clave"`), `applyTranslations()`, persistencia en `localStorage` (`rm_lang`), valor inicial desde `navigator.language`. |
+| `js/layout.js` | Sidebar/topbar/footer generados desde un array de datos (`RM_MODULES`) en vez de estar copiados en las 9 paginas HTML. Maneja el drawer movil (sidebar fuera de pantalla + hamburguesa + backdrop, accesible por teclado), el colapso de sidebar en escritorio, y el scroll-reveal (`IntersectionObserver`, respeta `prefers-reduced-motion`). Expone `initApp()` como punto de entrada unico por pagina. |
+
+`configuracion.js` (panel Apariencia, Fase F) se refactorizo para delegar la aplicacion
+de tema/color/fuente a `RMTheme` en vez de duplicar la logica -- el selector rapido de la
+topbar (todas las paginas, todos los roles) y el panel de Configuracion (solo Admin,
+persistido en BD) ahora comparten una sola implementacion.
+
+### `css/rossmille.css` -- reescrito con sistema de tokens
+
+Escalas nuevas: espaciado (`--rm-space-1..10`), radios, sombras, tipografia
+(`--rm-font-heading` = Sora para titulos, `--rm-font-body` = Inter se mantiene para UI).
+Tokens de color por tema via `[data-mode="oscuro"]` y `[data-accent="esmeralda|borgona"]`.
+Tintes de acento calculados con `color-mix()` (`--rm-accent-tint`) en vez de hex sueltos
+hardcodeados -- requiere navegadores 2023+ (Chrome 111+, Firefox 113+, Safari 16.4+).
+
+Se reemplazaron ~90 valores hex hardcodeados (`#1a1a2e`, `#6366f1`, etc.) repartidos en
+las 9 paginas por variables, incluyendo botones que antes eran casi-negros en unas paginas
+e indigo en otras -- ahora hay un solo color primario coherente en toda la app.
+
+### Layout / responsive / accesibilidad
+
+- Sidebar fija -> drawer fuera de pantalla debajo de 960px, con hamburguesa en la topbar.
+- `vender.html` (POS): panel de busqueda + carrito de layout fijo -> se apilan en movil.
+- Contenedor unificado (`.rm-page`, max-width 1280px) reemplaza los anchos ad-hoc que
+  tenia cada pagina (`.main`, `.cfg-page`, `.rp-page` con 900-1280px sueltos).
+- Footer y topbar (con selector de tema/idioma) agregados a las 9 paginas -- antes no
+  existia footer en ninguna, y el selector de tema solo era accesible desde Configuracion
+  (solo Admin); ahora cualquier Empleado tambien puede cambiar tema/idioma.
+- `<h1>` agregado a paginas que no tenian encabezado semantico (`productos`, `clientes`,
+  `pedidos`, `usuarios`, `vender`). Skip-link, `aria-label`/`aria-hidden` en iconos,
+  `:focus-visible` global, contraste del boton de cerrar de los modales de Bootstrap
+  corregido para modo oscuro (`.btn-close` invertido).
+
+### Alcance no cubierto (documentado, no silencioso)
+
+La traduccion (`data-i18n`) cubre la navegacion, topbar, footer, login y encabezados/botones
+comunes de las 9 paginas, pero **no** el contenido generado dinamicamente por cada modulo
+JS (filas de tablas, tickets, toasts) -- traducirlo requiere tocar los ~2500 lineas de JS
+de los modulos y quedo fuera de esta fase.
 
 ---
 
@@ -233,6 +326,7 @@ Desktop en WSL2 porque las rutas de bind mount cambian entre reinicios.
 ```
 rossmille-web/
 +-- pom.xml / mvnw / README.md / CONTEXTO_PROYECTO.md / PLAN_TRABAJO.md
++-- Dockerfile / .dockerignore / railway.toml         [Fase I -- listo para Railway]
 L-- src/main/
     +-- java/com/rossmille/
     |   +-- config/SecurityConfig.java             [/*.svg publico, @EnableMethodSecurity]
@@ -283,7 +377,7 @@ L-- src/main/
         +-- application.yml                        [multipart 50MB]
         L-- static/
             +-- favicon.svg
-            +-- css/rossmille.css                  [paleta, sidebar, dark mode, apariencia]
+            +-- css/rossmille.css                  [Fase H -- tokens, temas (modo+acento), topbar/footer/drawer]
             +-- login.html
             +-- dashboard.html                     [KPIs, chart, sidebar config]
             +-- configuracion.html                 [Fase F -- 7 secciones]
@@ -291,12 +385,15 @@ L-- src/main/
             +-- usuarios.html
             +-- reporte.html                       [Fase G -- 2 tabs, 3 charts]
             L-- js/
-                +-- rossmille.js                   [showToast, initSidebar, toggle, paginacion, aplicarApariencia]
+                +-- theme.js                       [Fase H -- RMTheme: modo/acento/fuente, localStorage]
+                +-- i18n.js                        [Fase H -- RMI18n: diccionario ES/EN, applyTranslations]
+                +-- layout.js                      [Fase H -- sidebar/topbar/footer data-driven, drawer movil, initApp()]
+                +-- rossmille.js                   [showToast, renderPaginacion]
                 +-- auth.js / api.js
-                +-- dashboard.js                   [Chart.js barras, KPIs]
-                +-- configuracion.js               [Fase F -- 7 secciones, apariencia tiempo real]
+                +-- dashboard.js                   [Chart.js barras, KPIs, reactivo a RMTheme]
+                +-- configuracion.js               [Fase F -- 7 secciones; Fase H -- delega tema a RMTheme]
                 +-- productos.js / clientes.js / vender.js / pedidos.js / usuarios.js
-                L-- reporte.js                     [Fase G -- tabs, bar chart, ranking, doughnut]
+                L-- reporte.js                     [Fase G -- tabs, bar chart, ranking, doughnut; Fase H -- reactivo a RMTheme]
 ```
 
 ---
@@ -366,22 +463,35 @@ POST /api/configuracion/restaurar
 - Sidebar colapsable: localStorage `rm_sidebar_collapsed`
 - Spring Boot sirve estaticos desde `target/` compilado -- reiniciar app para ver cambios
 - Chart.js 4.4.4 via CDN: usado en dashboard.js y reporte.js
+- [Fase H] Tema y acento unicos via `RMTheme` (theme.js): `data-mode` + `data-accent` en
+  `<html>`, localStorage `rm_theme`, migra `rm_apariencia` (formato anterior)
+- [Fase H] Idioma via `RMI18n` (i18n.js): `data-i18n` + localStorage `rm_lang`
+- [Fase H] Sidebar/topbar/footer generados desde `RM_MODULES` (layout.js) en vez de HTML
+  copiado en cada pagina -- `initApp()` es el punto de entrada unico
+- [Fase H] `color-mix()` en CSS para tintes de acento -- requiere navegadores 2023+
+- [Fase I] Variables de entorno para deploy: `PORT`, `MYSQLHOST/PORT/DATABASE/USER/PASSWORD`,
+  `JWT_SECRET`, `JWT_EXPIRATION` (todas con default local, no rompen `spring-boot:run`)
 
 ---
 
-## Paleta de colores (Fase E -- vigente)
+## Paleta de colores (base Fase E, extendida en Fase H)
 
 ```
 --rm-dark:      #0f172a    --rm-dark-2:    #1e293b
---rm-accent:    #6366f1    --rm-accent-h:  #4f46e5   (indigo)
---rm-gold:      #c9a96e    (brand "MILLE" en sidebar)
+--rm-accent:    #6366f1    --rm-accent-h:  #4f46e5   (indigo, acento por defecto)
+--rm-gold:      #c9a96e    (brand "MILLE" en sidebar, fijo en todos los temas)
 --rm-bg:        #f1f5f9    --rm-white:     #ffffff
 --rm-border:    #e2e8f0    --rm-text:      #1e293b    --rm-text-2: #64748b
 --rm-success:   #10b981    --rm-warning:   #f59e0b
 --rm-danger:    #ef4444    --rm-info:      #3b82f6    --rm-purple: #8b5cf6
 ```
 
-Tema oscuro: `[data-theme="oscuro"]` en `documentElement`, override de variables CSS.
+Acentos alternativos seleccionables (Fase H, `[data-accent="..."]`):
+esmeralda (`#059669`/`#047857`) y borgona (`#9f1239`/`#831843`).
+
+Tema oscuro: `[data-mode="oscuro"]` en `documentElement` (antes `data-theme`, renombrado
+en Fase H), override de variables CSS. Controlado por `RMTheme` (theme.js), no se
+manipula directo desde cada pagina.
 
 ---
 
@@ -404,3 +514,4 @@ Tema oscuro: `[data-theme="oscuro"]` en `documentElement`, override de variables
 | c2b118d | docs: contexto con Fase F y fix Docker |
 | 580b3e5 | docs: contexto Docker bind mount |
 | 4870e40 | Fase G: Reporte con graficas (top productos, metodos pago, ingresos/dia) |
+| (pendiente) | Fases H e I: rediseno frontend (tokens/temas/i18n/responsive/a11y) + Dockerfile/Railway -- ver hash real con `git log` tras este commit |

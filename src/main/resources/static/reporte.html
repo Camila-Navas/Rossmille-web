@@ -9,38 +9,36 @@
     <link href="/css/rossmille.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        .rp-page { padding: 28px 32px; max-width: 1100px; }
-
         /* Filtro */
         .filtro-card {
-            background: #fff; border: 1px solid var(--rm-border);
+            background: var(--rm-white); border: 1px solid var(--rm-border);
             border-radius: var(--rm-radius-lg); padding: 20px 24px;
-            box-shadow: var(--rm-shadow); margin-bottom: 24px;
+            box-shadow: var(--rm-shadow);
             display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;
         }
         .filtro-card label { font-size: 0.8rem; font-weight: 600; color: var(--rm-text-2); margin-bottom: 5px; display: block; }
         .filtro-card input[type="date"] {
             border: 1.5px solid var(--rm-border); border-radius: var(--rm-radius);
             padding: 7px 10px; font-size: 0.88rem;
-            font-family: 'Inter', 'Segoe UI', sans-serif; color: var(--rm-text);
+            font-family: var(--rm-font-body); color: var(--rm-text); background: var(--rm-white);
         }
         .filtro-card input[type="date"]:focus { outline: none; border-color: var(--rm-accent); }
 
         /* Tabs */
-        .rp-tabs { display: flex; gap: 4px; margin-bottom: 20px; }
+        .rp-tabs { display: flex; gap: 4px; }
         .rp-tab {
             display: flex; align-items: center; gap: 7px;
             padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--rm-border);
-            background: #fff; color: var(--rm-text-2); font-size: 0.85rem; font-weight: 500;
+            background: var(--rm-white); color: var(--rm-text-2); font-size: 0.85rem; font-weight: 500;
             cursor: pointer; transition: all 0.14s; font-family: inherit;
         }
         .rp-tab:hover { border-color: var(--rm-accent); color: var(--rm-accent); }
         .rp-tab.active { background: var(--rm-accent); color: #fff; border-color: var(--rm-accent); }
 
         /* KPI cards resumen */
-        .rp-kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
+        .rp-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
         .rp-kpi {
-            background: #fff; border: 1px solid var(--rm-border);
+            background: var(--rm-white); border: 1px solid var(--rm-border);
             border-radius: var(--rm-radius-lg); padding: 16px 18px;
             box-shadow: var(--rm-shadow); position: relative; overflow: hidden;
         }
@@ -55,7 +53,7 @@
 
         /* Tabla */
         .tabla-card {
-            background: #fff; border: 1px solid var(--rm-border);
+            background: var(--rm-white); border: 1px solid var(--rm-border);
             border-radius: var(--rm-radius-lg); box-shadow: var(--rm-shadow); overflow: auto;
         }
         .tabla-card table { width: 100%; border-collapse: collapse; min-width: 680px; }
@@ -64,8 +62,6 @@
             padding: 11px 14px; font-size: 0.75rem; font-weight: 600;
             text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;
         }
-        .tabla-card thead th:first-child { border-radius: var(--rm-radius) 0 0 0; }
-        .tabla-card thead th:last-child  { border-radius: 0 var(--rm-radius) 0 0; }
         .tabla-card tbody tr { border-bottom: 1px solid var(--rm-border); }
         .tabla-card tbody tr:hover { background: var(--rm-bg); }
         .tabla-card tbody td { padding: 10px 14px; font-size: 0.84rem; color: var(--rm-text); }
@@ -74,19 +70,16 @@
 
         /* Charts */
         .chart-card {
-            background: #fff; border: 1px solid var(--rm-border);
+            background: var(--rm-white); border: 1px solid var(--rm-border);
             border-radius: var(--rm-radius-lg); padding: 22px 24px;
-            box-shadow: var(--rm-shadow); margin-bottom: 20px;
+            box-shadow: var(--rm-shadow);
         }
-        .chart-card-title {
-            font-size: 0.9rem; font-weight: 700; color: var(--rm-text); margin-bottom: 4px;
-        }
+        .chart-card-title { font-size: 0.9rem; font-weight: 700; color: var(--rm-text); margin-bottom: 4px; }
         .chart-card-sub { font-size: 0.78rem; color: var(--rm-text-2); margin-bottom: 18px; }
 
-        /* Top productos table dentro del chart card */
         .top-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
         .top-table th { font-size: 0.72rem; font-weight: 600; color: var(--rm-text-2);
-            text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; border-bottom: 2px solid var(--rm-border); }
+            text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 10px; border-bottom: 2px solid var(--rm-border); text-align: left; }
         .top-table td { padding: 9px 10px; border-bottom: 1px solid var(--rm-border); color: var(--rm-text); vertical-align: middle; }
         .top-table tr:last-child td { border-bottom: none; }
         .top-table tr:hover td { background: var(--rm-bg); }
@@ -99,102 +92,71 @@
         .rank-2 { background: #e2e8f0; color: #475569; }
         .rank-3 { background: #ffd3b8; color: #9a3412; }
         .rank-n { background: var(--rm-bg); color: var(--rm-text-2); }
-        .bar-mini {
-            height: 6px; border-radius: 3px; background: var(--rm-accent);
-            transition: width 0.5s ease;
-        }
+        .bar-mini { height: 6px; border-radius: 3px; background: var(--rm-accent); transition: width 0.5s ease; }
         .units-badge {
-            display: inline-block; background: #eef2ff; color: var(--rm-accent);
+            display: inline-block; background: var(--rm-accent-tint); color: var(--rm-accent);
             border-radius: 6px; padding: 2px 8px; font-size: 0.75rem; font-weight: 700;
         }
 
-        /* Estado inicial */
-        .rp-empty {
-            text-align: center; padding: 60px 20px; color: var(--rm-text-2); font-size: 0.9rem;
-        }
+        .rp-empty { text-align: center; padding: 60px 20px; color: var(--rm-text-2); font-size: 0.9rem; }
         .rp-empty i { font-size: 2.5rem; display: block; margin-bottom: 12px; opacity: 0.35; }
-
-        /* Loading */
         .rp-loading { text-align: center; padding: 40px; color: var(--rm-text-2); font-size: 0.88rem; }
+
+        .rp-charts-row { display: grid; gap: var(--rm-space-4); grid-template-columns: 1fr; }
+        @media (min-width: 992px) { .rp-charts-row { grid-template-columns: 2fr 1fr; } }
     </style>
 </head>
 <body class="rm-has-sidebar">
 
-<nav class="rm-sidebar">
-    <div class="rm-sidebar-brand">
-        <div class="brand-name">ROSS <span class="brand-gold">MILLE</span></div>
-        <span class="brand-sub">Punto de Venta</span>
-    </div>
-    <ul class="rm-nav">
-        <li><a href="/dashboard.html"    class="rm-nav-link"><i class="bi bi-house-door"></i> Inicio</a></li>
-        <li><a href="/vender.html"       class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
-        <li><a href="/productos.html"    class="rm-nav-link"><i class="bi bi-box-seam"></i> Productos</a></li>
-        <li><a href="/clientes.html"     class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
-        <li><a href="/pedidos.html"      class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
-        <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
-        <li class="rm-nav-admin"><a href="/usuarios.html"      class="rm-nav-link"><i class="bi bi-person-gear"></i> Usuarios</a></li>
-        <li class="rm-nav-admin"><a href="/reporte.html"       class="rm-nav-link active"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
-        <li class="rm-nav-admin"><a href="/configuracion.html" class="rm-nav-link"><i class="bi bi-gear"></i> Configuracion</a></li>
-    </ul>
-    <div class="rm-sidebar-footer">
-        <div class="sf-name" id="sb-name"></div>
-        <div class="sf-role" id="sb-role"></div>
-        <button class="rm-btn-logout" onclick="logout()">
-            <i class="bi bi-box-arrow-right"></i> Cerrar sesion
-        </button>
-    </div>
-</nav>
+<a class="skip-link" href="#main" data-i18n="a11y.skipToContent">Saltar al contenido principal</a>
+<div id="rmDrawerBackdrop" class="rm-drawer-backdrop"></div>
+<div id="rmSidebarMount"></div>
+<div id="rmTopbarMount"></div>
 
-<div class="rp-page">
+<main id="main" class="rm-page">
 
-    <!-- Header -->
-    <div class="page-header mb-3">
+    <div class="page-header reveal">
         <div>
-            <h1 class="page-title"><i class="bi bi-bar-chart-line" style="color:var(--rm-accent)"></i> Reporte de Ventas</h1>
-            <p class="page-subtitle">Analiza el desempeno del negocio por periodo</p>
+            <h1 class="page-title" data-i18n="page.reporte.title">Reporte de Ventas</h1>
+            <p class="page-subtitle" data-i18n="page.reporte.subtitle">Analiza el desempeno del negocio por periodo</p>
         </div>
     </div>
 
-    <!-- Filtro -->
-    <div class="filtro-card">
+    <div class="filtro-card reveal">
         <div>
-            <label>Desde</label>
+            <label for="inputDesde">Desde</label>
             <input type="date" id="inputDesde">
         </div>
         <div>
-            <label>Hasta</label>
+            <label for="inputHasta">Hasta</label>
             <input type="date" id="inputHasta">
         </div>
         <button class="btn btn-primary" onclick="generarReporte()" id="btnGenerar">
-            <i class="bi bi-search me-1"></i>Generar reporte
+            <i class="bi bi-search me-1" aria-hidden="true"></i>Generar reporte
         </button>
         <button class="btn btn-success" id="btnPdf" disabled onclick="exportarPdf()">
-            <i class="bi bi-file-earmark-pdf me-1"></i>Exportar PDF
+            <i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i>Exportar PDF
         </button>
     </div>
 
-    <!-- Tabs -->
-    <div class="rp-tabs" id="rpTabs" style="display:none">
-        <button class="rp-tab active" data-tab="tabla" onclick="cambiarTab('tabla', this)">
-            <i class="bi bi-table"></i> Tabla de ventas
+    <div class="rp-tabs reveal" id="rpTabs" style="display:none" role="tablist">
+        <button class="rp-tab active" data-tab="tabla" role="tab" aria-selected="true" onclick="cambiarTab('tabla', this)">
+            <i class="bi bi-table" aria-hidden="true"></i> Tabla de ventas
         </button>
-        <button class="rp-tab" data-tab="graficas" onclick="cambiarTab('graficas', this)">
-            <i class="bi bi-bar-chart-fill"></i> Graficas y analisis
+        <button class="rp-tab" data-tab="graficas" role="tab" aria-selected="false" onclick="cambiarTab('graficas', this)">
+            <i class="bi bi-bar-chart-fill" aria-hidden="true"></i> Graficas y analisis
         </button>
     </div>
 
-    <!-- Error -->
-    <div id="errorMsg" class="alert alert-danger" style="display:none;font-size:0.85rem;"></div>
+    <div id="errorMsg" class="alert alert-danger" style="display:none;font-size:0.85rem;" role="alert"></div>
 
-    <!-- Loading -->
     <div id="rpLoading" class="rp-loading" style="display:none">
-        <div class="spinner-border spinner-border-sm text-primary me-2"></div>Generando reporte...
+        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>Generando reporte...
     </div>
 
     <!-- ==================== TAB: TABLA ==================== -->
     <div id="tabTabla" style="display:none">
 
-        <!-- KPIs -->
         <div class="rp-kpis" id="kpisTabla">
             <div class="rp-kpi rp-kpi-indigo">
                 <div class="rp-kpi-label">Total ventas</div>
@@ -210,8 +172,7 @@
             </div>
         </div>
 
-        <!-- Tabla -->
-        <div class="tabla-card">
+        <div class="tabla-card" style="margin-top:var(--rm-space-5)">
             <table>
                 <thead>
                     <tr>
@@ -234,8 +195,7 @@
     <!-- ==================== TAB: GRAFICAS ==================== -->
     <div id="tabGraficas" style="display:none">
 
-        <!-- KPIs graficas -->
-        <div class="rp-kpis mb-0" id="kpisGraficas">
+        <div class="rp-kpis" id="kpisGraficas">
             <div class="rp-kpi rp-kpi-indigo">
                 <div class="rp-kpi-label">Total ventas</div>
                 <div class="rp-kpi-value" id="gKpiCantidad">0</div>
@@ -256,38 +216,32 @@
             </div>
         </div>
 
-        <!-- Chart: Ingresos por dia -->
-        <div class="chart-card mt-4">
+        <div class="chart-card" style="margin-top:var(--rm-space-5)">
             <div class="chart-card-title">Ingresos por dia</div>
             <div class="chart-card-sub">Total de ingresos acumulado por dia en el periodo seleccionado</div>
             <div id="sinDias" class="rp-empty" style="display:none">
-                <i class="bi bi-calendar-x"></i>Sin ventas en el periodo
+                <i class="bi bi-calendar-x" aria-hidden="true"></i>Sin ventas en el periodo
             </div>
-            <canvas id="chartDias" height="90"></canvas>
+            <canvas id="chartDias" height="90" role="img" aria-label="Grafico de ingresos por dia"></canvas>
         </div>
 
-        <!-- Fila: Top productos + Metodos pago -->
-        <div class="row g-3">
-            <div class="col-lg-8">
-                <div class="chart-card" style="margin-bottom:0;height:100%">
-                    <div class="chart-card-title">Top 10 productos mas vendidos</div>
-                    <div class="chart-card-sub">Unidades vendidas por producto en el periodo</div>
-                    <div id="sinProductos" class="rp-empty" style="display:none">
-                        <i class="bi bi-box-seam"></i>Sin ventas en el periodo
-                    </div>
-                    <div id="tablaTopProductos"></div>
+        <div class="rp-charts-row" style="margin-top:var(--rm-space-4)">
+            <div class="chart-card" style="height:100%">
+                <div class="chart-card-title">Top 10 productos mas vendidos</div>
+                <div class="chart-card-sub">Unidades vendidas por producto en el periodo</div>
+                <div id="sinProductos" class="rp-empty" style="display:none">
+                    <i class="bi bi-box-seam" aria-hidden="true"></i>Sin ventas en el periodo
                 </div>
+                <div id="tablaTopProductos"></div>
             </div>
-            <div class="col-lg-4">
-                <div class="chart-card" style="margin-bottom:0;height:100%">
-                    <div class="chart-card-title">Ventas por metodo de pago</div>
-                    <div class="chart-card-sub">Distribucion por metodo</div>
-                    <div id="sinMetodos" class="rp-empty" style="display:none">
-                        <i class="bi bi-credit-card"></i>Sin datos
-                    </div>
-                    <canvas id="chartMetodos" style="max-height:260px"></canvas>
-                    <div id="leyendaMetodos" class="mt-3"></div>
+            <div class="chart-card" style="height:100%">
+                <div class="chart-card-title">Ventas por metodo de pago</div>
+                <div class="chart-card-sub">Distribucion por metodo</div>
+                <div id="sinMetodos" class="rp-empty" style="display:none">
+                    <i class="bi bi-credit-card" aria-hidden="true"></i>Sin datos
                 </div>
+                <canvas id="chartMetodos" style="max-height:260px" role="img" aria-label="Distribucion de ventas por metodo de pago"></canvas>
+                <div id="leyendaMetodos" class="mt-3"></div>
             </div>
         </div>
 
@@ -295,22 +249,26 @@
 
     <!-- Estado inicial (sin generar) -->
     <div id="estadoInicial" class="rp-empty">
-        <i class="bi bi-bar-chart"></i>
+        <i class="bi bi-bar-chart" aria-hidden="true"></i>
         Selecciona un rango de fechas y genera el reporte para ver los datos
     </div>
 
-</div>
+</main>
+
+<div id="rmFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/rossmille.js"></script>
+<script src="/js/layout.js"></script>
 <script src="/js/reporte.js"></script>
 <script>
-    var session = guardRoute();
+    var session = initApp({ activeKey: 'reporte', titleKey: 'page.reporte.title', subtitleKey: 'page.reporte.subtitle' });
     if (session) {
-        initSidebar(session);
         if (session.rol !== 'Administrador') {
             window.location.replace('/dashboard.html');
         } else {

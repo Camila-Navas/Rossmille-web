@@ -45,12 +45,25 @@
         }
     }
 
+    var ultimoVentasPorDia = null;
+
+    // Lee los colores actuales del tema (reacciona a acento y modo claro/oscuro)
+    function colorTema(varName) {
+        return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+    }
+
     function renderChart(ventasPorDia) {
+        ultimoVentasPorDia = ventasPorDia;
         var labels  = ventasPorDia.map(function (x) { return x.fecha; });
         var totales = ventasPorDia.map(function (x) { return x.total; });
 
         var ctx = document.getElementById('chartVentas').getContext('2d');
         if (chartInstance) { chartInstance.destroy(); }
+
+        var accent = colorTema('--rm-accent') || '#6366f1';
+        var accentHover = colorTema('--rm-accent-h') || '#4f46e5';
+        var textMuted = colorTema('--rm-text-2') || '#94a3b8';
+        var gridColor = colorTema('--rm-border') || '#e2e8f0';
 
         chartInstance = new Chart(ctx, {
             type: 'bar',
@@ -58,8 +71,8 @@
                 labels: labels,
                 datasets: [{
                     data: totales,
-                    backgroundColor: 'rgba(99,102,241,0.82)',
-                    hoverBackgroundColor: '#4f46e5',
+                    backgroundColor: accent,
+                    hoverBackgroundColor: accentHover,
                     borderRadius: 5,
                     borderSkipped: false
                 }]
@@ -83,15 +96,15 @@
                         border: { display: false },
                         ticks: {
                             font: { family: "'Inter', 'Segoe UI', sans-serif", size: 11 },
-                            color: '#aaa'
+                            color: textMuted
                         }
                     },
                     y: {
-                        grid: { color: '#f0f0f0' },
+                        grid: { color: gridColor },
                         border: { display: false },
                         ticks: {
                             font: { family: "'Inter', 'Segoe UI', sans-serif", size: 11 },
-                            color: '#aaa',
+                            color: textMuted,
                             callback: function (val) { return fmtCOP(val); }
                         }
                     }
@@ -101,4 +114,9 @@
     }
 
     cargarDashboard();
+
+    // Si el usuario cambia de tema/acento, el grafico se vuelve a pintar con los nuevos colores
+    document.addEventListener('rm:themechange', function () {
+        if (ultimoVentasPorDia) renderChart(ultimoVentasPorDia);
+    });
 })();

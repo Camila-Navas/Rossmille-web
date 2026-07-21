@@ -1,3 +1,8 @@
+// ============================================================
+// Utilidades compartidas: notificaciones toast + paginacion
+// ============================================================
+// La navegacion (sidebar/topbar/footer) y el tema ahora viven en
+// layout.js y theme.js respectivamente -- ver esos archivos.
 (function () {
     var toastWrap;
 
@@ -5,6 +10,8 @@
         if (!toastWrap) {
             toastWrap = document.createElement('div');
             toastWrap.className = 'rm-toast-wrap';
+            toastWrap.setAttribute('role', 'status');
+            toastWrap.setAttribute('aria-live', 'polite');
             document.body.appendChild(toastWrap);
         }
         return toastWrap;
@@ -16,77 +23,13 @@
         var cls = type || 'info';
         var icons = { success: 'bi-check-circle', error: 'bi-x-circle', info: 'bi-info-circle' };
         t.className = 'rm-toast ' + cls;
-        t.innerHTML = '<i class="bi ' + (icons[cls] || 'bi-info-circle') + '"></i><span>' + msg + '</span>';
+        t.innerHTML = '<i class="bi ' + (icons[cls] || 'bi-info-circle') + '" aria-hidden="true"></i><span>' + msg + '</span>';
         w.appendChild(t);
         setTimeout(function () { t.classList.add('show'); }, 10);
         setTimeout(function () {
             t.classList.remove('show');
             setTimeout(function () { t.remove(); }, 250);
         }, 3500);
-    };
-
-    window.initSidebar = function (session) {
-        if (!session) return;
-        var n = document.getElementById('sb-name');
-        var r = document.getElementById('sb-role');
-        if (n) n.textContent = session.nombre;
-        if (r) r.textContent = session.rol;
-        if (session.rol !== 'Administrador') {
-            document.querySelectorAll('.rm-nav-admin').forEach(function (el) {
-                el.style.display = 'none';
-            });
-        }
-
-        // Sidebar collapse toggle
-        var sidebar = document.querySelector('.rm-sidebar');
-        if (!sidebar) return;
-
-        var btn = document.createElement('button');
-        btn.className = 'rm-sidebar-toggle-btn';
-        btn.setAttribute('title', 'Contraer menu');
-        btn.innerHTML = '<i class="bi bi-chevron-left"></i>';
-        document.body.appendChild(btn);
-
-        if (localStorage.getItem('rm_sidebar_collapsed') === '1') {
-            document.body.classList.add('sidebar-collapsed');
-            btn.innerHTML = '<i class="bi bi-chevron-right"></i>';
-            btn.setAttribute('title', 'Expandir menu');
-        }
-
-        btn.addEventListener('click', function () {
-            var collapsed = document.body.classList.toggle('sidebar-collapsed');
-            localStorage.setItem('rm_sidebar_collapsed', collapsed ? '1' : '0');
-            btn.innerHTML = collapsed
-                ? '<i class="bi bi-chevron-right"></i>'
-                : '<i class="bi bi-chevron-left"></i>';
-            btn.setAttribute('title', collapsed ? 'Expandir menu' : 'Contraer menu');
-        });
-
-        aplicarApariencia();
-    };
-
-    window.aplicarApariencia = function () {
-        try {
-            var raw = localStorage.getItem('rm_apariencia');
-            if (!raw) return;
-            var ap = JSON.parse(raw);
-            if (ap.tema === 'oscuro') {
-                document.documentElement.setAttribute('data-theme', 'oscuro');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-            }
-            if (ap.color) {
-                document.documentElement.style.setProperty('--rm-accent', ap.color);
-                var r = parseInt(ap.color.slice(1,3),16);
-                var g = parseInt(ap.color.slice(3,5),16);
-                var b = parseInt(ap.color.slice(5,7),16);
-                var h = '#' + [Math.max(0,r-20),Math.max(0,g-20),Math.max(0,b-20)].map(function(v){return v.toString(16).padStart(2,'0');}).join('');
-                document.documentElement.style.setProperty('--rm-accent-h', h);
-            }
-            if (ap.fuente) {
-                document.documentElement.style.fontSize = ap.fuente + 'px';
-            }
-        } catch (e) { /* localStorage invalido */ }
     };
 
     window.renderPaginacion = function (wrapId, total, pagina, pageSize, fnNombre) {
@@ -99,10 +42,10 @@
         el.innerHTML =
             '<div class="pag-info">Mostrando ' + inicio + '-' + fin + ' de ' + total + '</div>' +
             '<div class="pag-controles">' +
-                '<button class="pag-btn"' + (pagina <= 1 ? ' disabled' : '') +
+                '<button class="pag-btn" aria-label="Pagina anterior"' + (pagina <= 1 ? ' disabled' : '') +
                     ' onclick="' + fnNombre + '(' + (pagina - 1) + ')">&lsaquo;</button>' +
                 '<span class="pag-num">Pag. ' + pagina + ' / ' + totalPags + '</span>' +
-                '<button class="pag-btn"' + (pagina >= totalPags ? ' disabled' : '') +
+                '<button class="pag-btn" aria-label="Pagina siguiente"' + (pagina >= totalPags ? ' disabled' : '') +
                     ' onclick="' + fnNombre + '(' + (pagina + 1) + ')">&rsaquo;</button>' +
             '</div>';
     };

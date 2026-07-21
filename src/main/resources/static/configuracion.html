@@ -9,18 +9,16 @@
     <link href="/css/rossmille.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        .cfg-page { padding: 28px 32px; max-width: 1060px; }
-
         /* Tabs de navegacion */
-        .cfg-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 24px; }
+        .cfg-tabs { display: flex; flex-wrap: wrap; gap: 4px; }
         .cfg-tab-btn {
             display: flex; align-items: center; gap: 7px;
             padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--rm-border);
-            background: #fff; color: var(--rm-text-2); font-size: 0.84rem; font-weight: 500;
+            background: var(--rm-white); color: var(--rm-text-2); font-size: 0.84rem; font-weight: 500;
             cursor: pointer; transition: all 0.14s; font-family: inherit;
         }
         .cfg-tab-btn i { font-size: 1rem; }
-        .cfg-tab-btn:hover { border-color: var(--rm-accent); color: var(--rm-accent); background: #f5f3ff; }
+        .cfg-tab-btn:hover { border-color: var(--rm-accent); color: var(--rm-accent); background: var(--rm-accent-tint); }
         .cfg-tab-btn.active { background: var(--rm-accent); color: #fff; border-color: var(--rm-accent); }
 
         /* Paneles de seccion */
@@ -29,7 +27,7 @@
 
         /* Cards de seccion */
         .cfg-card {
-            background: #fff; border: 1px solid var(--rm-border);
+            background: var(--rm-white); border: 1px solid var(--rm-border);
             border-radius: var(--rm-radius-lg); box-shadow: var(--rm-shadow);
             margin-bottom: 20px; overflow: hidden;
         }
@@ -40,16 +38,16 @@
         }
         .cfg-card-header .hdr-icon {
             width: 36px; height: 36px; border-radius: 10px;
-            background: #eef2ff; color: var(--rm-accent);
+            background: var(--rm-accent-tint); color: var(--rm-accent);
             display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
         }
-        .cfg-card-header h6 { font-size: 0.9rem; font-weight: 700; color: var(--rm-text); margin: 0; }
+        .cfg-card-header h2 { font-size: 0.9rem; font-weight: 700; color: var(--rm-text); margin: 0; font-family: var(--rm-font-heading); }
         .cfg-card-header p { font-size: 0.78rem; color: var(--rm-text-2); margin: 0; }
         .cfg-card-body { padding: 22px; }
         .cfg-card-footer {
             padding: 14px 22px; background: var(--rm-bg);
             border-top: 1px solid var(--rm-border);
-            display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+            display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap;
         }
 
         /* Logo upload */
@@ -58,7 +56,7 @@
             padding: 28px; text-align: center; cursor: pointer;
             transition: border-color 0.15s, background 0.15s;
         }
-        .logo-drop:hover { border-color: var(--rm-accent); background: #f5f3ff; }
+        .logo-drop:hover { border-color: var(--rm-accent); background: var(--rm-accent-tint); }
         .logo-drop img { max-height: 80px; max-width: 200px; object-fit: contain; display: none; }
         .logo-drop .logo-placeholder { color: var(--rm-text-2); }
         .logo-drop .logo-placeholder i { font-size: 2.2rem; display: block; margin-bottom: 8px; }
@@ -71,7 +69,7 @@
         .perm-cross { color: var(--rm-text-2); font-size: 1.1rem; opacity: 0.4; }
 
         /* Toggle switch */
-        .cfg-toggle { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--rm-border); }
+        .cfg-toggle { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--rm-border); gap: 12px; flex-wrap: wrap; }
         .cfg-toggle:last-child { border-bottom: none; }
         .cfg-toggle-label { font-size: 0.88rem; font-weight: 500; color: var(--rm-text); }
         .cfg-toggle-sub { font-size: 0.78rem; color: var(--rm-text-2); margin-top: 2px; }
@@ -79,10 +77,7 @@
         .form-switch .form-check-input:checked { background-color: var(--rm-accent); border-color: var(--rm-accent); }
 
         /* Respaldo */
-        .backup-action {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 16px 0; border-bottom: 1px solid var(--rm-border);
-        }
+        .backup-action { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--rm-border); flex-wrap: wrap; gap: 10px; }
         .backup-action:last-child { border-bottom: none; }
         .backup-action-label { font-size: 0.88rem; font-weight: 500; color: var(--rm-text); }
         .backup-action-sub { font-size: 0.78rem; color: var(--rm-text-2); margin-top: 2px; }
@@ -94,7 +89,7 @@
         .backup-file-drop:hover { border-color: var(--rm-accent); }
 
         /* Apariencia */
-        .ap-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--rm-border); }
+        .ap-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--rm-border); gap: 14px; flex-wrap: wrap; }
         .ap-row:last-child { border-bottom: none; }
         .ap-label { font-size: 0.88rem; font-weight: 500; color: var(--rm-text); }
         .ap-sub { font-size: 0.78rem; color: var(--rm-text-2); margin-top: 2px; }
@@ -103,9 +98,9 @@
             display: flex; align-items: center; gap: 6px;
             padding: 7px 14px; border-radius: 8px; border: 1.5px solid var(--rm-border);
             cursor: pointer; font-size: 0.83rem; font-weight: 500; color: var(--rm-text-2);
-            background: #fff; transition: all 0.14s; user-select: none;
+            background: var(--rm-white); transition: all 0.14s; user-select: none;
         }
-        .theme-opt.active { border-color: var(--rm-accent); color: var(--rm-accent); background: #eef2ff; }
+        .theme-opt.active { border-color: var(--rm-accent); color: var(--rm-accent); background: var(--rm-accent-tint); }
         .color-preview { width: 32px; height: 32px; border-radius: 8px; border: 2px solid var(--rm-border); }
         .font-size-row { display: flex; align-items: center; gap: 12px; }
         .font-size-row input[type=range] { flex: 1; accent-color: var(--rm-accent); }
@@ -114,7 +109,7 @@
         /* Info note */
         .info-note {
             display: flex; gap: 10px; align-items: flex-start;
-            background: #eef2ff; border: 1px solid #c7d2fe;
+            background: var(--rm-accent-tint); border: 1px solid var(--rm-accent-tint-md);
             border-radius: 8px; padding: 12px 14px; font-size: 0.82rem; color: #3730a3; margin-bottom: 16px;
         }
         .info-note i { flex-shrink: 0; font-size: 1rem; margin-top: 1px; }
@@ -124,170 +119,150 @@
             border-radius: 8px; padding: 12px 14px; font-size: 0.82rem; color: #92400e;
         }
         .warn-note i { flex-shrink: 0; font-size: 1rem; margin-top: 1px; }
+        [data-mode="oscuro"] .info-note { color: #c7d2fe; }
     </style>
 </head>
 <body class="rm-has-sidebar">
 
-<nav class="rm-sidebar">
-    <div class="rm-sidebar-brand">
-        <div class="brand-name">ROSS <span class="brand-gold">MILLE</span></div>
-        <span class="brand-sub">Punto de Venta</span>
-    </div>
-    <ul class="rm-nav">
-        <li><a href="/dashboard.html"    class="rm-nav-link"><i class="bi bi-house-door"></i> Inicio</a></li>
-        <li><a href="/vender.html"       class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
-        <li><a href="/productos.html"    class="rm-nav-link"><i class="bi bi-box-seam"></i> Productos</a></li>
-        <li><a href="/clientes.html"     class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
-        <li><a href="/pedidos.html"      class="rm-nav-link"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
-        <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
-        <li class="rm-nav-admin"><a href="/usuarios.html"      class="rm-nav-link"><i class="bi bi-person-gear"></i> Usuarios</a></li>
-        <li class="rm-nav-admin"><a href="/reporte.html"       class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
-        <li class="rm-nav-admin"><a href="/configuracion.html" class="rm-nav-link active"><i class="bi bi-gear"></i> Configuracion</a></li>
-    </ul>
-    <div class="rm-sidebar-footer">
-        <div class="sf-name" id="sb-name"></div>
-        <div class="sf-role" id="sb-role"></div>
-        <button class="rm-btn-logout" onclick="logout()">
-            <i class="bi bi-box-arrow-right"></i> Cerrar sesion
-        </button>
-    </div>
-</nav>
+<a class="skip-link" href="#main" data-i18n="a11y.skipToContent">Saltar al contenido principal</a>
+<div id="rmDrawerBackdrop" class="rm-drawer-backdrop"></div>
+<div id="rmSidebarMount"></div>
+<div id="rmTopbarMount"></div>
 
-<div class="cfg-page">
+<main id="main" class="rm-page">
 
-    <!-- Page header -->
-    <div class="page-header mb-4">
+    <div class="page-header reveal">
         <div>
-            <h1 class="page-title"><i class="bi bi-gear" style="color:var(--rm-accent)"></i> Configuracion</h1>
-            <p class="page-subtitle">Administra los parametros y ajustes del sistema ROSS MILLE</p>
+            <h1 class="page-title"><i class="bi bi-gear" style="color:var(--rm-accent)" aria-hidden="true"></i> <span data-i18n="page.configuracion.title">Configuracion</span></h1>
+            <p class="page-subtitle" data-i18n="page.configuracion.subtitle">Administra los parametros y ajustes del sistema ROSS MILLE</p>
         </div>
         <div id="headerStatus" style="display:none; font-size:0.8rem; color:var(--rm-text-2);">
-            <i class="bi bi-clock me-1"></i><span id="lastSavedText"></span>
+            <i class="bi bi-clock me-1" aria-hidden="true"></i><span id="lastSavedText"></span>
         </div>
     </div>
 
     <!-- Tab navigation -->
-    <div class="cfg-tabs" id="cfgTabs">
-        <button class="cfg-tab-btn active" data-pane="empresa">
-            <i class="bi bi-building"></i> Empresa
+    <div class="cfg-tabs reveal" id="cfgTabs" role="tablist">
+        <button class="cfg-tab-btn active" data-pane="empresa" role="tab" aria-selected="true">
+            <i class="bi bi-building" aria-hidden="true"></i> Empresa
         </button>
-        <button class="cfg-tab-btn" data-pane="sistema">
-            <i class="bi bi-sliders"></i> Sistema
+        <button class="cfg-tab-btn" data-pane="sistema" role="tab" aria-selected="false">
+            <i class="bi bi-sliders" aria-hidden="true"></i> Sistema
         </button>
-        <button class="cfg-tab-btn" data-pane="ventas">
-            <i class="bi bi-receipt"></i> Ventas
+        <button class="cfg-tab-btn" data-pane="ventas" role="tab" aria-selected="false">
+            <i class="bi bi-receipt" aria-hidden="true"></i> Ventas
         </button>
-        <button class="cfg-tab-btn" data-pane="seguridad">
-            <i class="bi bi-shield-lock"></i> Seguridad
+        <button class="cfg-tab-btn" data-pane="seguridad" role="tab" aria-selected="false">
+            <i class="bi bi-shield-lock" aria-hidden="true"></i> Seguridad
         </button>
-        <button class="cfg-tab-btn" data-pane="notificaciones">
-            <i class="bi bi-bell"></i> Notificaciones
+        <button class="cfg-tab-btn" data-pane="notificaciones" role="tab" aria-selected="false">
+            <i class="bi bi-bell" aria-hidden="true"></i> Notificaciones
         </button>
-        <button class="cfg-tab-btn" data-pane="respaldo">
-            <i class="bi bi-database"></i> Respaldo
+        <button class="cfg-tab-btn" data-pane="respaldo" role="tab" aria-selected="false">
+            <i class="bi bi-database" aria-hidden="true"></i> Respaldo
         </button>
-        <button class="cfg-tab-btn" data-pane="apariencia">
-            <i class="bi bi-palette"></i> Apariencia
+        <button class="cfg-tab-btn" data-pane="apariencia" role="tab" aria-selected="false">
+            <i class="bi bi-palette" aria-hidden="true"></i> Apariencia
         </button>
     </div>
 
-    <!-- ============================================================ -->
+    <div class="reveal">
+
     <!-- PANE 1: EMPRESA -->
-    <!-- ============================================================ -->
     <div class="cfg-pane active" id="pane-empresa">
         <div class="cfg-card">
             <div class="cfg-card-header">
-                <div class="hdr-icon"><i class="bi bi-building"></i></div>
+                <div class="hdr-icon"><i class="bi bi-building" aria-hidden="true"></i></div>
                 <div>
-                    <h6>Informacion de la Empresa</h6>
+                    <h2>Informacion de la Empresa</h2>
                     <p>Datos que aparecen en facturas, reportes y documentos del sistema</p>
                 </div>
             </div>
             <div class="cfg-card-body">
                 <div class="row g-3">
                     <div class="col-md-8">
-                        <label class="form-label">Nombre de la empresa</label>
+                        <label class="form-label" for="cfg-empresa.nombre">Nombre de la empresa</label>
                         <input type="text" class="form-control" id="cfg-empresa.nombre" placeholder="Ej: ROSS MILLE">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">NIT / RUT</label>
+                        <label class="form-label" for="cfg-empresa.nit">NIT / RUT</label>
                         <input type="text" class="form-control" id="cfg-empresa.nit" placeholder="Ej: 900.123.456-7">
                     </div>
                     <div class="col-12">
-                        <label class="form-label">Direccion</label>
+                        <label class="form-label" for="cfg-empresa.direccion">Direccion</label>
                         <input type="text" class="form-control" id="cfg-empresa.direccion" placeholder="Calle, carrera, numero...">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Telefono</label>
+                        <label class="form-label" for="cfg-empresa.telefono">Telefono</label>
                         <input type="text" class="form-control" id="cfg-empresa.telefono" placeholder="Ej: +57 310 000 0000">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Correo electronico</label>
+                        <label class="form-label" for="cfg-empresa.correo">Correo electronico</label>
                         <input type="email" class="form-control" id="cfg-empresa.correo" placeholder="info@rossmille.com">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Sitio web</label>
+                        <label class="form-label" for="cfg-empresa.sitio_web">Sitio web</label>
                         <input type="text" class="form-control" id="cfg-empresa.sitio_web" placeholder="www.rossmille.com">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Ciudad</label>
+                        <label class="form-label" for="cfg-empresa.ciudad">Ciudad</label>
                         <input type="text" class="form-control" id="cfg-empresa.ciudad" placeholder="Ej: Bogota">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Pais</label>
+                        <label class="form-label" for="cfg-empresa.pais">Pais</label>
                         <input type="text" class="form-control" id="cfg-empresa.pais" placeholder="Ej: Colombia">
                     </div>
                     <div class="col-12">
-                        <label class="form-label">Logo de la empresa</label>
-                        <div class="logo-drop" id="logoDrop" onclick="document.getElementById('logoInput').click()">
-                            <img id="logoPreviewImg" src="" alt="Logo">
+                        <span class="form-label" id="logoLabel">Logo de la empresa</span>
+                        <div class="logo-drop" id="logoDrop" role="button" tabindex="0" aria-labelledby="logoLabel"
+                            onclick="document.getElementById('logoInput').click()"
+                            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('logoInput').click();}">
+                            <img id="logoPreviewImg" src="" alt="Logo de la empresa">
                             <div class="logo-placeholder" id="logoPlaceholder">
-                                <i class="bi bi-cloud-upload"></i>
+                                <i class="bi bi-cloud-upload" aria-hidden="true"></i>
                                 <span>Clic para subir imagen (PNG, JPG, SVG &mdash; max 2 MB)</span>
                             </div>
                         </div>
                         <input type="file" id="logoInput" accept="image/png,image/jpeg,image/svg+xml" style="display:none">
                         <button class="btn btn-sm btn-outline-secondary mt-2" id="btnEliminarLogo" style="display:none" onclick="eliminarLogo()">
-                            <i class="bi bi-trash me-1"></i>Quitar logo
+                            <i class="bi bi-trash me-1" aria-hidden="true"></i>Quitar logo
                         </button>
                     </div>
                 </div>
             </div>
             <div class="cfg-card-footer">
                 <button class="btn btn-primary btn-sm px-4" onclick="guardarGrupo('empresa')">
-                    <i class="bi bi-check2 me-1"></i>Guardar empresa
+                    <i class="bi bi-check2 me-1" aria-hidden="true"></i>Guardar empresa
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
     <!-- PANE 2: SISTEMA -->
-    <!-- ============================================================ -->
     <div class="cfg-pane" id="pane-sistema">
         <div class="cfg-card">
             <div class="cfg-card-header">
-                <div class="hdr-icon"><i class="bi bi-sliders"></i></div>
+                <div class="hdr-icon"><i class="bi bi-sliders" aria-hidden="true"></i></div>
                 <div>
-                    <h6>Configuracion del Sistema</h6>
+                    <h2>Configuracion del Sistema</h2>
                     <p>Moneda, impuestos, formato de fechas e idioma</p>
                 </div>
             </div>
             <div class="cfg-card-body">
                 <div class="row g-3">
                     <div class="col-md-3">
-                        <label class="form-label">Simbolo de moneda</label>
+                        <label class="form-label" for="cfg-sistema.moneda_simbolo">Simbolo de moneda</label>
                         <input type="text" class="form-control" id="cfg-sistema.moneda_simbolo" placeholder="$" maxlength="5">
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">IVA (%)</label>
+                        <label class="form-label" for="cfg-sistema.iva_porcentaje">IVA (%)</label>
                         <div class="input-group">
                             <input type="number" class="form-control" id="cfg-sistema.iva_porcentaje" min="0" max="100" step="0.1">
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Formato de fecha</label>
+                        <label class="form-label" for="cfg-sistema.formato_fecha">Formato de fecha</label>
                         <select class="form-select" id="cfg-sistema.formato_fecha">
                             <option value="dd/MM/yyyy">DD/MM/AAAA (31/12/2024)</option>
                             <option value="MM/dd/yyyy">MM/DD/AAAA (12/31/2024)</option>
@@ -296,14 +271,15 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Idioma del sistema</label>
+                        <label class="form-label" for="cfg-sistema.idioma">Idioma del sistema</label>
                         <select class="form-select" id="cfg-sistema.idioma">
                             <option value="es">Espanol</option>
                             <option value="en">English</option>
                         </select>
+                        <div class="form-text">Referencia informativa. El idioma real de la interfaz se cambia desde el selector de la barra superior.</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Zona horaria</label>
+                        <label class="form-label" for="cfg-sistema.zona_horaria">Zona horaria</label>
                         <select class="form-select" id="cfg-sistema.zona_horaria">
                             <option value="America/Bogota">America/Bogota (UTC-5)</option>
                             <option value="America/Mexico_City">America/Mexico City (UTC-6)</option>
@@ -318,48 +294,46 @@
             </div>
             <div class="cfg-card-footer">
                 <button class="btn btn-primary btn-sm px-4" onclick="guardarGrupo('sistema')">
-                    <i class="bi bi-check2 me-1"></i>Guardar sistema
+                    <i class="bi bi-check2 me-1" aria-hidden="true"></i>Guardar sistema
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
     <!-- PANE 3: VENTAS -->
-    <!-- ============================================================ -->
     <div class="cfg-pane" id="pane-ventas">
         <div class="cfg-card">
             <div class="cfg-card-header">
-                <div class="hdr-icon"><i class="bi bi-receipt"></i></div>
+                <div class="hdr-icon"><i class="bi bi-receipt" aria-hidden="true"></i></div>
                 <div>
-                    <h6>Configuracion de Ventas</h6>
+                    <h2>Configuracion de Ventas</h2>
                     <p>Facturas, metodos de pago y descuentos</p>
                 </div>
             </div>
             <div class="cfg-card-body">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label">Consecutivo inicial de facturas</label>
+                        <label class="form-label" for="cfg-ventas.consecutivo_inicial">Consecutivo inicial de facturas</label>
                         <input type="number" class="form-control" id="cfg-ventas.consecutivo_inicial" min="1">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Prefijo de facturas</label>
+                        <label class="form-label" for="cfg-ventas.prefijo_facturas">Prefijo de facturas</label>
                         <input type="text" class="form-control" id="cfg-ventas.prefijo_facturas" placeholder="FAC-" maxlength="10">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Descuento maximo permitido (%)</label>
+                        <label class="form-label" for="cfg-ventas.descuento_maximo">Descuento maximo permitido (%)</label>
                         <div class="input-group">
                             <input type="number" class="form-control" id="cfg-ventas.descuento_maximo" min="0" max="100">
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
                     <div class="col-12">
-                        <label class="form-label">Pie de pagina en facturas</label>
+                        <label class="form-label" for="cfg-ventas.pie_pagina">Pie de pagina en facturas</label>
                         <textarea class="form-control" id="cfg-ventas.pie_pagina" rows="2" placeholder="Mensaje que aparece al final de las facturas..."></textarea>
                     </div>
                     <div class="col-12">
-                        <label class="form-label">Metodos de pago aceptados</label>
-                        <div class="d-flex gap-3 flex-wrap mt-1">
+                        <span class="form-label" id="metodosPagoLabel">Metodos de pago aceptados</span>
+                        <div class="d-flex gap-3 flex-wrap mt-1" role="group" aria-labelledby="metodosPagoLabel">
                             <div class="form-check">
                                 <input class="form-check-input metodo-pago-chk" type="checkbox" id="mp-Efectivo" value="Efectivo">
                                 <label class="form-check-label" for="mp-Efectivo">Efectivo</label>
@@ -386,31 +360,29 @@
             </div>
             <div class="cfg-card-footer">
                 <button class="btn btn-primary btn-sm px-4" onclick="guardarGrupo('ventas')">
-                    <i class="bi bi-check2 me-1"></i>Guardar ventas
+                    <i class="bi bi-check2 me-1" aria-hidden="true"></i>Guardar ventas
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
     <!-- PANE 4: SEGURIDAD -->
-    <!-- ============================================================ -->
     <div class="cfg-pane" id="pane-seguridad">
 
-        <!-- Permisos por rol (solo lectura) -->
         <div class="cfg-card">
             <div class="cfg-card-header">
-                <div class="hdr-icon" style="background:#ecfdf5;color:var(--rm-success)"><i class="bi bi-person-check"></i></div>
+                <div class="hdr-icon" style="background:color-mix(in srgb, var(--rm-success) 14%, var(--rm-white));color:var(--rm-success)"><i class="bi bi-person-check" aria-hidden="true"></i></div>
                 <div>
-                    <h6>Permisos por Rol</h6>
+                    <h2>Permisos por Rol</h2>
                     <p>Acceso por modulo segun el rol del usuario (definido en el sistema)</p>
                 </div>
             </div>
             <div class="cfg-card-body">
                 <div class="info-note mb-3">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
                     <span>Los permisos estan definidos a nivel de sistema y no son editables desde aqui. Para modificarlos se requiere un cambio en el codigo fuente.</span>
                 </div>
+                <div style="overflow-x:auto;">
                 <table class="table table-bordered perms-table align-middle">
                     <thead>
                         <tr>
@@ -420,50 +392,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td><i class="bi bi-house-door me-2 text-muted"></i>Dashboard</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td></tr>
-                        <tr><td><i class="bi bi-cart3 me-2 text-muted"></i>Vender</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td></tr>
-                        <tr><td><i class="bi bi-box-seam me-2 text-muted"></i>Productos</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td></tr>
-                        <tr><td><i class="bi bi-people me-2 text-muted"></i>Clientes</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td></tr>
-                        <tr><td><i class="bi bi-clipboard2-list me-2 text-muted"></i>Pedidos</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td></tr>
-                        <tr><td><i class="bi bi-person-gear me-2 text-muted"></i>Usuarios</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td><td class="text-center"><i class="bi bi-dash-circle perm-cross"></i></td></tr>
-                        <tr><td><i class="bi bi-bar-chart-line me-2 text-muted"></i>Reporte</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td><td class="text-center"><i class="bi bi-dash-circle perm-cross"></i></td></tr>
-                        <tr><td><i class="bi bi-gear me-2 text-muted"></i>Configuracion</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check"></i></td><td class="text-center"><i class="bi bi-dash-circle perm-cross"></i></td></tr>
+                        <tr><td><i class="bi bi-house-door me-2 text-muted" aria-hidden="true"></i>Dashboard</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td></tr>
+                        <tr><td><i class="bi bi-cart3 me-2 text-muted" aria-hidden="true"></i>Vender</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td></tr>
+                        <tr><td><i class="bi bi-box-seam me-2 text-muted" aria-hidden="true"></i>Productos</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td></tr>
+                        <tr><td><i class="bi bi-people me-2 text-muted" aria-hidden="true"></i>Clientes</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td></tr>
+                        <tr><td><i class="bi bi-clipboard2-list me-2 text-muted" aria-hidden="true"></i>Pedidos</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td></tr>
+                        <tr><td><i class="bi bi-person-gear me-2 text-muted" aria-hidden="true"></i>Usuarios</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td><td class="text-center"><i class="bi bi-dash-circle perm-cross" aria-hidden="true"></i></td></tr>
+                        <tr><td><i class="bi bi-bar-chart-line me-2 text-muted" aria-hidden="true"></i>Reporte</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td><td class="text-center"><i class="bi bi-dash-circle perm-cross" aria-hidden="true"></i></td></tr>
+                        <tr><td><i class="bi bi-gear me-2 text-muted" aria-hidden="true"></i>Configuracion</td><td class="text-center"><i class="bi bi-check-circle-fill perm-check" aria-hidden="true"></i></td><td class="text-center"><i class="bi bi-dash-circle perm-cross" aria-hidden="true"></i></td></tr>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
 
-        <!-- Politica de seguridad (editable) -->
         <div class="cfg-card">
             <div class="cfg-card-header">
-                <div class="hdr-icon" style="background:#f5f3ff;color:var(--rm-purple)"><i class="bi bi-shield-lock"></i></div>
+                <div class="hdr-icon" style="background:color-mix(in srgb, var(--rm-purple) 14%, var(--rm-white));color:var(--rm-purple)"><i class="bi bi-shield-lock" aria-hidden="true"></i></div>
                 <div>
-                    <h6>Politica de Acceso</h6>
+                    <h2>Politica de Acceso</h2>
                     <p>Tiempo de sesion, intentos de login y longitud de contrasena</p>
                 </div>
             </div>
             <div class="cfg-card-body">
                 <div class="info-note mb-3">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
                     <span>Los cambios de tiempo de sesion se aplican a los nuevos tokens JWT generados despues de guardar. Las sesiones activas no se ven afectadas.</span>
                 </div>
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label">Tiempo de sesion activa</label>
+                        <label class="form-label" for="cfg-seguridad.tiempo_sesion_horas">Tiempo de sesion activa</label>
                         <div class="input-group">
                             <input type="number" class="form-control" id="cfg-seguridad.tiempo_sesion_horas" min="1" max="72">
                             <span class="input-group-text">horas</span>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Longitud minima de contrasena</label>
+                        <label class="form-label" for="cfg-seguridad.contrasena_min_longitud">Longitud minima de contrasena</label>
                         <div class="input-group">
                             <input type="number" class="form-control" id="cfg-seguridad.contrasena_min_longitud" min="4" max="32">
                             <span class="input-group-text">chars</span>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Max. intentos de login fallidos</label>
+                        <label class="form-label" for="cfg-seguridad.max_intentos_login">Max. intentos de login fallidos</label>
                         <div class="input-group">
                             <input type="number" class="form-control" id="cfg-seguridad.max_intentos_login" min="1" max="20">
                             <span class="input-group-text">intentos</span>
@@ -473,30 +445,28 @@
             </div>
             <div class="cfg-card-footer">
                 <button class="btn btn-primary btn-sm px-4" onclick="guardarGrupo('seguridad')">
-                    <i class="bi bi-check2 me-1"></i>Guardar seguridad
+                    <i class="bi bi-check2 me-1" aria-hidden="true"></i>Guardar seguridad
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
     <!-- PANE 5: NOTIFICACIONES -->
-    <!-- ============================================================ -->
     <div class="cfg-pane" id="pane-notificaciones">
         <div class="cfg-card">
             <div class="cfg-card-header">
-                <div class="hdr-icon" style="background:#fffbeb;color:var(--rm-warning)"><i class="bi bi-bell"></i></div>
+                <div class="hdr-icon" style="background:color-mix(in srgb, var(--rm-warning) 14%, var(--rm-white));color:var(--rm-warning)"><i class="bi bi-bell" aria-hidden="true"></i></div>
                 <div>
-                    <h6>Configuracion de Notificaciones</h6>
+                    <h2>Configuracion de Notificaciones</h2>
                     <p>Alertas de inventario y notificaciones del sistema</p>
                 </div>
             </div>
             <div class="cfg-card-body">
                 <div class="row g-3 mb-4">
                     <div class="col-md-5">
-                        <label class="form-label">Umbral de stock bajo</label>
+                        <label class="form-label" for="cfg-notificaciones.stock_umbral">Umbral de stock bajo</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-exclamation-triangle"></i></span>
+                            <span class="input-group-text"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></span>
                             <input type="number" class="form-control" id="cfg-notificaciones.stock_umbral" min="1" max="100">
                             <span class="input-group-text">unidades</span>
                         </div>
@@ -524,21 +494,19 @@
             </div>
             <div class="cfg-card-footer">
                 <button class="btn btn-primary btn-sm px-4" onclick="guardarGrupo('notificaciones')">
-                    <i class="bi bi-check2 me-1"></i>Guardar notificaciones
+                    <i class="bi bi-check2 me-1" aria-hidden="true"></i>Guardar notificaciones
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
     <!-- PANE 6: RESPALDO -->
-    <!-- ============================================================ -->
     <div class="cfg-pane" id="pane-respaldo">
         <div class="cfg-card">
             <div class="cfg-card-header">
-                <div class="hdr-icon" style="background:#eff6ff;color:var(--rm-info)"><i class="bi bi-database-down"></i></div>
+                <div class="hdr-icon" style="background:color-mix(in srgb, var(--rm-info) 14%, var(--rm-white));color:var(--rm-info)"><i class="bi bi-database-down" aria-hidden="true"></i></div>
                 <div>
-                    <h6>Exportar Base de Datos</h6>
+                    <h2>Exportar Base de Datos</h2>
                     <p>Descarga un archivo .sql con todos los datos del sistema</p>
                 </div>
             </div>
@@ -548,57 +516,62 @@
                     Guarda este archivo en un lugar seguro para poder restaurar el sistema en caso de falla.
                 </p>
                 <button class="btn btn-primary" id="btnDescargar" onclick="descargarBackup()">
-                    <i class="bi bi-download me-2"></i>Descargar respaldo .sql
+                    <i class="bi bi-download me-2" aria-hidden="true"></i>Descargar respaldo .sql
                 </button>
             </div>
         </div>
 
         <div class="cfg-card">
             <div class="cfg-card-header">
-                <div class="hdr-icon" style="background:#fef2f2;color:var(--rm-danger)"><i class="bi bi-database-up"></i></div>
+                <div class="hdr-icon" style="background:#fef2f2;color:var(--rm-danger)"><i class="bi bi-database-up" aria-hidden="true"></i></div>
                 <div>
-                    <h6>Restaurar Respaldo</h6>
+                    <h2>Restaurar Respaldo</h2>
                     <p>Importa un archivo .sql generado por este sistema</p>
                 </div>
             </div>
             <div class="cfg-card-body">
                 <div class="warn-note mb-3">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                     <span>
                         <strong>Importante:</strong> La restauracion ejecuta sentencias INSERT IGNORE sobre los datos existentes.
                         No elimina registros actuales. Solo sube informacion nueva o que no exista en la BD actual.
                         Solo acepta archivos .sql generados por ROSS MILLE.
                     </span>
                 </div>
-                <div class="backup-file-drop" id="restoreDrop" onclick="document.getElementById('restoreInput').click()">
-                    <i class="bi bi-file-earmark-code" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+                <div class="backup-file-drop" id="restoreDrop" role="button" tabindex="0"
+                    onclick="document.getElementById('restoreInput').click()"
+                    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('restoreInput').click();}">
+                    <i class="bi bi-file-earmark-code" style="font-size:2rem;display:block;margin-bottom:8px" aria-hidden="true"></i>
                     <div id="restoreFileName">Clic para seleccionar archivo .sql de respaldo</div>
                 </div>
                 <input type="file" id="restoreInput" accept=".sql" style="display:none">
                 <div class="mt-3 d-flex justify-content-end">
                     <button class="btn btn-danger btn-sm px-4" id="btnRestaurar" disabled onclick="restaurarBackup()">
-                        <i class="bi bi-upload me-1"></i>Restaurar
+                        <i class="bi bi-upload me-1" aria-hidden="true"></i>Restaurar
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
     <!-- PANE 7: APARIENCIA -->
-    <!-- ============================================================ -->
     <div class="cfg-pane" id="pane-apariencia">
         <div class="cfg-card">
             <div class="cfg-card-header">
-                <div class="hdr-icon" style="background:#f5f3ff;color:var(--rm-purple)"><i class="bi bi-palette"></i></div>
+                <div class="hdr-icon" style="background:color-mix(in srgb, var(--rm-purple) 14%, var(--rm-white));color:var(--rm-purple)"><i class="bi bi-palette" aria-hidden="true"></i></div>
                 <div>
-                    <h6>Apariencia del Sistema</h6>
+                    <h2>Apariencia del Sistema</h2>
                     <p>Tema, colores y tipografia. Los cambios se aplican en tiempo real</p>
                 </div>
             </div>
             <div class="cfg-card-body">
 
-                <!-- Tema -->
+                <div class="info-note">
+                    <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+                    <span>Esta seccion guarda la apariencia por defecto de todo el sistema (BD). Cualquier usuario puede tambien
+                        ajustar su propia preferencia rapida de tema e idioma desde el icono de la barra superior, sin afectar esta configuracion.</span>
+                </div>
+
                 <div class="ap-row">
                     <div>
                         <div class="ap-label">Tema del sistema</div>
@@ -606,15 +579,14 @@
                     </div>
                     <div class="theme-toggle">
                         <div class="theme-opt active" id="themeClaro" onclick="setTema('claro')">
-                            <i class="bi bi-sun"></i> Claro
+                            <i class="bi bi-sun" aria-hidden="true"></i> Claro
                         </div>
                         <div class="theme-opt" id="themeOscuro" onclick="setTema('oscuro')">
-                            <i class="bi bi-moon"></i> Oscuro
+                            <i class="bi bi-moon" aria-hidden="true"></i> Oscuro
                         </div>
                     </div>
                 </div>
 
-                <!-- Color principal -->
                 <div class="ap-row">
                     <div>
                         <div class="ap-label">Color principal del sistema</div>
@@ -622,6 +594,7 @@
                     </div>
                     <div class="d-flex align-items-center gap-3">
                         <div class="color-preview" id="colorPreviewBox"></div>
+                        <label class="visually-hidden-focusable" for="cfg-apariencia.color_principal">Color principal</label>
                         <input type="color" class="form-control form-control-color" id="cfg-apariencia.color_principal"
                                style="width:42px;height:38px;padding:2px 3px;border-radius:8px;cursor:pointer"
                                title="Elige un color">
@@ -629,16 +602,16 @@
                     </div>
                 </div>
 
-                <!-- Fuente -->
                 <div class="ap-row">
                     <div>
                         <div class="ap-label">Tamano de fuente base</div>
                         <div class="ap-sub">Afecta el tamano del texto en toda la interfaz (12px - 20px)</div>
                     </div>
                     <div class="font-size-row" style="width:260px">
-                        <span style="font-size:0.78rem;color:var(--rm-text-2)">A</span>
+                        <span style="font-size:0.78rem;color:var(--rm-text-2)" aria-hidden="true">A</span>
+                        <label class="visually-hidden-focusable" for="cfg-apariencia.tamano_fuente">Tamano de fuente</label>
                         <input type="range" id="cfg-apariencia.tamano_fuente" min="12" max="20" step="1">
-                        <span style="font-size:1rem;color:var(--rm-text-2)">A</span>
+                        <span style="font-size:1rem;color:var(--rm-text-2)" aria-hidden="true">A</span>
                         <span class="font-size-val" id="fontSizeLabel">15px</span>
                     </div>
                 </div>
@@ -646,30 +619,44 @@
             </div>
             <div class="cfg-card-footer">
                 <button class="btn btn-outline-secondary btn-sm" onclick="resetApariencia()">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i>Restablecer
+                    <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>Restablecer
                 </button>
                 <button class="btn btn-primary btn-sm px-4" onclick="guardarGrupo('apariencia')">
-                    <i class="bi bi-check2 me-1"></i>Guardar apariencia
+                    <i class="bi bi-check2 me-1" aria-hidden="true"></i>Guardar apariencia
                 </button>
             </div>
         </div>
     </div>
 
-</div><!-- /cfg-page -->
+    </div><!-- /reveal wrapper -->
+
+</main>
+
+<div id="rmFooterMount"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/rossmille.js"></script>
+<script src="/js/layout.js"></script>
 <script src="/js/configuracion.js"></script>
 <script>
-    var session = guardRoute();
+    document.querySelectorAll('.cfg-tab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.cfg-tab-btn').forEach(function (b) { b.setAttribute('aria-selected', 'false'); });
+            btn.setAttribute('aria-selected', 'true');
+        });
+    });
+
+    var session = initApp({ activeKey: 'configuracion', titleKey: 'page.configuracion.title', subtitleKey: 'page.configuracion.subtitle' });
     if (session) {
         if (session.rol !== 'Administrador') {
             window.location.replace('/dashboard.html');
+        } else {
+            cargarConfiguracion();
         }
-        initSidebar(session);
-        cargarConfiguracion();
     }
 </script>
 </body>

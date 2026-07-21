@@ -9,191 +9,104 @@
     <link href="/css/rossmille.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        .main { padding: 28px 32px; max-width: 900px; }
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .tabs {
-            display: flex;
-            gap: 4px;
-            background: #e8e8f0;
-            border-radius: 8px;
-            padding: 4px;
-        }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .tabs { display: flex; gap: 4px; background: var(--rm-bg); border-radius: var(--rm-radius); padding: 4px; }
         .tab-btn {
-            padding: 6px 20px;
-            border: none;
-            background: transparent;
-            border-radius: 6px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: #666;
-            cursor: pointer;
-            transition: all 0.15s;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            padding: 6px 20px; border: none; background: transparent; border-radius: var(--rm-radius-sm);
+            font-size: 0.88rem; font-weight: 600; color: var(--rm-text-2); cursor: pointer;
+            transition: all var(--rm-transition-fast); font-family: var(--rm-font-body);
         }
-        .tab-btn.active {
-            background: #fff;
-            color: #1a1a2e;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-        }
+        .tab-btn.active { background: var(--rm-white); color: var(--rm-text); box-shadow: var(--rm-shadow-sm); }
         .btn-nuevo {
-            background: #1a1a2e;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 20px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.15s;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--rm-accent); color: #fff; border: none; border-radius: var(--rm-radius);
+            padding: 8px 20px; font-size: 0.88rem; font-weight: 600; cursor: pointer;
+            transition: background var(--rm-transition-fast); font-family: var(--rm-font-body);
         }
-        .btn-nuevo:hover { background: #2d2d50; }
+        .btn-nuevo:hover { background: var(--rm-accent-h); }
 
         .pedido-card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            margin-bottom: 14px;
-            overflow: hidden;
-            border: 1.5px solid transparent;
-            transition: border-color 0.15s;
+            background: var(--rm-white); border-radius: var(--rm-radius-lg); box-shadow: var(--rm-shadow);
+            margin-bottom: 14px; overflow: hidden; border: 1.5px solid transparent; transition: border-color var(--rm-transition-fast);
         }
-        .pedido-card:hover { border-color: #e0e0ee; }
-        .card-header-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 20px 10px;
-            cursor: pointer;
-        }
-        .card-id { font-size: 0.78rem; color: #999; min-width: 72px; }
-        .card-cliente { font-weight: 700; font-size: 0.92rem; color: #1a1a2e; flex: 1; }
-        .card-fecha { font-size: 0.78rem; color: #888; min-width: 110px; text-align: right; }
-        .badge-estado {
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-            white-space: nowrap;
-        }
+        .pedido-card:hover { border-color: var(--rm-border); }
+        .card-header-row { display: flex; align-items: center; gap: 12px; padding: 14px 20px 10px; cursor: pointer; flex-wrap: wrap; }
+        .card-id { font-size: 0.78rem; color: var(--rm-text-2); min-width: 72px; }
+        .card-cliente { font-weight: 700; font-size: 0.92rem; color: var(--rm-text); flex: 1; min-width: 140px; }
+        .card-fecha { font-size: 0.78rem; color: var(--rm-text-2); min-width: 110px; text-align: right; }
+        .badge-estado { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: var(--rm-radius-pill); white-space: nowrap; }
         .estado-pendiente { background: #fff3cd; color: #856404; }
         .estado-en-proceso { background: #cfe2ff; color: #0a4fa8; }
         .estado-atendido { background: #d1e7dd; color: #0a5c36; }
         .card-body-row { padding: 0 20px 12px; display: none; }
         .card-body-row.open { display: block; }
-        .card-total { font-size: 0.82rem; color: #555; margin-bottom: 6px; }
-        .card-obs { font-size: 0.8rem; color: #666; margin-bottom: 10px; font-style: italic; }
+        .card-total { font-size: 0.82rem; color: var(--rm-text-2); margin-bottom: 6px; }
+        .card-obs { font-size: 0.8rem; color: var(--rm-text-2); margin-bottom: 10px; font-style: italic; }
         .items-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 12px; }
-        .items-table th { color: #888; font-weight: 600; padding: 4px 0; border-bottom: 1px solid #f0f0f5; }
-        .items-table td { padding: 5px 0; border-bottom: 1px solid #f8f8fc; color: #333; }
+        .items-table th { color: var(--rm-text-2); font-weight: 600; padding: 4px 0; border-bottom: 1px solid var(--rm-border); text-align: left; }
+        .items-table td { padding: 5px 0; border-bottom: 1px solid var(--rm-border); color: var(--rm-text); }
         .items-table td:last-child { text-align: right; }
         .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .btn-avanzar {
-            border: none;
-            border-radius: 6px;
-            padding: 6px 16px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.15s;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-        }
+        .btn-avanzar { border: none; border-radius: var(--rm-radius-sm); padding: 6px 16px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: opacity var(--rm-transition-fast); font-family: var(--rm-font-body); }
         .btn-avanzar-pendiente { background: #fff3cd; color: #856404; }
         .btn-avanzar-pendiente:hover { opacity: 0.8; }
         .btn-avanzar-proceso { background: #cfe2ff; color: #0a4fa8; }
         .btn-avanzar-proceso:hover { opacity: 0.8; }
-        .btn-eliminar {
-            background: transparent;
-            border: 1px solid #f0a0a0;
-            color: #cc4444;
-            border-radius: 6px;
-            padding: 6px 14px;
-            font-size: 0.82rem;
-            cursor: pointer;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-        }
-        .btn-eliminar:hover { background: #fff0f0; }
+        .btn-eliminar { background: transparent; border: 1px solid var(--rm-danger); color: var(--rm-danger); border-radius: var(--rm-radius-sm); padding: 6px 14px; font-size: 0.82rem; cursor: pointer; font-family: var(--rm-font-body); }
+        .btn-eliminar:hover { background: var(--rm-danger); color: #fff; }
 
-        .item-row {
-            display: grid;
-            grid-template-columns: 1fr 70px 110px 1fr 32px;
-            gap: 6px;
-            align-items: start;
-            margin-bottom: 6px;
-        }
+        .item-row { display: grid; grid-template-columns: 1fr 70px 110px 1fr 32px; gap: 6px; align-items: start; margin-bottom: 6px; }
         .item-row input, .item-row textarea {
-            border: 1px solid #d0d0dd;
-            border-radius: 6px;
-            padding: 5px 8px;
-            font-size: 0.82rem;
-            width: 100%;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            border: 1px solid var(--rm-border); border-radius: var(--rm-radius-sm); padding: 5px 8px;
+            font-size: 0.82rem; width: 100%; font-family: var(--rm-font-body); background: var(--rm-white); color: var(--rm-text);
         }
         .btn-remove-item {
-            background: transparent;
-            border: 1px solid #f0a0a0;
-            color: #cc4444;
-            border-radius: 6px;
-            width: 32px;
-            height: 32px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: transparent; border: 1px solid var(--rm-danger); color: var(--rm-danger); border-radius: var(--rm-radius-sm);
+            width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; font-family: var(--rm-font-body);
         }
-        .total-estimado { font-weight: 700; color: #1a1a2e; font-size: 0.95rem; }
-        .empty-msg { text-align: center; color: #aaa; padding: 48px 0; font-size: 0.9rem; }
+        .total-estimado { font-weight: 700; color: var(--rm-text); font-size: 0.95rem; }
+        .empty-msg { text-align: center; color: var(--rm-text-2); padding: 48px 0; font-size: 0.9rem; }
+
+        @media (max-width: 559.98px) {
+            .item-row { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body class="rm-has-sidebar">
 
-<nav class="rm-sidebar">
-    <div class="rm-sidebar-brand">
-        <div class="brand-name">ROSS <span class="brand-gold">MILLE</span></div>
-        <span class="brand-sub">Punto de Venta</span>
-    </div>
-    <ul class="rm-nav">
-        <li><a href="/dashboard.html" class="rm-nav-link"><i class="bi bi-house-door"></i> Inicio</a></li>
-        <li><a href="/vender.html" class="rm-nav-link"><i class="bi bi-cart3"></i> Vender</a></li>
-        <li><a href="/productos.html" class="rm-nav-link"><i class="bi bi-box-seam"></i> Productos</a></li>
-        <li><a href="/clientes.html" class="rm-nav-link"><i class="bi bi-people"></i> Clientes</a></li>
-        <li><a href="/pedidos.html" class="rm-nav-link active"><i class="bi bi-clipboard2-list"></i> Pedidos</a></li>
-        <li class="rm-nav-admin"><div class="rm-nav-sep"></div></li>
-        <li class="rm-nav-admin"><a href="/usuarios.html" class="rm-nav-link"><i class="bi bi-person-gear"></i> Usuarios</a></li>
-        <li class="rm-nav-admin"><a href="/reporte.html" class="rm-nav-link"><i class="bi bi-bar-chart-line"></i> Reporte</a></li>
-        <li class="rm-nav-admin"><a href="/configuracion.html" class="rm-nav-link"><i class="bi bi-gear"></i> Configuracion</a></li>
-    </ul>
-    <div class="rm-sidebar-footer">
-        <div class="sf-name" id="sb-name"></div>
-        <div class="sf-role" id="sb-role"></div>
-        <button class="rm-btn-logout" onclick="logout()">
-            <i class="bi bi-box-arrow-right"></i> Cerrar Sesion
-        </button>
-    </div>
-</nav>
+<a class="skip-link" href="#main" data-i18n="a11y.skipToContent">Saltar al contenido principal</a>
+<div id="rmDrawerBackdrop" class="rm-drawer-backdrop"></div>
+<div id="rmSidebarMount"></div>
+<div id="rmTopbarMount"></div>
 
-<div class="main">
-    <div class="toolbar">
-        <div class="tabs">
-            <button class="tab-btn active" id="tabActivos"
+<main id="main" class="rm-page">
+
+    <div class="page-header reveal">
+        <div>
+            <h1 class="page-title" data-i18n="page.pedidos.title">Pedidos</h1>
+            <p class="page-subtitle" data-i18n="page.pedidos.subtitle">Encargos activos e historial de pedidos atendidos</p>
+        </div>
+    </div>
+
+    <div class="toolbar reveal">
+        <div class="tabs" role="tablist">
+            <button class="tab-btn active" id="tabActivos" role="tab" aria-selected="true"
                 onclick="cambiarTab('activos')">Activos</button>
-            <button class="tab-btn" id="tabHistorial"
+            <button class="tab-btn" id="tabHistorial" role="tab" aria-selected="false"
                 onclick="cambiarTab('historial')">Historial</button>
         </div>
         <button class="btn-nuevo" onclick="abrirModalNuevo()">+ Nuevo Pedido</button>
     </div>
 
-    <div id="listaPedidos">
-        <div class="empty-msg">Cargando...</div>
+    <div class="reveal">
+        <div id="listaPedidos">
+            <div class="empty-msg" data-i18n="common.loading">Cargando...</div>
+        </div>
     </div>
-</div>
+
+</main>
+
+<div id="rmFooterMount"></div>
 
 <!-- Modal: Nuevo Pedido -->
 <div class="modal fade" id="modalNuevo" tabindex="-1">
@@ -201,47 +114,47 @@
         <div class="modal-content">
             <div class="modal-header border-0">
                 <h6 class="modal-title fw-bold">Nuevo Pedido</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label fw-semibold" style="font-size:0.85rem;">ID del Cliente</label>
+                    <label class="form-label fw-semibold" style="font-size:0.85rem;" for="nuevoIdCliente">ID del Cliente</label>
                     <input type="text" id="nuevoIdCliente" class="form-control form-control-sm"
                         placeholder="Ej: 1234567890" maxlength="10">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold" style="font-size:0.85rem;">Observaciones</label>
+                    <label class="form-label fw-semibold" style="font-size:0.85rem;" for="nuevoObservaciones">Observaciones</label>
                     <textarea id="nuevoObservaciones" class="form-control form-control-sm"
                         rows="2" placeholder="Notas adicionales (opcional)"></textarea>
                 </div>
                 <div class="mb-2">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <label class="form-label fw-semibold mb-0" style="font-size:0.85rem;">
+                        <span class="form-label fw-semibold mb-0" style="font-size:0.85rem;">
                             Productos del pedido
-                        </label>
+                        </span>
                         <button type="button" class="btn btn-outline-secondary btn-sm"
                             onclick="agregarItemForm()">+ Agregar item</button>
                     </div>
                     <div style="display:grid; grid-template-columns: 1fr 70px 110px 1fr 32px; gap:6px; margin-bottom:4px;">
-                        <span style="font-size:0.75rem; color:#888; font-weight:600;">Nombre producto</span>
-                        <span style="font-size:0.75rem; color:#888; font-weight:600;">Cant.</span>
-                        <span style="font-size:0.75rem; color:#888; font-weight:600;">Precio est.</span>
-                        <span style="font-size:0.75rem; color:#888; font-weight:600;">Descripcion</span>
+                        <span style="font-size:0.75rem; color:var(--rm-text-2); font-weight:600;">Nombre producto</span>
+                        <span style="font-size:0.75rem; color:var(--rm-text-2); font-weight:600;">Cant.</span>
+                        <span style="font-size:0.75rem; color:var(--rm-text-2); font-weight:600;">Precio est.</span>
+                        <span style="font-size:0.75rem; color:var(--rm-text-2); font-weight:600;">Descripcion</span>
                         <span></span>
                     </div>
                     <div id="itemsForm"></div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-3 pt-2"
-                    style="border-top: 1px solid #e8e8f0;">
-                    <span style="font-size:0.85rem; color:#666;">Total estimado:</span>
+                    style="border-top: 1px solid var(--rm-border);">
+                    <span style="font-size:0.85rem; color:var(--rm-text-2);">Total estimado:</span>
                     <span class="total-estimado" id="totalEstimadoLabel">$0</span>
                 </div>
-                <div id="nuevoError" class="text-danger mt-2" style="font-size:0.83rem; display:none;"></div>
+                <div id="nuevoError" class="text-danger mt-2" style="font-size:0.83rem; display:none;" role="alert"></div>
             </div>
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-outline-secondary btn-sm"
-                    data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-dark btn-sm"
+                    data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
+                <button type="button" class="btn btn-primary btn-sm"
                     id="btnCrearPedido" onclick="crearPedido()">Crear Pedido</button>
             </div>
         </div>
@@ -254,19 +167,19 @@
         <div class="modal-content">
             <div class="modal-header border-0 pb-0">
                 <h6 class="modal-title fw-bold">Eliminar pedido</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <p id="textoEliminar" style="font-size:0.88rem; color:#333; margin-bottom:12px;"></p>
-                <label style="font-size:0.82rem; font-weight:600;">Contrasena de administrador</label>
+                <p id="textoEliminar" style="font-size:0.88rem; color:var(--rm-text); margin-bottom:12px;"></p>
+                <label style="font-size:0.82rem; font-weight:600;" for="inputContrasenaEliminar">Contrasena de administrador</label>
                 <input type="password" id="inputContrasenaEliminar"
                     class="form-control form-control-sm mt-1" placeholder="Contrasena">
                 <div id="errorEliminar" class="text-danger mt-2"
-                    style="font-size:0.8rem; display:none;"></div>
+                    style="font-size:0.8rem; display:none;" role="alert"></div>
             </div>
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-outline-secondary btn-sm"
-                    data-bs-dismiss="modal">Cancelar</button>
+                    data-bs-dismiss="modal" data-i18n="common.cancel">Cancelar</button>
                 <button type="button" class="btn btn-danger btn-sm"
                     id="btnConfirmarEliminar" onclick="ejecutarEliminar()">Eliminar</button>
             </div>
@@ -275,16 +188,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/i18n.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/rossmille.js"></script>
+<script src="/js/layout.js"></script>
 <script src="/js/pedidos.js"></script>
 <script>
-    var session = guardRoute();
-    if (session) {
-        initSidebar(session);
-        window._esAdmin = session.rol === 'Administrador';
-    }
+    var session = initApp({ activeKey: 'pedidos', titleKey: 'page.pedidos.title', subtitleKey: 'page.pedidos.subtitle' });
+    if (session) window._esAdmin = session.rol === 'Administrador';
 </script>
 </body>
 </html>
