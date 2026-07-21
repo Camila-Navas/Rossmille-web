@@ -92,8 +92,8 @@ cero, correr `python3 db/setup_admin.py` desde el proyecto prototipo.
 | E | Rediseno visual paleta indigo/gold + dashboard v2 | COMPLETADA | 3298859 |
 | F | Modulo Configuracion completo (7 secciones) | COMPLETADA | f062546 |
 | G | Reporte con graficas (top productos, metodos pago, ingresos/dia) | COMPLETADA | 4870e40 |
-| H | Rediseno frontend: design tokens, temas (modo + 3 acentos), i18n ES/EN, layout responsive mobile-first, accesibilidad | COMPLETADA | (este commit) |
-| I | Preparacion para despliegue en Railway: Dockerfile multi-stage, railway.toml, variables de entorno | COMPLETADA | (este commit) |
+| H | Rediseno frontend: design tokens, temas (modo + 3 acentos), i18n ES/EN, layout responsive mobile-first, accesibilidad | COMPLETADA | 3629bc3 |
+| I | Preparacion para despliegue en Railway: Dockerfile multi-stage, railway.toml, variables de entorno | COMPLETADA | 3629bc3 |
 
 ---
 
@@ -514,4 +514,4 @@ manipula directo desde cada pagina.
 | c2b118d | docs: contexto con Fase F y fix Docker |
 | 580b3e5 | docs: contexto Docker bind mount |
 | 4870e40 | Fase G: Reporte con graficas (top productos, metodos pago, ingresos/dia) |
-| (pendiente) | Fases H e I: rediseno frontend (tokens/temas/i18n/responsive/a11y) + Dockerfile/Railway -- ver hash real con `git log` tras este commit |
+| 3629bc3 | Fases H e I: rediseno frontend (tokens/temas/i18n/responsive/a11y) + Dockerfile/Railway |
