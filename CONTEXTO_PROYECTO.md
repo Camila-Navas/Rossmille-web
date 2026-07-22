@@ -1,6 +1,6 @@
 # Contexto del Proyecto -- ROSS MILLE Web
 
-Ultima actualizacion: 2026-07-20
+Ultima actualizacion: 2026-07-21
 
 Migracion del prototipo ROSS MILLE POS (Java Swing) a aplicacion web profesional con
 Spring Boot REST API y frontend HTML/CSS/Vanilla JS.
@@ -8,6 +8,9 @@ Objetivo: pieza de portafolio que demuestra manejo profesional de Java backend m
 
 - Prototipo Swing original: `/home/camil/proyectos/prototype-java` (repo: Rossmille_pos) -- ARCHIVADO
 - Este proyecto: `/home/camil/proyectos/rossmille-web` (repo: rossmille-web)
+- Desde el 2026-07-21 este repo es autocontenido: `docker-compose.yml`, `db/init.sql`
+  y `db/setup_admin.py` se copiaron aqui (antes solo vivian en `prototype-java`,
+  lo que obligaba a clonar ambos repos para levantar la BD). Ver seccion mas abajo.
 
 ---
 
@@ -32,7 +35,7 @@ Objetivo: pieza de portafolio que demuestra manejo profesional de Java backend m
 
 ```bash
 # 1. Levantar la BD (Docker Desktop debe estar corriendo en Windows)
-docker compose up -d   # desde /home/camil/proyectos/prototype-java
+docker compose up -d   # desde este repo (rossmille-web) -- ver docker-compose.yml
 
 # 2. Correr la app Spring Boot
 cd /home/camil/proyectos/rossmille-web
@@ -121,7 +124,7 @@ con un valor propio, ya que el default del repo es publico en el historial de gi
 
 ### Pasos manuales que Railway no resuelve solo (documentados en README.md)
 
-1. Cargar `db/init.sql` (vive en el repo `prototype-java`) contra la BD de Railway --
+1. Cargar `db/init.sql` (vive en este repo) contra la BD de Railway --
    el plugin de MySQL arranca vacio, `ddl-auto: validate` no crea tablas.
 2. Crear el primer administrador con `setup_admin.py` apuntando a esa BD, o INSERT manual.
 3. Configurar `JWT_SECRET` en las variables de entorno del servicio antes de exponer la app.
@@ -310,6 +313,40 @@ Guardar por seccion. Apariencia aplica cambios en tiempo real sin guardar.
 
 ---
 
+## Autocontencion de BD + fix descuento + build Docker validado (2026-07-21)
+
+### Repo autocontenido (`docker-compose.yml`, `db/init.sql`, `db/setup_admin.py`)
+
+Estos 3 archivos vivian unicamente en `prototype-java` (el prototipo Swing archivado),
+lo que obligaba a tener ambos repos clonados para poder levantar la BD de `rossmille-web`
+-- un problema real para un proyecto de portafolio pensado para clonarse solo.
+Se copiaron tal cual a este repo (mismo `container_name: rossmille_mysql` y
+`volumes: rossmille_data`, asi que reutilizan el mismo contenedor/volumen si ya
+existian). `prototype-java` no se modifico ni se borro, sigue archivado.
+README.md actualizado para reflejar el nuevo flujo (`docker compose up -d` desde
+este repo, sin mencionar `prototype-java`).
+
+### Fix: descuento sin limite superior en Vender (commit 0d4a36a)
+
+`VentaService.registrar()` calculaba `total = subtotal.subtract(descuento).max(ZERO)`
+sin validar que `descuento <= subtotal` -- una venta con descuento mayor al subtotal
+se aceptaba igual (HTTP 201), descontaba stock real, y guardaba `total: 0` con el
+`descuento` invalido en la BD, distorsionando ingresos en Reporte. Reproducido y
+confirmado navegando la app vendida en vivo (no solo por inspeccion de codigo).
+Corregido en `VentaService.java` (lanza `IllegalArgumentException` -> HTTP 400 antes
+de tocar stock/BD si `descuento > subtotal`) y en `vender.js` (misma validacion en
+frontend + borde rojo en el input cuando excede el subtotal).
+
+### Build Docker validado de punta a punta
+
+Quedaba pendiente desde la Fase I: nunca se habia corrido `docker build` real.
+Se corrio en esta sesion -- `BUILD SUCCESS`, y se levanto el contenedor resultante
+contra la BD real (mismas variables que usaria Railway: `MYSQLHOST`, `MYSQLUSER`, etc.)
+-- login y `login.html` respondieron HTTP 200 dentro del contenedor. Contenedor e
+imagen de prueba se eliminaron despues de validar; el `Dockerfile` no cambio.
+
+---
+
 ## Docker fix (2026-06-17, commit 884122d en prototype-java)
 
 Eliminado bind mount `./db/init.sql:/docker-entrypoint-initdb.d/init.sql` del
@@ -327,6 +364,10 @@ Desktop en WSL2 porque las rutas de bind mount cambian entre reinicios.
 rossmille-web/
 +-- pom.xml / mvnw / README.md / CONTEXTO_PROYECTO.md / PLAN_TRABAJO.md
 +-- Dockerfile / .dockerignore / railway.toml         [Fase I -- listo para Railway]
++-- docker-compose.yml                                [autocontenido desde 2026-07-21]
++-- db/
+|   +-- init.sql                                      [autocontenido desde 2026-07-21]
+|   L-- setup_admin.py                                [autocontenido desde 2026-07-21]
 L-- src/main/
     +-- java/com/rossmille/
     |   +-- config/SecurityConfig.java             [/*.svg publico, @EnableMethodSecurity]

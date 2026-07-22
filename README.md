@@ -42,10 +42,9 @@ cd rossmille-web
 
 ### 2. Levantar la base de datos
 
-La BD MySQL 8.0 se levanta desde el proyecto Swing (comparten el mismo contenedor):
+El repo incluye su propio `docker-compose.yml`:
 
 ```bash
-cd /ruta/al/prototipo-java
 docker compose up -d
 ```
 
@@ -55,20 +54,25 @@ Verificar que el contenedor este corriendo:
 docker ps
 ```
 
+Si la BD es nueva (volumen recien creado), cargar el schema:
+
+```bash
+docker exec -i rossmille_mysql mysql -uRossMille -pRossMillB01 rossmille_db < db/init.sql
+```
+
 Verificar que las tablas existan:
 
 ```bash
 docker exec rossmille_mysql mysql -uRossMille -pRossMillB01 rossmille_db -e "SHOW TABLES;"
 ```
 
-Deben aparecer las 7 tablas: `usuarios`, `clientes`, `productos`, `ventas`, `detalle_venta`, `pedidos`, `detalle_pedido`.
+Deben aparecer las 8 tablas: `usuarios`, `clientes`, `productos`, `ventas`, `detalle_venta`, `pedidos`, `detalle_pedido`, `configuracion`.
 
 ### 3. Crear el primer administrador
 
-Si la tabla `usuarios` esta vacia, ejecutar el script del prototipo:
+Si la tabla `usuarios` esta vacia, ejecutar:
 
 ```bash
-cd /ruta/al/prototipo-java
 python3 db/setup_admin.py
 ```
 
@@ -183,6 +187,10 @@ Respuesta: `{ "ok": true, "data": { "token": "...", "nombre": "...", "rol": "...
 rossmille-web/
 ├── pom.xml
 ├── mvnw
+├── docker-compose.yml
+├── db/
+│   ├── init.sql
+│   └── setup_admin.py
 ├── src/main/
 │   ├── java/com/rossmille/
 │   │   ├── config/
@@ -238,7 +246,7 @@ rossmille-web/
 ## Base de datos
 
 La app usa `ddl-auto: validate` — Hibernate verifica que las entidades coincidan con el schema
-pero no lo modifica. El schema se crea desde `db/init.sql` del prototipo Swing.
+pero no lo modifica. El schema se crea desde `db/init.sql` de este repo.
 
 Configuracion en `src/main/resources/application.yml`.
 
@@ -266,16 +274,16 @@ hace falta tocar codigo para desplegar.
 ### 3. Cargar el schema
 
 El servicio de MySQL arranca vacio. Antes del primer login necesitas correr el
-`db/init.sql` del prototipo Swing (`prototype-java`) contra la base de Railway:
-usa el boton "Connect" del plugin MySQL en Railway para obtener credenciales/URL
-publicas y ejecuta el script con un cliente MySQL (`mysql -h ... -u ... -p ... < init.sql`)
-o desde la pestaña "Data" del propio Railway.
+`db/init.sql` de este repo contra la base de Railway: usa el boton "Connect" del
+plugin MySQL en Railway para obtener credenciales/URL publicas y ejecuta el script
+con un cliente MySQL (`mysql -h ... -u ... -p ... < db/init.sql`) o desde la
+pestana "Data" del propio Railway.
 
 ### 4. Crear el primer administrador
 
-Corre `db/setup_admin.py` del prototipo apuntando a la base de Railway (mismo
-mecanismo que en local, solo cambia el host/credenciales), o inserta el registro
-manualmente en la tabla `usuarios` con una contrasena hasheada en BCrypt.
+Corre `db/setup_admin.py` apuntando a la base de Railway (mismo mecanismo que en
+local, solo cambia el host/credenciales), o inserta el registro manualmente en la
+tabla `usuarios` con una contrasena hasheada en BCrypt.
 
 ### 5. Variables de entorno de la app
 

@@ -12,3 +12,5 @@ HELP.md
 README.md
 CONTEXTO_PROYECTO.md
 PLAN_TRABAJO.md
+db/
+docker-compose.yml
