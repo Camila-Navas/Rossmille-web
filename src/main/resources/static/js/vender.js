@@ -138,11 +138,15 @@ function renderCarrito() {
 
 function actualizarTotales() {
     var subtotal = carrito.reduce(function (acc, i) { return acc + i.precio * i.cantidad; }, 0);
-    var descuento = parseFloat(document.getElementById('inputDescuento').value) || 0;
+    var inputDescuento = document.getElementById('inputDescuento');
+    var descuento = parseFloat(inputDescuento.value) || 0;
     if (descuento < 0) descuento = 0;
+    var excedeSubtotal = descuento > subtotal;
     var total = Math.max(0, subtotal - descuento);
     document.getElementById('subtotalVal').textContent = '$' + formatNum(subtotal);
     document.getElementById('totalVal').textContent    = '$' + formatNum(total);
+    inputDescuento.style.borderColor = excedeSubtotal ? 'var(--rm-danger)' : '';
+    inputDescuento.title = excedeSubtotal ? 'El descuento no puede ser mayor al subtotal' : '';
 }
 
 async function finalizarVenta() {
@@ -151,6 +155,11 @@ async function finalizarVenta() {
 
     var descuento = parseFloat(document.getElementById('inputDescuento').value) || 0;
     if (descuento < 0) descuento = 0;
+    var subtotal = carrito.reduce(function (acc, i) { return acc + i.precio * i.cantidad; }, 0);
+    if (descuento > subtotal) {
+        mostrarError('El descuento no puede ser mayor al subtotal ($' + formatNum(subtotal) + ')');
+        return;
+    }
     var metodoPago = document.getElementById('selectPago').value;
     var idCliente  = document.getElementById('inputCliente').value.trim() || null;
 

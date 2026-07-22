@@ -83,7 +83,12 @@ public class VentaService {
             itemsRespuesta.add(ir);
         }
 
-        BigDecimal total = subtotal.subtract(descuento).max(BigDecimal.ZERO);
+        if (descuento.compareTo(subtotal) > 0) {
+            throw new IllegalArgumentException(
+                    "El descuento no puede ser mayor al subtotal de la venta");
+        }
+
+        BigDecimal total = subtotal.subtract(descuento);
 
         // Insertar venta
         Venta venta = new Venta();
