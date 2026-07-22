@@ -54,6 +54,17 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Flyway: crea/versiona el schema en cada entorno al arrancar la app,
+             reemplaza la ejecucion manual de db/init.sql -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+        </dependency>
+
         <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

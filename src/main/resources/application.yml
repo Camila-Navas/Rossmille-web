@@ -12,9 +12,22 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
+      # Flyway crea/versiona el schema (ver spring.flyway abajo); Hibernate
+      # solo valida que las entidades coincidan, nunca lo modifica.
       ddl-auto: validate
     show-sql: false
     open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    # El schema ya existia (docker-compose local, o una BD de Railway donde
+    # alguien corrio db/init.sql a mano) antes de que este proyecto usara
+    # Flyway. baseline-on-migrate le dice a Flyway: si no encuentra su tabla
+    # de historial pero SI encuentra tablas de la app, no las recrees --
+    # marca baseline-version como "ya aplicada" y sigue desde ahi. En una
+    # base de Railway completamente vacia, Flyway simplemente corre V1 normal.
+    baseline-on-migrate: true
+    baseline-version: 0
 
 server:
   # Railway asigna el puerto dinamicamente via la variable PORT
@@ -25,3 +38,13 @@ jwt:
   # con un valor propio y secreto antes de exponer la app publicamente.
   secret: ${JWT_SECRET:rossmille-jwt-secret-key-2024-rossmille-pos-web}
   expiration: ${JWT_EXPIRATION:28800000}
+
+admin:
+  seed:
+    # Si la tabla usuarios esta vacia al arrancar, AdminSeeder crea este
+    # administrador (ver com.rossmille.config.AdminSeeder). Si estas 3
+    # variables no estan definidas, no crea nada y solo deja un WARN en el
+    # log -- nunca falla el arranque por esto.
+    id: ${ADMIN_ID:}
+    nombre: ${ADMIN_NOMBRE:}
+    password: ${ADMIN_PASSWORD:}

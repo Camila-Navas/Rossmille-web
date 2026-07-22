@@ -54,23 +54,21 @@ Verificar que el contenedor este corriendo:
 docker ps
 ```
 
-Si la BD es nueva (volumen recien creado), cargar el schema:
-
-```bash
-docker exec -i rossmille_mysql mysql -uRossMille -pRossMillB01 rossmille_db < db/init.sql
-```
-
-Verificar que las tablas existan:
+Si la BD es nueva (volumen recien creado), no hace falta cargar nada a mano:
+Flyway crea las 8 tablas solo al arrancar la app (paso 4). Para verificarlo
+manualmente de todos modos:
 
 ```bash
 docker exec rossmille_mysql mysql -uRossMille -pRossMillB01 rossmille_db -e "SHOW TABLES;"
 ```
 
-Deben aparecer las 8 tablas: `usuarios`, `clientes`, `productos`, `ventas`, `detalle_venta`, `pedidos`, `detalle_pedido`, `configuracion`.
+Deben aparecer: `usuarios`, `clientes`, `productos`, `ventas`, `detalle_venta`, `pedidos`, `detalle_pedido`, `configuracion`.
 
 ### 3. Crear el primer administrador
 
-Si la tabla `usuarios` esta vacia, ejecutar:
+Si defines `ADMIN_ID`, `ADMIN_NOMBRE` y `ADMIN_PASSWORD` como variables de entorno
+antes de correr la app, se crea solo al arrancar (si la tabla `usuarios` esta
+vacia). Alternativa manual/interactiva sin tocar variables de entorno:
 
 ```bash
 python3 db/setup_admin.py
@@ -189,12 +187,13 @@ rossmille-web/
 ├── mvnw
 ├── docker-compose.yml
 ├── db/
-│   ├── init.sql
-│   └── setup_admin.py
+│   ├── init.sql              (referencia historica, ver Flyway abajo)
+│   └── setup_admin.py        (alternativa manual, ver AdminSeeder abajo)
 ├── src/main/
 │   ├── java/com/rossmille/
 │   │   ├── config/
-│   │   │   └── SecurityConfig.java
+│   │   │   ├── SecurityConfig.java
+│   │   │   └── AdminSeeder.java   (crea el primer admin si usuarios esta vacia)
 │   │   ├── controller/
 │   │   │   ├── AuthController.java
 │   │   │   ├── ProductoController.java
@@ -212,6 +211,8 @@ rossmille-web/
 │   │   └── service/
 │   └── resources/
 │       ├── application.yml
+│       ├── db/migration/
+│       │   └── V1__init.sql      (Flyway -- crea el schema al arrancar)
 │       └── static/
 │           ├── login.html
 │           ├── dashboard.html
@@ -245,8 +246,11 @@ rossmille-web/
 
 ## Base de datos
 
-La app usa `ddl-auto: validate` — Hibernate verifica que las entidades coincidan con el schema
-pero no lo modifica. El schema se crea desde `db/init.sql` de este repo.
+El schema lo crea y versiona **Flyway** (`src/main/resources/db/migration/`) al arrancar
+la app, en local y en Railway por igual. `ddl-auto: validate` sigue activo -- Hibernate
+solo verifica que las entidades coincidan con lo que Flyway ya creo, nunca lo modifica.
+`db/init.sql` se conserva como referencia historica y para levantar la BD local sin
+pasar por la app (`docker exec -i rossmille_mysql mysql ... < db/init.sql`).
 
 Configuracion en `src/main/resources/application.yml`.
 
@@ -264,34 +268,59 @@ hace falta tocar codigo para desplegar.
 1. New Project → Deploy from GitHub repo → selecciona este repositorio.
 2. Railway detecta `railway.toml` y construye con el `Dockerfile` (no usa Nixpacks).
 
-### 2. Agregar MySQL
+### 2. Agregar MySQL y enlazar las variables (paso critico)
 
 1. En el mismo proyecto: New → Database → Add MySQL.
-2. Railway inyecta automaticamente `MYSQLHOST`, `MYSQLPORT`, `MYSQLDATABASE`,
-   `MYSQLUSER` y `MYSQLPASSWORD` al servicio de la app (variable reference, se
-   configura solo si ambos servicios estan en el mismo proyecto).
+2. Railway **no enlaza las variables solo** -- hay que hacerlo a mano una vez:
+   en el servicio de la app → pestana **Variables** → agregar referencias al
+   servicio de MySQL con la sintaxis `${{NombreServicio.VARIABLE}}`:
 
-### 3. Cargar el schema
+   ```
+   MYSQLHOST=${{MySQL.MYSQLHOST}}
+   MYSQLPORT=${{MySQL.MYSQLPORT}}
+   MYSQLDATABASE=${{MySQL.MYSQLDATABASE}}
+   MYSQLUSER=${{MySQL.MYSQLUSER}}
+   MYSQLPASSWORD=${{MySQL.MYSQLPASSWORD}}
+   ```
 
-El servicio de MySQL arranca vacio. Antes del primer login necesitas correr el
-`db/init.sql` de este repo contra la base de Railway: usa el boton "Connect" del
-plugin MySQL en Railway para obtener credenciales/URL publicas y ejecuta el script
-con un cliente MySQL (`mysql -h ... -u ... -p ... < db/init.sql`) o desde la
-pestana "Data" del propio Railway.
+   Si el servicio de la app queda con "0 Variables", `application.yml` usa sus
+   defaults locales (`localhost:3306`) y la app **crashea al arrancar** con
+   `Connection refused` -- no hay ningun default valido dentro del contenedor
+   de Railway. Este paso es obligatorio, no opcional.
 
-### 4. Crear el primer administrador
+### 3. El schema se crea solo (Flyway)
 
-Corre `db/setup_admin.py` apuntando a la base de Railway (mismo mecanismo que en
-local, solo cambia el host/credenciales), o inserta el registro manualmente en la
-tabla `usuarios` con una contrasena hasheada en BCrypt.
+Ya no hace falta correr `db/init.sql` a mano. Al arrancar, Flyway
+(`src/main/resources/db/migration/V1__init.sql`) crea las 8 tablas si la base
+esta vacia. `db/init.sql` se conserva en el repo solo como referencia
+historica / para levantar la BD local sin pasar por la app.
 
-### 5. Variables de entorno de la app
+### 4. Crear el primer administrador (automatico)
 
-En el servicio de la app (Settings → Variables), agrega al menos:
+`AdminSeeder` (`com.rossmille.config.AdminSeeder`) crea el primer Administrador
+al arrancar si la tabla `usuarios` esta vacia, usando estas variables:
 
-| Variable | Valor sugerido |
-|----------|----------------|
-| `JWT_SECRET` | una cadena aleatoria propia (no uses el valor por defecto del repo en produccion) |
+| Variable | Ejemplo |
+|----------|---------|
+| `ADMIN_ID` | `1234567` |
+| `ADMIN_NOMBRE` | `Admin Principal` |
+| `ADMIN_PASSWORD` | contrasena propia, minimo 6 caracteres |
+
+Si no estan configuradas y la tabla esta vacia, la app arranca igual pero deja
+un `WARN` en el log y nadie podra iniciar sesion hasta que se configuren y se
+reinicie el servicio (o se inserte un usuario manualmente).
+`db/setup_admin.py` se conserva como alternativa manual/interactiva si se
+prefiere no usar estas variables.
+
+### 5. Variables de entorno de la app -- resumen completo
+
+En el servicio de la app (Settings → Variables):
+
+| Variable | Origen | Obligatoria |
+|----------|--------|-------------|
+| `MYSQLHOST` / `MYSQLPORT` / `MYSQLDATABASE` / `MYSQLUSER` / `MYSQLPASSWORD` | Referencia al servicio MySQL (paso 2) | Si |
+| `JWT_SECRET` | Valor propio, aleatorio | Si -- el default del repo es publico |
+| `ADMIN_ID` / `ADMIN_NOMBRE` / `ADMIN_PASSWORD` | Valores propios | Solo la primera vez (BD vacia) |
 
 `PORT` la define Railway automaticamente — no la configures a mano.
 

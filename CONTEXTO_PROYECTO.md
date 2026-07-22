@@ -313,6 +313,102 @@ Guardar por seccion. Apariencia aplica cambios en tiempo real sin guardar.
 
 ---
 
+## Flyway + AdminSeeder + diagnostico real del crash en Railway (2026-07-21)
+
+### Contexto
+
+Al intentar el primer deploy en Railway, el servicio crasheaba al arrancar
+(`CJCommunicationsException: Connection refused` -> cascada hasta
+`UnsatisfiedDependencyException` en `jwtAuthenticationFilter`). Se investigo
+con un brief que traia varias premisas incorrectas sobre el repo (asumia
+`application.properties` con credenciales hardcodeadas, sin leer variables de
+entorno) -- eso ya estaba resuelto desde la Fase I. La causa raiz real,
+confirmada por el propio usuario: **el servicio de la app en Railway tenia
+0 Variables configuradas**, asi que `application.yml` usaba sus defaults
+locales (`MYSQLHOST:localhost`) y el contenedor intentaba conectar a
+`localhost:3306`, donde no hay nada.
+
+### Lo que arregla el crash de verdad (accion en el dashboard, no codigo)
+
+En Railway, el servicio de MySQL y el de la app deben estar en el mismo
+proyecto, y hay que enlazar las variables a mano (Railway no lo hace solo):
+en el servicio de la app -> Variables -> agregar referencias con la sintaxis
+`${{MySQL.MYSQLHOST}}`, `${{MySQL.MYSQLPORT}}`, etc. Sin esto, ningun cambio
+de codigo evita el crash -- documentado con el detalle completo en el
+README (seccion "Despliegue en Railway").
+
+### Flyway reemplaza la carga manual de `db/init.sql`
+
+Se agrego `org.flywaydb:flyway-core` + `flyway-mysql` al `pom.xml` (sin
+version explicita, gestionada por el BOM de `spring-boot-starter-parent`).
+El schema vive ahora en `src/main/resources/db/migration/V1__init.sql`
+(mismo contenido que `db/init.sql`, sin `CREATE DATABASE`/`USE` porque
+Flyway se conecta directo al schema de la URL JDBC y el usuario de Railway
+no siempre tiene privilegios para crear bases nuevas).
+
+`ddl-auto: validate` se mantiene sin cambios -- Flyway crea/versiona el
+schema, Hibernate solo valida que las entidades coincidan. Es la combinacion
+recomendada, no un reemplazo.
+
+Config en `application.yml`:
+```yaml
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+```
+
+`baseline-on-migrate: true` + `baseline-version: 0` fue necesario porque ya
+existian bases de datos con las tablas creadas a mano (BD local de Docker,
+y potencialmente una BD de Railway donde alguien ya habia corrido
+`db/init.sql`) *antes* de introducir Flyway. Sin esto, Flyway falla con
+"found non-empty schema without metadata table" en cualquier BD que no este
+completamente vacia. Con `baseline-version: 0`, Flyway marca "todo hasta la
+version 0" como ya aplicado y corre igual `V1__init.sql` encima -- seguro
+porque todas las sentencias usan `CREATE TABLE IF NOT EXISTS`.
+
+**Validado en esta sesion, ambos escenarios:**
+- BD existente con datos (BD local, 3 usuarios, ventas de prueba) -> Flyway
+  hizo baseline en version 0 y migro a V1 sin tocar los datos existentes.
+  Login y datos intactos despues.
+- BD completamente vacia (contenedor MySQL efimero, simulando el MySQL nuevo
+  de Railway) -> Flyway corrio V1 desde cero sin necesitar baseline.
+
+`db/init.sql` se conserva en el repo solo como referencia historica / opcion
+para levantar la BD local sin pasar por la app.
+
+### AdminSeeder reemplaza la ejecucion manual de `db/setup_admin.py` en produccion
+
+Nuevo `com.rossmille.config.AdminSeeder implements CommandLineRunner`: si
+`usuarioRepository.count() == 0` al arrancar, crea un Administrador usando
+`ADMIN_ID` / `ADMIN_NOMBRE` / `ADMIN_PASSWORD` (variables de entorno, mismo
+patron `${VAR:default-vacio}` que ya se usaba para MYSQLHOST etc.). Usa el
+mismo bean `PasswordEncoder` (BCrypt) que ya usa `AuthService` para verificar
+login, asi que el hash es compatible sin logica nueva. Si esas 3 variables no
+estan definidas y la tabla esta vacia, solo deja un `WARN` en el log -- nunca
+rompe el arranque.
+
+**Validado en esta sesion**: BD vacia + esas 3 variables -> admin creado en
+el arranque, login exitoso con esas credenciales en el primer intento.
+
+`db/setup_admin.py` se conserva como alternativa manual/interactiva para
+quien prefiera no usar variables de entorno.
+
+### Por que NO se agregaron perfiles de Spring (`application-prod.yml`)
+
+El pedido original incluia separar config en perfiles Spring (`dev`/`prod`).
+Se decidio no hacerlo: el patron ya existente en `application.yml`
+(`${VAR:default-local}` para cada valor) ya logra el mismo objetivo -- un
+solo archivo que funciona igual en local (usa los defaults) y en Railway
+(usa las variables inyectadas), sin condicionales de perfil. Agregar
+`application-prod.yml` habria significado dos lugares con la misma
+informacion que mantener sincronizados, sin ganar nada que el patron actual
+no de ya.
+
+---
+
 ## Autocontencion de BD + fix descuento + build Docker validado (2026-07-21)
 
 ### Repo autocontenido (`docker-compose.yml`, `db/init.sql`, `db/setup_admin.py`)
@@ -371,6 +467,7 @@ rossmille-web/
 L-- src/main/
     +-- java/com/rossmille/
     |   +-- config/SecurityConfig.java             [/*.svg publico, @EnableMethodSecurity]
+    |   +-- config/AdminSeeder.java                [crea admin inicial si usuarios esta vacia -- 2026-07-21]
     |   +-- controller/
     |   |   +-- AuthController.java
     |   |   +-- ConfiguracionController.java       GET+PUT /api/configuracion, backup, restaurar
@@ -415,7 +512,8 @@ L-- src/main/
     |       +-- UsuarioService.java
     |       L-- ReporteService.java                [Fase G -- +obtenerGraficas()]
     L-- resources/
-        +-- application.yml                        [multipart 50MB]
+        +-- application.yml                        [multipart 50MB, Flyway, admin.seed.*]
+        +-- db/migration/V1__init.sql               [Flyway -- crea el schema al arrancar, 2026-07-21]
         L-- static/
             +-- favicon.svg
             +-- css/rossmille.css                  [Fase H -- tokens, temas (modo+acento), topbar/footer/drawer]
@@ -512,6 +610,12 @@ POST /api/configuracion/restaurar
 - [Fase H] `color-mix()` en CSS para tintes de acento -- requiere navegadores 2023+
 - [Fase I] Variables de entorno para deploy: `PORT`, `MYSQLHOST/PORT/DATABASE/USER/PASSWORD`,
   `JWT_SECRET`, `JWT_EXPIRATION` (todas con default local, no rompen `spring-boot:run`)
+- [2026-07-21] Flyway (`db/migration/V1__init.sql`) crea/versiona el schema en cada
+  entorno al arrancar -- reemplaza cargar `db/init.sql` a mano. `ddl-auto: validate`
+  se mantiene (Flyway crea, Hibernate solo valida)
+- [2026-07-21] `AdminSeeder` (CommandLineRunner) crea el primer Administrador si
+  `usuarios` esta vacia, usando `ADMIN_ID`/`ADMIN_NOMBRE`/`ADMIN_PASSWORD` -- reemplaza
+  correr `db/setup_admin.py` a mano en produccion (sigue disponible como alternativa manual)
 
 ---
 
